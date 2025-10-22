@@ -1,0 +1,80 @@
+{
+  "name": "midoriwallet",
+  "private": true,
+  "version": "1.0.1",
+  "description": "Midori Wallet",
+  "bugs": {
+    "url": "https://github.com/goastian/midori-wallet/issues"
+  },
+  "license": "MIT",
+  "author": "Midori Wallet <contact@astian.org> (https://astian.org/midori-wallet/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goastian/midori-wallet.git"
+  },
+  "type": "module",
+  "scripts": {
+    "server": "node ./server.js",
+    "server:watch": "nodemon -e js,yaml -w ./ -x node -r dotenv/config ./server.js dotenv_config_path=./.env.local",
+    "worker": "node ./worker.js",
+    "worker:watch": "nodemon -e js,yaml -w ./ -x node -r dotenv/config ./worker.js dotenv_config_path=./.env.local",
+    "lint": "eslint .",
+    "lint:api": "spectral lint ./lib/v*/*.yaml"
+  },
+  "dependencies": {
+    "@coinspace/crypto-db": "^1.16.5",
+    "@ensdomains/address-encoder": "^0.2.9",
+    "@sentry/integrations": "^6.17.3",
+    "@sentry/node": "^6.17.3",
+    "@simplewebauthn/server": "^8.2.0",
+    "@simplewebauthn/server-1.0.0": "npm:@simplewebauthn/server@^1.0.0",
+    "@unstoppabledomains/resolution": "^9.2.2",
+    "axios": "^1.7.7",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0",
+    "big.js": "^6.2.1",
+    "bip44-constants": "^8.0.103",
+    "body-parser": "^1.18.1",
+    "content-hash": "^2.5.2",
+    "cors": "^2.8.5",
+    "delay": "^5.0.0",
+    "ejs": "^2.6.1",
+    "expiry-map": "^2.0.0",
+    "express": "^4.15.4",
+    "express-openapi-validator": "^4.13.1",
+    "helmet": "^3.21.0",
+    "http-errors": "^2.0.0",
+    "mongodb": "^3.1.10",
+    "p-forever": "^3.0.1",
+    "p-memoize": "^7.1.1",
+    "semver": "^7.3.2"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.10.1",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.49.0",
+    "eslint-config-coinspace": "^2.1.1",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": "^20.11.1",
+    "npm": "^10.0.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "ignorePatterns": [
+      "/dist"
+    ],
+    "extends": [
+      "coinspace"
+    ],
+    "env": {
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "requireConfigFile": false,
+      "sourceType": "module"
+    }
+  }
+}
