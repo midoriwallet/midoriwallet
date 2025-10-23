@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
+  <g clip-path="url(#faceId_svg__a)">
+    <path stroke="url(#faceId_svg__b)" stroke-linecap="round" stroke-width="8.421" d="M123.789 28.67V16.841c0-6.976-5.655-12.632-12.631-12.632H99.33M4.21 28.67V16.841C4.21 9.866 9.867 4.21 16.843 4.21H28.67m95.119 95.12v11.828c0 6.976-5.655 12.631-12.631 12.631H99.33M4.21 99.33v11.828c0 6.976 5.656 12.631 12.632 12.631H28.67m11.414-75.077v-8.266m47.47 8.266v-8.266m1.268 46.02-.495.892a10.947 10.947 0 0 1-9.57 5.63H49.673a10.948 10.948 0 0 1-9.199-5.012l-.39-.603M57.75 70.885l.683-.495A13.475 13.475 0 0 0 64 59.48V40.446"/>
+  </g>
+  <defs>
+    <linearGradient id="faceId_svg__b" x1="-16" x2="124" y1="-18" y2="142.5" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFA842"/>
+      <stop offset=".35" stop-color="#60BB49"/>
+      <stop offset="1" stop-color="#4CAB89"/>
+    </linearGradient>
+    <clipPath id="faceId_svg__a">
+      <path fill="#fff" d="M0 0h128v128H0z"/>
+    </clipPath>
+  </defs>
+</svg>

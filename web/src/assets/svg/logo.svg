@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg3"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.4.2 (unknown)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <sodipodi:namedview
+     id="namedview3"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1575"
+     inkscape:cx="531.74946"
+     inkscape:cy="455.29158"
+     inkscape:window-width="1920"
+     inkscape:window-height="1172"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3" />
+  <path
+     d="M7 2C4.23858 2 2 4.23858 2 7H3V8H17V7H18C18 4.23858 15.7614 2 13 2H7Z"
+     fill="#152C70"
+     id="path1"
+     style="fill:#294b40;fill-opacity:1" />
+  <path
+     d="M3 6C2.44772 6 2 6.44772 2 7V17C2 19.7614 4.23858 22 7 22H17C19.7614 22 22 19.7614 22 17V11C22 8.23858 19.7614 6 17 6H3Z"
+     fill="#4296FF"
+     id="path2"
+     style="fill:#03a66a;fill-opacity:1" />
+  <path
+     d="m 21.12,14 c 0,1.1046 -0.8954,2 -2,2 -1.1046,0 -2,-0.8954 -2,-2 0,-1.1046 0.8954,-2 2,-2 1.1046,0 2,0.8954 2,2 z"
+     fill="#152C70"
+     id="path3"
+     style="fill:#3a6f5b;fill-opacity:1" />
+  <path
+     id="path100962"
+     style="fill:#ffffff;fill-opacity:1;stroke-width:0.0939039"
+     d="M 7.6055569,9.6561119 C 7.2359586,9.6562495 6.8756135,9.8466271 6.6706054,10.190852 L 2.419892,17.324034 c 0.3238505,0.198273 0.6775196,0.303413 1.03035,0.319744 v 1.02e-4 l 1.067e-4,10e-5 c 0.00257,1.14e-4 0.00475,-9e-6 0.0071,1.01e-4 0.016064,9.86e-4 0.031802,0.0015 0.048011,0.0017 0.033797,7.39e-4 0.067562,4.93e-4 0.1012726,-4.95e-4 0.00689,-1.36e-4 0.013808,-4.93e-4 0.020701,-4.93e-4 0.048433,-0.0017 0.096667,-0.0049 0.1447498,-0.0099 0.00581,-4.93e-4 0.011582,-0.0012 0.017407,-0.0017 0.050316,-0.0056 0.1003728,-0.01281 0.1501052,-0.02201 0.00316,-4.92e-4 0.00634,-9.85e-4 0.00944,-0.0017 0.053066,-0.0099 0.1057701,-0.02177 0.1579376,-0.03559 0.06646,-0.01761 0.1320856,-0.03833 0.1966749,-0.06216 0.064593,-0.02383 0.1281371,-0.0508 0.1903902,-0.08074 0.062253,-0.02998 0.1232237,-0.06297 0.1826653,-0.09896 0.178319,-0.107929 0.3429057,-0.242599 0.4874104,-0.402403 0.047469,-0.05249 0.092676,-0.107758 0.1355781,-0.165628 0.00127,-0.0017 0.00263,-0.0034 0.00391,-0.0053 0.042734,-0.05797 0.08314,-0.118595 0.1208494,-0.181821 L 7.5641759,12.986348 8.69457,15.068126 7.2867311,17.430664 c 0.3238534,0.198276 0.6776212,0.303407 1.0304591,0.31974 l 9.86e-5,9.9e-5 c 0.00127,5.7e-5 0.00246,-5.1e-5 0.00358,0 0.017251,0.0012 0.034187,0.0017 0.05162,0.002 0.034614,7.4e-4 0.069116,4.94e-4 0.1036419,-4.93e-4 0.00516,-1.34e-4 0.010536,-4.92e-4 0.015682,-4.92e-4 0.049738,-0.0017 0.099384,-0.0049 0.1487653,-0.01019 0.00516,-4.95e-4 0.010302,-9.86e-4 0.015461,-0.0017 0.050498,-0.0056 0.1007088,-0.01308 0.1506248,-0.0221 0.00313,-4.93e-4 0.00649,-0.0012 0.00964,-0.0017 0.053009,-0.0099 0.1057037,-0.02152 0.1578391,-0.03538 0.3322842,-0.08798 0.6441287,-0.254834 0.9061034,-0.492957 l 1.076e-4,-10e-5 c 0.052315,-0.04756 0.1026121,-0.09794 0.1507141,-0.151129 6.3e-5,-7.4e-5 1.41e-4,-1.31e-4 1.41e-4,-1.37e-4 1.1e-4,-1.23e-4 1.39e-4,-1.37e-4 5.09e-4,-4.93e-4 0.04801,-0.05313 0.09389,-0.109009 0.137227,-0.167604 v -1.02e-4 c 0.04344,-0.05876 0.08444,-0.120252 0.122709,-0.184407 V 16.6833 l 2.140364,-3.591806 2.306629,4.245206 c 0.291919,0.537281 0.957304,0.733603 1.486442,0.43868 0.529334,-0.295007 0.721732,-0.970089 0.429718,-1.507652 l -2.859767,-5.263305 -5.07e-4,4.93e-4 -0.356878,-0.657877 c -0.0017,-0.0032 -0.0034,-0.0063 -0.0052,-0.0093 -5.07e-4,-0.0012 -0.0015,-0.0021 -0.0022,-0.0032 C 13.349535,10.188126 13.235851,10.05756 13.09006,9.958123 13.07416,9.945733 13.05739,9.934934 13.03978,9.924234 12.86219,9.8147848 12.666081,9.7628121 12.472476,9.7629423 12.102882,9.7630775 11.742429,9.953457 11.53742,10.297674 l -1.536319,2.578558 -0.6924375,-1.275171 c 1.41e-4,4.91e-4 5.085e-4,4.91e-4 7.616e-4,9.84e-4 L 8.5705884,10.240613 c -0.00177,-0.0032 -0.00337,-0.0063 -0.00494,-0.0093 -5.086e-4,-7.4e-4 -0.00102,-0.0012 -0.00153,-0.002 C 8.4833679,10.082249 8.369464,9.951159 8.2233269,9.8514113 8.2074191,9.8390223 8.1906609,9.8282226 8.1730507,9.817523 7.995405,9.7082745 7.7992904,9.6563021 7.6056916,9.6564335 Z" />
+  <text
+     xml:space="preserve"
+     style="font-size:0.36px;writing-mode:lr-tb;direction:ltr;fill:#294b40;fill-opacity:1;stroke-width:0.03"
+     x="1.0885528"
+     y="23.922247"
+     id="text3"><tspan
+       sodipodi:role="line"
+       id="tspan3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.4px;font-family:Azonix;-inkscape-font-specification:'Azonix, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;stroke-width:0.03"
+       x="1.0885528"
+       y="23.922247">Midori Wallet</tspan><tspan
+       sodipodi:role="line"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.4px;font-family:Azonix;-inkscape-font-specification:'Azonix, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.03"
+       x="1.0885528"
+       y="25.165178"
+       id="tspan4" /></text>
+</svg>
