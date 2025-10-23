@@ -1,0 +1,162 @@
+# Configuración del Frontend Web MidoriWallet
+# ==========================================
+# Copia este archivo a .env y llena los valores
+
+# Configuración básica
+VITE_BUILD_TYPE=web
+VITE_PLATFORM=web
+VITE_DISTRIBUTION=web
+VITE_NAME=MidoriWallet
+VITE_VERSION=1.0.0
+
+# URLs del sitio
+VITE_SITE_URL=http://localhost:3000
+VITE_SITE_URL_TOR=http://your-tor-site.onion
+
+# URLs de la API
+VITE_API_HOST=http://localhost:8080
+VITE_API_HOST_TOR=http://your-tor-api.onion
+
+# URLs específicas de criptomonedas (Bitcoin)
+VITE_API_BTC_URL=http://localhost:8080/api/bitcoin
+VITE_API_BTC_URL_TOR=http://your-tor-api.onion/api/bitcoin
+
+# URLs específicas de criptomonedas (Ethereum)
+VITE_API_ETH_URL=http://localhost:8080/api/ethereum
+VITE_API_ETH_URL_TOR=http://your-tor-api.onion/api/ethereum
+
+# URLs específicas de criptomonedas (Litecoin)
+VITE_API_LTC_URL=http://localhost:8080/api/litecoin
+VITE_API_LTC_URL_TOR=http://your-tor-api.onion/api/litecoin
+
+# URLs específicas de criptomonedas (Bitcoin Cash)
+VITE_API_BCH_URL=http://localhost:8080/api/bitcoin-cash
+VITE_API_BCH_URL_TOR=http://your-tor-api.onion/api/bitcoin-cash
+
+# URLs específicas de criptomonedas (Dash)
+VITE_API_DASH_URL=http://localhost:8080/api/dash
+VITE_API_DASH_URL_TOR=http://your-tor-api.onion/api/dash
+
+# URLs específicas de criptomonedas (Dogecoin)
+VITE_API_DOGE_URL=http://localhost:8080/api/dogecoin
+VITE_API_DOGE_URL_TOR=http://your-tor-api.onion/api/dogecoin
+
+# URLs específicas de criptomonedas (Ethereum Classic)
+VITE_API_ETC_URL=http://localhost:8080/api/ethereum-classic
+VITE_API_ETC_URL_TOR=http://your-tor-api.onion/api/ethereum-classic
+
+# URLs específicas de criptomonedas (Binance Smart Chain)
+VITE_API_BSC_URL=http://localhost:8080/api/binance-smart-chain
+VITE_API_BSC_URL_TOR=http://your-tor-api.onion/api/binance-smart-chain
+
+# URLs específicas de criptomonedas (Polygon)
+VITE_API_POLYGON_URL=http://localhost:8080/api/polygon
+VITE_API_POLYGON_URL_TOR=http://your-tor-api.onion/api/polygon
+
+# URLs específicas de criptomonedas (Avalanche)
+VITE_API_AVAX_URL=http://localhost:8080/api/avalanche-c-chain
+VITE_API_AVAX_URL_TOR=http://your-tor-api.onion/api/avalanche-c-chain
+
+# URLs específicas de criptomonedas (Arbitrum)
+VITE_API_ARB_URL=http://localhost:8080/api/arbitrum
+VITE_API_ARB_URL_TOR=http://your-tor-api.onion/api/arbitrum
+
+# URLs específicas de criptomonedas (Optimism)
+VITE_API_OP_URL=http://localhost:8080/api/optimism
+VITE_API_OP_URL_TOR=http://your-tor-api.onion/api/optimism
+
+# URLs específicas de criptomonedas (Fantom)
+VITE_API_FTM_URL=http://localhost:8080/api/fantom
+VITE_API_FTM_URL_TOR=http://your-tor-api.onion/api/fantom
+
+# URLs específicas de criptomonedas (Base)
+VITE_API_BASE_URL=http://localhost:8080/api/base
+VITE_API_BASE_URL_TOR=http://your-tor-api.onion/api/base
+
+# URLs específicas de criptomonedas (Sonic)
+VITE_API_SONIC_URL=http://localhost:8080/api/sonic
+VITE_API_SONIC_URL_TOR=http://your-tor-api.onion/api/sonic
+
+# URLs específicas de criptomonedas (Ripple)
+VITE_API_XRP_URL=http://localhost:8080/api/ripple
+VITE_API_XRP_URL_TOR=http://your-tor-api.onion/api/ripple
+
+# URLs específicas de criptomonedas (Stellar)
+VITE_API_XLM_URL=http://localhost:8080/api/stellar
+VITE_API_XLM_URL_TOR=http://your-tor-api.onion/api/stellar
+
+# URLs específicas de criptomonedas (Monero)
+VITE_API_XMR_URL=http://localhost:8080/api/monero
+VITE_API_XMR_URL_TOR=http://your-tor-api.onion/api/monero
+
+# URLs específicas de criptomonedas (EOS)
+VITE_API_EOS_URL=http://localhost:8080/api/eos
+VITE_API_EOS_URL_TOR=http://your-tor-api.onion/api/eos
+
+# URLs específicas de criptomonedas (Solana)
+VITE_API_SOL_URL=http://localhost:8080/api/solana
+VITE_API_SOL_URL_TOR=http://your-tor-api.onion/api/solana
+
+# URLs específicas de criptomonedas (Tron)
+VITE_API_TRX_URL=http://localhost:8080/api/tron
+VITE_API_TRX_URL_TOR=http://your-tor-api.onion/api/tron
+
+# URLs específicas de criptomonedas (Cardano)
+VITE_API_ADA_URL=http://localhost:8080/api/cardano
+VITE_API_ADA_URL_TOR=http://your-tor-api.onion/api/cardano
+
+# URLs específicas de criptomonedas (Toncoin)
+VITE_API_TON_URL=http://localhost:8080/api/toncoin
+VITE_API_TON_URL_TOR=http://your-tor-api.onion/api/toncoin
+
+# URLs específicas de criptomonedas (Sui)
+VITE_API_SUI_URL=http://localhost:8080/api/sui
+VITE_API_SUI_URL_TOR=http://your-tor-api.onion/api/sui
+
+# URLs de servicios
+VITE_API_PRICE_URL=http://localhost:8080/api/price
+VITE_API_PRICE_URL_TOR=http://your-tor-api.onion/api/price
+
+VITE_API_RAMP_URL=http://localhost:8080/api/ramp
+VITE_API_RAMP_URL_TOR=http://your-tor-api.onion/api/ramp
+
+VITE_API_SWAP_URL=http://localhost:8080/api/swap
+VITE_API_SWAP_URL_TOR=http://your-tor-api.onion/api/swap
+
+# Content Security Policy
+VITE_API_CSP=http://localhost:8080
+VITE_API_CSP_TOR=http://your-tor-api.onion
+
+# Configuración de Sentry (opcional)
+VITE_SENTRY_DSN=
+VITE_SENTRY_ENVIRONMENT=development
+
+# APIs de terceros (opcionales)
+# ============================
+
+# Google API (para geolocalización, etc.)
+VITE_GOOGLE_API_KEY=
+
+# WalletConnect (para conexión con dApps)
+VITE_WALLETCONNECT_ID=
+
+# MoonPay (para compra/venta de criptomonedas)
+VITE_MOONPAY_API_KEY=
+
+# Changelly (para intercambio de criptomonedas)
+VITE_CHANGELLY_REF=
+
+# ChangeNOW (para intercambio de criptomonedas)
+VITE_CHANGENOW_REF=
+
+# Zendesk (para soporte al cliente)
+VITE_ZENDESK_APP_ID=
+VITE_ZENDESK_CLIENT_ID=
+VITE_ZENDESK_URL=
+
+# Cuenta dummy para testing (opcional)
+VITE_DUMMY_ACCOUNT=
+
+# Información de commit (se llena automáticamente en CI/CD)
+VITE_COMMIT=local
+
