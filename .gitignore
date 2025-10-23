@@ -1,0 +1,8 @@
+node_modules
+.DS_Store
+*.local
+dist
+electron/out
+*.provisionprofile
+.vscode/*
+!.vscode/settings.example.json
