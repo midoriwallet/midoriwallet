@@ -1,0 +1,54 @@
+{
+  "name": "midoriwallet",
+  "private": true,
+  "version": "1.0.1",
+  "description": "Midori Wallet",
+  "bugs": {
+    "url": "https://github.com/midoriwallet/midoriwallet/issues"
+  },
+  "license": "MIT",
+  "author": "Midori Wallet <contact@astian.org> (https://astian.org/midori-wallet/)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goastian/midori-wallet.git"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "node ./build.js",
+    "android": "node ./android.js",
+    "ios": "node ./ios.js",
+    "cordova": "cordova",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^7.1.0",
+    "chalk": "^5.3.0",
+    "cordova": "^12.0.0",
+    "ejs": "^3.1.9",
+    "plist": "^3.1.0",
+    "xcode": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.49.0",
+    "eslint-config-coinspace": "^2.1.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "ignorePatterns": [
+      "/dist",
+      "/build"
+    ],
+    "extends": [
+      "coinspace"
+    ],
+    "env": {
+      "node": true,
+      "browser": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "requireConfigFile": false,
+      "sourceType": "module"
+    }
+  }
+}
