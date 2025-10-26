@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM node:bookworm AS build
+FROM node:20-bookworm AS build
 WORKDIR /work
 
 # 1) Copiamos solo manifests para cachear npm ci
@@ -22,15 +22,14 @@ RUN --mount=type=secret,id=npm_token bash -lc '\
     rm -f "$HOME/.npmrc" \
     '
 
-# 3) Ahora copiamos el código fuente y construimos
-COPY web/ web/
+# 3) Ahora sí copiamos el resto del código (incluye phonegap/)
+COPY . .
+
+# 4) Construimos la web ya con todas las rutas presentes
 RUN cd web && npm run build
 
-COPY server/ server/
-# (si el server necesita build/transpile, hazlo aquí)
-
-# --- Imagen final ---
-FROM node:bookworm AS runner
+# --- Imagen final (runtime) ---
+FROM node:20-bookworm AS runner
 WORKDIR /app
 COPY --from=build /work /app
 EXPOSE 3000
