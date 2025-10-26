@@ -20,10 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # (Opcional) solo si vas a multi-arch
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v3
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -34,18 +30,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker metadata (tags/labels)
+      - name: Extract Docker metadata (solo tag con nombre del repo)
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          # Desactivamos 'latest' por defecto y lo habilitamos solo en main
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
-            type=sha
+            type=raw,value=${{ github.event.repository.name }}
 
       - name: Build and Push
         uses: docker/build-push-action@v6
@@ -53,10 +46,10 @@ jobs:
           context: .
           file: ./containerfile
           push: true
-          # platforms: linux/amd64,linux/arm64  # (opcional)
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          # Caché de BuildKit en GitHub Actions (NO publica imagen "buildcache")
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
