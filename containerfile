@@ -1,18 +1,22 @@
 # syntax=docker/dockerfile:1.7
-FROM node:20-bookworm AS build
+FROM node:bookworm AS build
 WORKDIR /work
 
-# Prepara .npmrc usando el secret (no queda en la capa final)
-# Usamos --mount=type=secret para no “hornear” el token en la imagen
-RUN --mount=type=secret,id=npm_token \
-    bash -lc 'cat > ~/.npmrc <<EOF
+# Crea ~/.npmrc usando el secret de BuildKit sin “hornear” el token
+# - Usamos heredoc de Dockerfile para evitar que el parser interprete las líneas como instrucciones
+RUN --mount=type=secret,id=npm_token <<'EOF'
+set -euo pipefail
+TOKEN="$(cat /run/secrets/npm_token)"
+mkdir -p "${HOME}"
+cat > "${HOME}/.npmrc" <<NPMRC
 registry=https://registry.npmjs.org/
 @CoinSpace:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)
+//npm.pkg.github.com/:_authToken=${TOKEN}
 always-auth=true
-EOF'
+NPMRC
+EOF
 
-# Copiamos package.json primero para cachear npm ci
+# Copiamos package*.json primero para cachear npm ci
 COPY web/package*.json web/
 COPY server/package*.json server/
 
@@ -26,7 +30,7 @@ RUN cd server && npm ci --omit=dev
 COPY . .
 
 # --- Imagen final (runtime) ---
-FROM node:20-bookworm AS runner
+FROM node:bookworm AS runner
 WORKDIR /app
 
 # Copia artefactos construidos
@@ -35,8 +39,5 @@ COPY --from=build /work /app
 # Ajusta si tu server escucha otro puerto
 EXPOSE 3000
 
-# Ajusta el comando de arranque (ejemplos):
-# CMD ["node", "server/index.js"]
-# o si usas un framework con start script:
-# CMD ["npm", "--prefix", "server", "run", "start"]
+# Comando de arranque
 CMD ["node", "server/index.js"]
