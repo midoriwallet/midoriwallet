@@ -3,12 +3,11 @@ name: Build and Push Container
 on:
   push:
     branches: ["main"]
-    tags: ["v*", "release-*"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  packages: write # necesario para publicar en GHCR
+  packages: write
 
 env:
   REGISTRY: ghcr.io
@@ -21,8 +20,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up QEMU (optional, para multi-arch)
-        uses: docker/setup-qemu-action@v3
+      # (Opcional) solo si vas a multi-arch
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -34,15 +34,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Etiquetas: última de main y/o tag semántico
       - name: Extract Docker metadata (tags/labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          # Desactivamos 'latest' por defecto y lo habilitamos solo en main
+          flavor: |
+            latest=false
           tags: |
-            type=ref,event=branch
-            type=ref,event=tag
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
             type=sha
 
       - name: Build and Push
@@ -51,13 +53,10 @@ jobs:
           context: .
           file: ./containerfile
           push: true
-          # Para multi-arch, descomenta:
-          # platforms: linux/amd64,linux/arm64
+          # platforms: linux/amd64,linux/arm64  # (opcional)
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Pasamos el token como secret de BuildKit (no queda en capas)
           secrets: |
             "npm_token=${{ secrets.NPM_TOKEN }}"
-          # Habilita caché entre builds
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
