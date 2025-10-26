@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM node:20-bookworm AS build
+FROM node:bookworm AS build
 WORKDIR /work
 
 # 1) Copiamos solo manifests para cachear npm ci
@@ -30,7 +30,7 @@ COPY server/ server/
 # (si el server necesita build/transpile, hazlo aquí)
 
 # --- Imagen final ---
-FROM node:20-bookworm AS runner
+FROM node:bookworm AS runner
 WORKDIR /app
 COPY --from=build /work /app
 EXPOSE 3000
