@@ -38,7 +38,7 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=${{ github.event.repository.name }}
+            type=ref,event=branch
 
       - name: Build and Push
         uses: docker/build-push-action@v6
