@@ -37,5 +37,5 @@ ENV NODE_ENV=production
 COPY --from=build /work/server /app
 COPY --from=build /work/server/node_modules /app/node_modules
 
-EXPOSE 3000
+EXPOSE 8081
 CMD ["npm", "run", "server"]
