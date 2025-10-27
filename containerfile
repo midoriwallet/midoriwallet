@@ -1,4 +1,4 @@
-FROM docker.io/node:alpine AS build
+FROM docker.io/node:20-alpine AS build
 WORKDIR /work
 
 # 1) Copiamos solo manifests para cachear npm ci
