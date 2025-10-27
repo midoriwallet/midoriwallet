@@ -3,5 +3,5 @@
 **/dist
 **/build
 .gitignore
-Dockerfile
-containerfile
+[.]Docker*
+[.]container*
