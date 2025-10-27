@@ -30,7 +30,7 @@ RUN sh -lc '\
     npm run build'
 
 # --- Imagen final (runtime) ---
-FROM docker.io/node:alpine AS runner
+FROM docker.io/node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
