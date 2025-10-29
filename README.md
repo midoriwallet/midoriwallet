@@ -116,3 +116,8 @@ Midori Wallet supports a wide range of cryptocurrencies and tokens:
 ### Authentication Methods
 - **PIN Code**: 4-6 digit PIN for quick access
 - **Biometric Authentication**: Fingerprint and face recognitio
+
+
+
+[Midoriwallet](https://ads.fund/token/0xadfdd60ece5d037ca3bedd440369c44e85ce6d8d) project is supported by ADS.FUND
+
