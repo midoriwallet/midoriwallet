@@ -13,7 +13,7 @@ axiosRetry(github, {
   shouldResetTimeout: true,
 });
 
-const GH_ACCOUNT = process.env.GH_ACCOUNT || 'CoinSpace/CoinSpace';
+const GH_ACCOUNT = process.env.GH_ACCOUNT || 'midoriwallet/midoriwallet';
 const { GH_TOKEN } = process.env;
 
 const TYPE_FILE = 'file';
@@ -25,8 +25,8 @@ const platforms = [{
   arch: 'any',
   app: 'app',
   type: TYPE_LINK,
-  pattern: /coin\.space\/wallet/ig,
-  link: 'https://coin.space/wallet/',
+pattern: /wallet\.astian\.org/ig,
+  link: 'https://wallet.astian.org/',
 }, {
   // Tor wallet
   distribution: 'tor',
