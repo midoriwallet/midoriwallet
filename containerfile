@@ -27,7 +27,7 @@ COPY . .
 RUN sh -lc '\
     cd web; \
     export NODE_OPTIONS="--max-old-space-size=4096"; \
-    npm run build'
+    npm run postinstall && npm run build'
 
 # --- Imagen final (runtime) ---
 FROM docker.io/node:20-alpine AS runner
