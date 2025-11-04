@@ -7,7 +7,7 @@ COPY server/package*.json server/
 
 # 2) Instalamos dependencias leyendo el token desde el secret
 #    (se crea y borra ~/.npmrc en la misma capa)
-RUN --mount=type=secret,id=npm_token sh -lc '\
+RUN --mount=type=secret,id=npm_token bash -lc '\
     set -euo pipefail; \
     TOKEN="$(cat /run/secrets/npm_token)"; \
     mkdir -p "$HOME"; \
@@ -24,7 +24,7 @@ RUN --mount=type=secret,id=npm_token sh -lc '\
 COPY . .
 
 # 4) Construimos la web ya con todas las rutas presentes
-RUN sh -lc '\
+RUN bash -lc '\
     cd web; \
     export NODE_OPTIONS="--max-old-space-size=4096"; \
     npm run postinstall && npm run build'
