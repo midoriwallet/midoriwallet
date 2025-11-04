@@ -1,4 +1,4 @@
-FROM docker.io/node:20-alpine AS build
+FROM docker.io/node:20 AS build
 WORKDIR /work
 
 # 1) Copiamos solo manifests para cachear npm ci
@@ -30,7 +30,7 @@ RUN sh -lc '\
     npm run postinstall && npm run build'
 
 # --- Imagen final (runtime) ---
-FROM docker.io/node:20-alpine AS runner
+FROM docker.io/node:20 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
