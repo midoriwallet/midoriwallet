@@ -44,7 +44,7 @@ export default {
         {{ $isHiddenBalance ? '*****' : amount }}
         <a
           v-if="$wallet.crypto._id === 'monero@monero' && $wallet.balance.value === 0n && !$isHiddenBalance"
-          @click.stop="$safeOpen('https://support.coin.space/hc/en-us/articles/38917242800532')"
+          @click.stop="$safeOpen('')"
         >
           {{ $t('Support') }}
         </a>

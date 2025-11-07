@@ -83,7 +83,7 @@ export default {
           <CsButtonGroup>
             <CsButton
               type="primary-link"
-              @click="$safeOpen('https://support.coin.space/hc/en-us/articles/4403046925204')"
+              @click="$safeOpen('')"
             >
               {{ $t('Read more') }}
             </CsButton>

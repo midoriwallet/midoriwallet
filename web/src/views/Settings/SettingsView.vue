@@ -76,7 +76,7 @@ export default {
       if (this.env.VITE_BUILD_TYPE === 'phonegap') {
         window.Zendesk.showHelpCenter(null, null, null, prettyVersion);
       } else {
-        this.$safeOpen('https://support.coin.space/hc/en-us/sections/115000511287-FAQ');
+        this.$safeOpen('');
       }
     },
     logout() {

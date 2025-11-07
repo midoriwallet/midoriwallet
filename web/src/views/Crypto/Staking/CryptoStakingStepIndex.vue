@@ -42,7 +42,7 @@ export default {
   computed: {
     supportUrl() {
       if (this.$wallet.crypto._id === 'ethereum@ethereum') {
-        return 'https://support.coin.space/hc/en-us/articles/30344399125780';
+        return '';
       }
     },
   },

@@ -134,7 +134,7 @@ export default {
       </CsButton>
       <CsButton
         type="primary-link"
-        @click="$safeOpen('https://support.coin.space/hc/en-us/articles/27563411040404')"
+        @click="$safeOpen('')"
       >
         {{ $t('What is WalletConnect?') }}
       </CsButton>
