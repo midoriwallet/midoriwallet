@@ -96,7 +96,7 @@ export default {
       <CsWarning
         v-if="token.custom === true"
         class="&__warning"
-        @click="$safeOpen('https://support.coin.space/hc/en-us/articles/37103058738708')"
+        @click="$safeOpen('https://astian.org/community/topic/warning-scam-custom-tokens-in-your-wallet-obt-artf/#postid-4')"
       >
         {{ $t('Adding unknown tokens can be risky, so only add tokens you trust. Learn more.') }}
       </CsWarning>

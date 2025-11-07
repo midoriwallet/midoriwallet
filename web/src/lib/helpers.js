@@ -24,7 +24,7 @@ export function cryptoSubtitleWithSymbol(wallet) {
 }
 
 export function safeOpen(url) {
-  if (url.startsWith('https://support.coin.space/')) {
+  if (url.startsWith('https://astian.org/community/forum/midori-wallet//')) {
     url = `${url}?tf_24464158=${encodeURIComponent(prettyVersion)}`;
   }
   const win = window.open(url, '_blank');
