@@ -16,7 +16,7 @@ export default {
   mixins: [onShowOnHide],
   computed: {
     copyright() {
-      return `© ${new Date().getFullYear()} CoinSpace`;
+      return `© ${new Date().getFullYear()} Astian`;
     },
   },
   async onShow() {
