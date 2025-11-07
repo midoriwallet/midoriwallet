@@ -13,6 +13,11 @@ import apiV4 from './lib/v4/api.js';
 
 const app = express();
 
+// Normaliza SITE_URL (sin barra final) para logs/uso posterior
+const SITE_URL = process.env.SITE_URL
+  ? process.env.SITE_URL.replace(/\/$/, '')
+  : undefined;
+
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.SENTRY_ENVIRONMENT,
@@ -37,12 +42,14 @@ app.set('view engine', 'ejs');
 
 if (process.env.IS_TOR !== 'true') {
   app.get('/.well-known/webauthn', (req, res) => {
-    return res.json({
-      origins: [
-        new URL(process.env.SITE_URL).origin,
-        new URL(process.env.SITE_URL_TOR).origin,
-      ],
-    });
+    const origins = [];
+    if (process.env.SITE_URL) {
+      try { origins.push(new URL(process.env.SITE_URL).origin); } catch { }
+    }
+    if (process.env.SITE_URL_TOR) {
+      try { origins.push(new URL(process.env.SITE_URL_TOR).origin); } catch { }
+    }
+    return res.json({ origins });
   });
 }
 
@@ -82,8 +89,13 @@ app.use((req, res, next) => {
   res.status(404).send({ error: 'Oops! page not found.' });
 });
 
+// ---- aquí respetamos SITE_URL en el arranque ----
 const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
-  console.info('server listening on http://localhost:' + server.address().port);
+// Si quieres limitar la interfaz, exporta HOST en el .env; por defecto 0.0.0.0
+const host = process.env.HOST || '0.0.0.0';
+
+const server = app.listen(port, host, () => {
+  const display = SITE_URL || `http://localhost:${server.address().port}`;
+  console.info(`server listening on ${display}`);
   server.timeout = 30000; // 30 sec
 });
