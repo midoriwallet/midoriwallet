@@ -1,5 +1,10 @@
 import { config } from 'dotenv';
 config({ path: './.env' });
+
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+
 import Integrations from '@sentry/integrations';
 import Sentry from '@sentry/node';
 import express from 'express';
@@ -29,6 +34,11 @@ Sentry.init({
   ],
 });
 app.use(Sentry.Handlers.requestHandler());
+
+// Si estás detrás de proxy/reverse-proxy (nginx, heroku, etc.)
+if (process.env.TRUST_PROXY === 'true') {
+  app.set('trust proxy', 1);
+}
 
 middleware.init(app);
 
@@ -89,13 +99,108 @@ app.use((req, res, next) => {
   res.status(404).send({ error: 'Oops! page not found.' });
 });
 
-// ---- aquí respetamos SITE_URL en el arranque ----
-const port = process.env.PORT || 8080;
-// Si quieres limitar la interfaz, exporta HOST en el .env; por defecto 0.0.0.0
-const host = process.env.HOST || '0.0.0.0';
+/* ===========================
+   SSL / HTTP bootstrapping
+   =========================== */
 
-const server = app.listen(port, host, () => {
-  const display = SITE_URL || `http://localhost:${server.address().port}`;
+// Respeta HOST y PORT para el servidor HTTP “legacy” o para redirección
+const host = process.env.HOST || '0.0.0.0';
+const httpPort = Number(process.env.PORT || 8080);
+
+// Config SSL desde .env
+const SSL_ENABLED = String(process.env.SSL_ENABLED || '').toLowerCase() === 'true';
+const SSL_PORT = Number(process.env.SSL_PORT || 8443);
+const START_HTTP_REDIRECT = String(process.env.START_HTTP_REDIRECT || 'true').toLowerCase() === 'true';
+
+// Si SSL está activo, fuerza HSTS
+if (SSL_ENABLED) {
+  app.use((req, res, next) => {
+    // 6 meses de HSTS; ajusta si hace falta. Incluye subdominios y preload opcionalmente.
+    res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains');
+    next();
+  });
+}
+
+function buildHttpsOptionsFromEnv() {
+  const keyPath = process.env.SSL_KEY_PATH;
+  const certPath = process.env.SSL_CERT_PATH;
+  const caPath = process.env.SSL_CA_PATH; // opcional
+  const passphrase = process.env.SSL_PASSPHRASE; // opcional
+
+  if (!keyPath || !certPath) {
+    throw new Error('SSL_KEY_PATH y SSL_CERT_PATH son requeridos cuando SSL_ENABLED=true');
+  }
+
+  const options = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath),
+  };
+
+  if (caPath) {
+    // Soporta cadena intermedia: un archivo con la cadena completa o varios separados por \n
+    options.ca = fs.readFileSync(caPath);
+  }
+
+  if (passphrase) {
+    options.passphrase = passphrase;
+  }
+
+  return options;
+}
+
+function logListening(protocol, portToUse) {
+  const display = SITE_URL
+    ? SITE_URL
+    : `${protocol}://localhost:${portToUse}`;
   console.info(`server listening on ${display}`);
-  server.timeout = 30000; // 30 sec
-});
+}
+
+// Modo SSL
+if (SSL_ENABLED) {
+  let httpsOptions;
+  try {
+    httpsOptions = buildHttpsOptionsFromEnv();
+  } catch (e) {
+    console.error(`[SSL] ${e.message}`);
+    process.exit(1);
+  }
+
+  const httpsServer = https.createServer(httpsOptions, app);
+
+  httpsServer.timeout = 30000; // 30 sec
+  httpsServer.listen(SSL_PORT, host, () => {
+    logListening('https', SSL_PORT);
+  });
+
+  // Opcionalmente arranca HTTP para redirigir a HTTPS
+  if (START_HTTP_REDIRECT) {
+    const redirectApp = express();
+
+    // Si estás detrás de proxy (e.g. X-Forwarded-Proto), respétalo
+    if (process.env.TRUST_PROXY === 'true') {
+      redirectApp.set('trust proxy', 1);
+    }
+
+    redirectApp.use((req, res) => {
+      // Construye URL destino preservando host/path/query
+      const hostHeader = req.headers.host
+        ? req.headers.host.split(':')[0]
+        : 'localhost';
+
+      const portPart = (SSL_PORT === 443) ? '' : `:${SSL_PORT}`;
+      const location = `https://${hostHeader}${portPart}${req.originalUrl}`;
+      res.redirect(301, location);
+    });
+
+    const httpServer = http.createServer(redirectApp);
+    httpServer.listen(httpPort, host, () => {
+      console.info(`[redirect] http://localhost:${httpPort} → https://localhost:${SSL_PORT}`);
+    });
+  }
+} else {
+  // Modo HTTP puro (como lo tenías)
+  const server = app.listen(httpPort, host, () => {
+    logListening('http', server.address().port);
+    server.timeout = 30000; // 30 sec
+  });
+}
