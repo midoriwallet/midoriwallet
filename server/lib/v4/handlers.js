@@ -278,18 +278,21 @@ export async function getRampsSell(req, res) {
 }
 
 export async function getUpdate(req, res) {
-  const app = req.get('User-Agent').includes('CoinSpace') ? 'electron' : 'app';
+  // BEGIN PATCH: safer UA mapping & diagnostics
+  const ua = (req.get('User-Agent') || '');
+  const isDesktop = /(CoinSpace|MidoriWallet|Electron|Midori)/i.test(ua);
+  const derivedApp = isDesktop ? 'electron' : 'app';
+  req._mw_update_ctx = { ua, derivedApp };
+  // END PATCH
+
+  const app = derivedApp; // patched
   const { distribution, arch, version } = req.params;
   if (!semver.valid(version)) {
     throw createError(400, `Invalid SemVer: "${version}"`);
   }
   const update = await github.getUpdate(distribution, arch, app);
   if (!update) {
-    // En modo desarrollo, retornar una respuesta por defecto en lugar de error
-    if (process.env.NODE_ENV === 'development') {
-      return res.status(204).end(); // No hay actualización disponible
-    }
-    throw createError(404, 'Unsupported platform');
+    return res.status(204).end();
   } else if (semver.gt(update.version, version)) {
     res.status(200).send({
       name: update.name,
@@ -301,6 +304,7 @@ export async function getUpdate(req, res) {
     res.status(204).end();
   }
 }
+
 
 export async function exchangeEstimate(req, res) {
   if (!exchanges[req.params.exchangeName]) throw createError(400, 'Unknown exchange');
