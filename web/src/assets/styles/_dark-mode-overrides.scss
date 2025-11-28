@@ -185,6 +185,26 @@
       }
     }
     
+    // Passphrase textarea - white text for better visibility
+    .CsFormTextareaReadonly,
+    .cs-form-textarea-readonly {
+      &__textarea {
+        color: var(--color-text) !important; // White text for passphrase words
+        font-weight: 500;
+      }
+    }
+    
+    // Passphrase specific styling
+    .auth-step-passphrase,
+    .AuthStepPassphrase {
+      .CsFormTextareaReadonly__textarea,
+      .cs-form-textarea-readonly__textarea {
+        color: #ffffff !important; // Pure white for maximum contrast
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+    }
+    
     // Generic input and button elements - modern dark design
     input:not([type="radio"]):not([type="checkbox"]):not([type="range"]),
     textarea,
