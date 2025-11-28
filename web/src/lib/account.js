@@ -6,6 +6,7 @@ import { setLanguage } from './i18n/i18n.js';
 import { Amount, CsWallet } from '@coinspace/cs-common';
 import { cryptoSubtitle, cryptoToFiat, defineAppProperty, roundCrypto } from './helpers.js';
 import { setSentryConnection, setSentryUser } from './sentry.js';
+import themeManager, { THEMES } from './theme.js';
 
 export async function createAccount({ app, router }) {
   const account = new Account({
@@ -25,6 +26,14 @@ export async function createAccount({ app, router }) {
   const cryptos = ref([]);
   const isHiddenBalance = ref(false);
   const isOnion = ref(account.isOnion);
+  const theme = ref(themeManager.getTheme());
+  const isDarkMode = ref(themeManager.isDarkMode());
+
+  // Listen for theme changes
+  themeManager.addListener((newTheme, newIsDark) => {
+    theme.value = newTheme;
+    isDarkMode.value = newIsDark;
+  });
 
   defineAppProperty(app, '$wallet', undefined);
   defineAppProperty(app, '$walletState', undefined);
@@ -37,6 +46,10 @@ export async function createAccount({ app, router }) {
   defineAppProperty(app, '$cryptos', cryptos);
   defineAppProperty(app, '$isHiddenBalance', isHiddenBalance);
   defineAppProperty(app, '$isOnion', isOnion);
+  defineAppProperty(app, '$theme', theme);
+  defineAppProperty(app, '$isDarkMode', isDarkMode);
+  defineAppProperty(app, '$themeManager', themeManager);
+  defineAppProperty(app, '$THEMES', THEMES);
 
   const dummyBalances = {
     'bitcoin@bitcoin': '0.5',

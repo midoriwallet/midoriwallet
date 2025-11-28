@@ -26,6 +26,30 @@ async function main() {
   app.use(i18n);
   app.use(router);
   app.mount('#app');
+  
+  // Force apply dark mode styles after Vue mounts
+  setTimeout(() => {
+    const theme = localStorage.getItem('_cs_theme') || 'auto';
+    let isDark = false;
+    if (theme === 'dark') {
+      isDark = true;
+    } else if (theme === 'auto') {
+      isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    
+    if (isDark) {
+      const bgColor = window.innerWidth >= 1024 ? '#1e2421' : '#121614';
+      // Apply to body
+      document.body.style.setProperty('background-color', bgColor, 'important');
+      document.body.style.setProperty('color', '#e8e8e8', 'important');
+      // CRITICAL: Apply to #app div too!
+      const appDiv = document.getElementById('app');
+      if (appDiv) {
+        appDiv.style.setProperty('background-color', bgColor, 'important');
+      }
+      console.log('[Dark Mode] Applied background to body and #app:', bgColor);
+    }
+  }, 100);
 }
 
 main().catch(console.error);

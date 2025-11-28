@@ -2,7 +2,7 @@ html {
   display: flex;
   min-height: 100%;
   box-sizing: border-box;
-  color: $text-color;
+  color: var(--color-text);
   /* stylelint-disable-next-line max-line-length */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: $font-size-base;
@@ -10,15 +10,34 @@ html {
   letter-spacing: 0.01em;
   line-height: 1.5;
   text-size-adjust: none; // Prevent adjustments of font size after orientation changes in iOS.
+  transition: background-color 0.3s ease, color 0.3s ease;
   &.platform--ios {
     min-height: 100vh; // fix ios overlay bug
   }
 }
 
 body {
-  background-color: $background-color;
+  background-color: var(--color-background);
   @include breakpoint(lg) {
-    background-color: $secondary-light;
+    background-color: var(--color-secondary-light);
+  }
+}
+
+// Force dark mode background
+html.theme--dark body {
+  background-color: #121614 !important;
+  @include breakpoint(lg) {
+    background-color: #1e2421 !important;
+  }
+}
+
+// Force auto mode background (follows system)
+@media (prefers-color-scheme: dark) {
+  html.theme--auto body {
+    background-color: #121614 !important;
+    @include breakpoint(lg) {
+      background-color: #1e2421 !important;
+    }
   }
 }
 
@@ -64,16 +83,17 @@ input {
 }
 
 a {
-  color: $primary;
+  color: var(--color-primary);
   cursor: pointer;
   text-decoration: none;
+  transition: color 0.2s ease;
 
   @include hover {
-    color: darker($primary, 15%);
+    opacity: 0.8;
   }
 
   &:active {
-    color: darker($primary, 25%);
+    opacity: 0.6;
   }
 }
 

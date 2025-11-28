@@ -1,7 +1,7 @@
 {
   "name": "midoriwallet",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Midori Wallet",
   "bugs": {
     "url": "https://github.com/goastian/midori-wallet/issues"

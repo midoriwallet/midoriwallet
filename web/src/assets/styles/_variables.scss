@@ -1,4 +1,4 @@
-// colors
+// colors - Light Theme (default)
 $text-color: #222;
 $secondary: #616763;
 $secondary-light: #f6f8fa;
@@ -13,6 +13,19 @@ $background-color-dark: #2c3832;
 $white: #fff;
 $black: #000;
 $gray: #d3d3d3;
+
+// Dark Theme colors
+$dark-text-color: #e8e8e8;
+$dark-secondary: #a8aaa9;
+$dark-secondary-light: #1e2421;
+$dark-primary: #06c97f;
+$dark-primary-light: #0d2e22;
+$dark-danger: #ff4d36;
+$dark-danger-light: #2d1915;
+$dark-divider: #2d3330;
+$dark-background-color: #121614;
+$dark-background-color-secondary: #1a1e1c;
+$dark-gray: #4a4a4a;
 
 // typography
 $font-size-base: 16px;

@@ -40,7 +40,7 @@ export default {
         max($spacing-xl, env(safe-area-inset-right))
         0
         max($spacing-xl, env(safe-area-inset-left));
-      color: $secondary;
+      color: var(--color-secondary);
       @include breakpoint(lg) {
         padding: 0;
       }
@@ -49,7 +49,7 @@ export default {
     &__title {
       @include text-sm;
       padding: $spacing-2xs 0;
-      border-bottom: 1px solid $divider;
+      border-bottom: 1px solid var(--color-divider);
     }
 
     &__list {

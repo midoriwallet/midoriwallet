@@ -107,7 +107,7 @@ export default {
 
     &__description {
       @include text-sm;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__before,
@@ -133,7 +133,7 @@ export default {
     }
 
     &--danger {
-      color: $danger;
+      color: var(--color-danger);
     }
   }
 </style>

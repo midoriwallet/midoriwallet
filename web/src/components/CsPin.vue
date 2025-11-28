@@ -359,6 +359,7 @@ export default {
       height: $spacing-6xl;
       border-radius: 50%;
       font-weight: $font-weight-regular;
+      transition: all 0.2s ease;
 
       &--disabled {
         background-color: transparent;
@@ -377,6 +378,101 @@ export default {
 
     &__error {
       @include text-md;
+    }
+  }
+
+  // Dark mode styles - theme-consistent design
+  html.theme--dark,
+  html.theme--auto {
+    @media (prefers-color-scheme: dark) {
+      .#{ $filename } {
+        &__key {
+          // Number buttons - subtle gray/green background with bright green text
+          &.cs-button--secondary {
+            color: var(--color-primary) !important; // Bright green numbers
+            background-color: var(--color-secondary-light) !important; // Subtle gray background
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            
+            &:hover {
+              background-color: var(--color-primary-light) !important; // Soft green on hover
+              transform: scale(1.05);
+            }
+            
+            &:active {
+              background-color: var(--color-primary-light) !important;
+              transform: scale(0.98);
+              box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            }
+          }
+          
+          // Named buttons (Log out, Delete) - use theme colors
+          &--named {
+            color: var(--color-primary) !important;
+            background-color: transparent !important;
+            
+            &:hover {
+              background-color: var(--color-primary-light) !important;
+            }
+          }
+        }
+        
+        // PIN dots
+        &__dot {
+          background-color: var(--color-divider);
+          border: 2px solid var(--color-divider);
+          
+          &--active {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            animation: scale-dot 0.2s;
+          }
+        }
+      }
+    }
+  }
+
+  // Force dark theme (always apply)
+  html.theme--dark {
+    .#{ $filename } {
+      &__key {
+        &.cs-button--secondary {
+          color: var(--color-primary) !important; // Bright green numbers
+          background-color: var(--color-secondary-light) !important; // Subtle gray background
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          font-weight: 600;
+          
+          &:hover {
+            background-color: var(--color-primary-light) !important; // Soft green on hover
+            transform: scale(1.05);
+          }
+          
+          &:active {
+            background-color: var(--color-primary-light) !important;
+            transform: scale(0.98);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+          }
+        }
+        
+        &--named {
+          color: var(--color-primary) !important;
+          background-color: transparent !important;
+          
+          &:hover {
+            background-color: var(--color-primary-light) !important;
+          }
+        }
+      }
+      
+      &__dot {
+        background-color: var(--color-divider);
+        border: 2px solid var(--color-divider);
+        
+        &--active {
+          background-color: var(--color-primary);
+          border-color: var(--color-primary);
+        }
+      }
     }
   }
 </style>

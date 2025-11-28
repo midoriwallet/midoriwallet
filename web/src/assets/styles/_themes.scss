@@ -1,0 +1,92 @@
+// Theme system using CSS custom properties
+:root {
+  // Light theme (default)
+  --color-text: #222;
+  --color-secondary: #616763;
+  --color-secondary-light: #f6f8fa;
+  --color-primary: #05a76b;
+  --color-primary-brand: #05a76b;
+  --color-primary-light: #f0f9f2;
+  --color-danger: #dd230e;
+  --color-danger-light: #fcf5ef;
+  --color-divider: #f0f0f0;
+  --color-background: #fff;
+  --color-background-dark: #2c3832;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray: #d3d3d3;
+  
+  // Shadows
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 5%);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
+  
+  // Border radius
+  --border-radius-sm: 0.375rem;
+  --border-radius-md: 0.5rem;
+  --border-radius-lg: 0.625rem;
+}
+
+// Dark theme
+html.theme--dark {
+  --color-text: #e8e8e8;
+  --color-secondary: #a8aaa9;
+  --color-secondary-light: #1e2421;
+  --color-primary: #06c97f;
+  --color-primary-brand: #06c97f;
+  --color-primary-light: #0d2e22;
+  --color-danger: #ff4d36;
+  --color-danger-light: #2d1915;
+  --color-divider: #2d3330;
+  --color-background: #121614;
+  --color-background-dark: #1a1e1c;
+  --color-white: #1a1e1c;
+  --color-black: #e8e8e8;
+  --color-gray: #4a4a4a;
+  
+  // Shadows for dark mode
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 30%);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 40%), 0 2px 4px -1px rgb(0 0 0 / 30%);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 50%), 0 4px 6px -2px rgb(0 0 0 / 40%);
+}
+
+// Force background color on body for dark theme
+html.theme--dark body {
+  background-color: #121614 !important;
+  
+  @media (min-width: 1024px) {
+    background-color: #1e2421 !important;
+  }
+}
+
+// Auto theme (follows system preference)
+@media (prefers-color-scheme: dark) {
+  html.theme--auto {
+    --color-text: #e8e8e8;
+    --color-secondary: #a8aaa9;
+    --color-secondary-light: #1e2421;
+    --color-primary: #06c97f;
+    --color-primary-brand: #06c97f;
+    --color-primary-light: #0d2e22;
+    --color-danger: #ff4d36;
+    --color-danger-light: #2d1915;
+    --color-divider: #2d3330;
+    --color-background: #121614;
+    --color-background-dark: #1a1e1c;
+    --color-white: #1a1e1c;
+    --color-black: #e8e8e8;
+    --color-gray: #4a4a4a;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 30%);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 40%), 0 2px 4px -1px rgb(0 0 0 / 30%);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 50%), 0 4px 6px -2px rgb(0 0 0 / 40%);
+  }
+  
+  html.theme--auto body {
+    background-color: #121614 !important;
+    
+    @media (min-width: 1024px) {
+      background-color: #1e2421 !important;
+    }
+  }
+}

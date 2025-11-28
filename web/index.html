@@ -1,6 +1,94 @@
 <!DOCTYPE html>
 <html lang="en" class="platform--<%= env.VITE_PLATFORM %>">
   <head>
+    <script>
+      // Apply theme IMMEDIATELY to prevent flash
+      (function() {
+        try {
+          const theme = localStorage.getItem('_cs_theme') || 'auto';
+          const html = document.documentElement;
+          html.classList.add('theme--' + theme);
+          
+          // Determine if dark mode should be active
+          let isDark = false;
+          if (theme === 'dark') {
+            isDark = true;
+          } else if (theme === 'auto') {
+            isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+          
+          // Apply styles immediately
+          if (isDark) {
+            html.style.setProperty('--color-background', '#121614');
+            html.style.setProperty('--color-text', '#e8e8e8');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('theme--auto');
+        }
+        
+        // Force body background immediately when body is available
+        const applyBodyStyles = function() {
+          const theme = localStorage.getItem('_cs_theme') || 'auto';
+          let isDark = false;
+          if (theme === 'dark') {
+            isDark = true;
+          } else if (theme === 'auto') {
+            isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+          
+          if (isDark) {
+            const bgColor = window.innerWidth >= 1024 ? '#1e2421' : '#121614';
+            document.body.style.setProperty('background-color', bgColor, 'important');
+            document.body.style.setProperty('color', '#e8e8e8', 'important');
+          }
+        };
+        
+        if (document.body) {
+          applyBodyStyles();
+        } else {
+          document.addEventListener('DOMContentLoaded', applyBodyStyles);
+        }
+        
+        // Reapply on window resize
+        try {
+          window.addEventListener('resize', applyBodyStyles);
+        } catch (e) {
+          // ignore
+        }
+      })();
+      
+      // Second attempt - use MutationObserver to force styles
+      (function() {
+        if (!document.body) return;
+        const observer = new MutationObserver(function() {
+          const theme = localStorage.getItem('_cs_theme') || 'auto';
+          let isDark = false;
+          if (theme === 'dark') {
+            isDark = true;
+          } else if (theme === 'auto') {
+            isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+          
+          if (isDark) {
+            const current = document.body.style.backgroundColor;
+            const expected = window.innerWidth >= 1024 ? 'rgb(30, 36, 33)' : 'rgb(18, 22, 20)';
+            if (current !== expected && !current.includes('18, 22, 20') && !current.includes('30, 36, 33')) {
+              const bgColor = window.innerWidth >= 1024 ? '#1e2421' : '#121614';
+              document.body.style.setProperty('background-color', bgColor, 'important');
+              document.body.style.setProperty('color', '#e8e8e8', 'important');
+            }
+          }
+        });
+        
+        if (document.body) {
+          observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+        } else {
+          document.addEventListener('DOMContentLoaded', function() {
+            observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+          });
+        }
+      })();
+    </script>
     <title>Midori Wallet</title>
     <meta charset="UTF-8" />
     <% if (env.VITE_PLATFORM === 'android') { %>
@@ -57,9 +145,116 @@
     <meta name="apple-mobile-web-app-title" content="Midori Wallet">
     <style>
       @import '/src/assets/styles/common.scss';
+      
+      /* Theme CSS Variables - Force inclusion */
+      :root {
+        --color-text: #222;
+        --color-secondary: #616763;
+        --color-secondary-light: #f6f8fa;
+        --color-primary: #05a76b;
+        --color-primary-brand: #05a76b;
+        --color-primary-light: #f0f9f2;
+        --color-danger: #dd230e;
+        --color-danger-light: #fcf5ef;
+        --color-divider: #f0f0f0;
+        --color-background: #fff;
+        --color-background-dark: #2c3832;
+        --color-white: #fff;
+        --color-black: #000;
+        --color-gray: #d3d3d3;
+      }
+      
+      html.theme--dark {
+        --color-text: #e8e8e8;
+        --color-secondary: #a8aaa9;
+        --color-secondary-light: #1e2421;
+        --color-primary: #06c97f;
+        --color-primary-brand: #06c97f;
+        --color-primary-light: #0d2e22;
+        --color-danger: #ff4d36;
+        --color-danger-light: #2d1915;
+        --color-divider: #2d3330;
+        --color-background: #121614;
+        --color-background-dark: #1a1e1c;
+        --color-white: #1a1e1c;
+        --color-black: #e8e8e8;
+        --color-gray: #4a4a4a;
+      }
+      
+      /* Force dark background with high specificity */
+      html.theme--dark body,
+      html.theme--dark body.theme--dark {
+        background-color: #121614 !important;
+        color: #e8e8e8 !important;
+      }
+      
+      @media (min-width: 1024px) {
+        html.theme--dark body,
+        html.theme--dark body.theme--dark {
+          background-color: #1e2421 !important;
+        }
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        html.theme--auto {
+          --color-text: #e8e8e8;
+          --color-secondary: #a8aaa9;
+          --color-secondary-light: #1e2421;
+          --color-primary: #06c97f;
+          --color-primary-brand: #06c97f;
+          --color-primary-light: #0d2e22;
+          --color-danger: #ff4d36;
+          --color-danger-light: #2d1915;
+          --color-divider: #2d3330;
+          --color-background: #121614;
+          --color-background-dark: #1a1e1c;
+          --color-white: #1a1e1c;
+          --color-black: #e8e8e8;
+          --color-gray: #4a4a4a;
+        }
+        
+        html.theme--auto body,
+        html.theme--auto body.theme--auto {
+          background-color: #121614 !important;
+          color: #e8e8e8 !important;
+        }
+      }
+      
+      @media (prefers-color-scheme: dark) and (min-width: 1024px) {
+        html.theme--auto body,
+        html.theme--auto body.theme--auto {
+          background-color: #1e2421 !important;
+        }
+      }
     </style>
   </head>
   <body>
+    <style id="theme-override">
+      /* Force dark theme background - CRITICAL FIX */
+      html.theme--dark body {
+        background-color: #121614 !important;
+        color: #e8e8e8 !important;
+      }
+      
+      @media (min-width: 1024px) {
+        html.theme--dark body {
+          background-color: #1e2421 !important;
+        }
+      }
+      
+      @media (prefers-color-scheme: dark) {
+        html.theme--auto body {
+          background-color: #121614 !important;
+          color: #e8e8e8 !important;
+        }
+      }
+      
+      @media (prefers-color-scheme: dark) and (min-width: 1024px) {
+        html.theme--auto body {
+          background-color: #1e2421 !important;
+        }
+      }
+    </style>
     <noscript>
       <div class="noscript">
         <div class="noscript__title">JavaScript is needed</div>

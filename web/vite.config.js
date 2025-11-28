@@ -105,6 +105,7 @@ export default defineConfig(({ mode }) => {
               @import "./src/assets/styles/variables";
               @import "./src/assets/styles/mixins";
               @import "./src/assets/styles/functions";
+              @import "./src/assets/styles/themes";
               $filename: "${kebab}";
             `;
             return str + content;

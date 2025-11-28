@@ -27,6 +27,12 @@ export default {
       currencies: currencies.map((currency) => ({ value: currency, name: currency })),
       language: this.$i18n.locale,
       languages,
+      theme: this.$theme,
+      themes: [
+        { value: this.$THEMES.LIGHT, name: this.$t('Light') },
+        { value: this.$THEMES.DARK, name: this.$t('Dark') },
+        { value: this.$THEMES.AUTO, name: this.$t('Auto') },
+      ],
     };
   },
   computed: {
@@ -47,6 +53,15 @@ export default {
     },
   },
   watch: {
+    '$theme': {
+      handler(newValue) {
+        // Sync local theme with global theme
+        if (this.theme !== newValue) {
+          this.theme = newValue;
+        }
+      },
+      immediate: true,
+    },
     async currency(value, oldValue) {
       if (value === oldValue) {
         return;
@@ -69,6 +84,15 @@ export default {
       });
       await this.$account.details.save();
       this.$account.emit('update', 'language');
+    },
+    theme(value, oldValue) {
+      if (value === oldValue) {
+        return;
+      }
+      // Only update if user changed it (not from sync)
+      if (value !== this.$theme) {
+        this.$themeManager.setTheme(value);
+      }
     },
   },
   methods: {
@@ -114,6 +138,17 @@ export default {
       </CsButton>
     </div>
     <CsListItems :title="$t('General')">
+      <CsListItem
+        :title="$t('Theme')"
+      >
+        <template #after>
+          <CsListItemDropdown
+            v-model="theme"
+            :options="themes"
+            :aria-label="$t('Theme')"
+          />
+        </template>
+      </CsListItem>
       <CsListItem
         :title="$t('Local currency')"
       >

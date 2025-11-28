@@ -62,7 +62,10 @@ export default {
       opacity: 0;
       pointer-events: none;
       &:checked ~ #{ $self }__button {
-        background-color: $secondary-light;
+        background-color: var(--color-secondary-light);
+        color: var(--color-primary);
+        font-weight: 600;
+        box-shadow: 0 0 0 2px var(--color-primary);
       }
     }
 
@@ -74,6 +77,15 @@ export default {
       justify-content: center;
       border-radius: 0.5rem;
       cursor: pointer;
+      background-color: var(--color-secondary-light);
+      color: var(--color-secondary);
+      transition: all 0.2s;
+      font-weight: 500;
+      
+      &:hover {
+        background-color: var(--color-divider);
+        color: var(--color-text);
+      }
     }
   }
 </style>

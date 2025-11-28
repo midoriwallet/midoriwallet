@@ -149,7 +149,7 @@ export default {
     &__header {
       @include text-sm;
       margin-bottom: $spacing-2xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__list {
@@ -179,15 +179,21 @@ export default {
       overflow-x: hidden;
 
       @include hover {
-        background-color: $secondary-light;
+        background-color: var(--color-secondary-light);
       }
 
       &:active {
-        background-color: $secondary-light;
+        background-color: var(--color-secondary-light);
       }
 
       &--selected {
-        background-color: $secondary-light;
+        background-color: var(--color-secondary-light);
+        border-left: 3px solid var(--color-primary);
+        
+        .cs-crypto-list__title,
+        .#{ $filename }__title {
+          color: var(--color-primary);
+        }
       }
 
       &--columns {
@@ -245,7 +251,7 @@ export default {
     }
 
     &__subtitle {
-      color: $secondary;
+      color: var(--color-secondary);
       @include text-xs;
       @include ellipsis;
 
@@ -263,11 +269,11 @@ export default {
       padding-left: $spacing-xs;
 
       &--positive {
-        color: $primary;
+        color: var(--color-primary);
       }
 
       &--negative {
-        color: $danger;
+        color: var(--color-danger);
       }
     }
 
