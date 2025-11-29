@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midori Wallet</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 420px;
+      height: 600px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #05a76b 0%, #048a59 100%);
+      color: white;
+    }
+
+    #loading.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #wallet-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+    }
+
+    #wallet-frame.loaded {
+      display: block;
+    }
+
+    #error {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      text-align: center;
+      background: #f8f9fa;
+    }
+
+    #error.show {
+      display: flex;
+    }
+
+    #error h2 {
+      color: #dd230e;
+      margin-bottom: 10px;
+    }
+
+    #error p {
+      color: #616763;
+      margin-bottom: 20px;
+    }
+
+    #error button {
+      padding: 12px 24px;
+      background: #05a76b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #error button:hover {
+      background: #048a59;
+      transform: translateY(-2px);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #05a76b;
+      color: white;
+      font-size: 12px;
+    }
+
+    .toolbar.hidden {
+      display: none;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toolbar button {
+      padding: 4px 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .toolbar button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    #frame-container {
+      width: 100%;
+      height: calc(100% - 32px);
+      display: none;
+    }
+
+    #frame-container.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Connecting with Midori Wallet...</p>
+  </div>
+
+  <!-- Toolbar -->
+  <div id="toolbar" class="toolbar hidden">
+    <div class="toolbar-left">
+      <span>🔒 wallet.astian.org</span>
+    </div>
+    <div class="toolbar-right">
+      <button id="refresh-btn" title="Recargar">🔄</button>
+      <button id="open-tab-btn" title="Abrir en nueva pestaña">↗</button>
+    </div>
+  </div>
+
+  <!-- Wallet Frame Container -->
+  <div id="frame-container">
+    <iframe 
+      id="wallet-frame" 
+      src="https://wallet.astian.org/"
+      allow="clipboard-read; clipboard-write; camera; microphone"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
+    ></iframe>
+  </div>
+
+  <!-- Error -->
+  <div id="error">
+    <h2>⚠️ Error de Conexión</h2>
+    <p id="error-message">No se pudo conectar con wallet.astian.org</p>
+    <button id="retry-btn">Reintentar</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

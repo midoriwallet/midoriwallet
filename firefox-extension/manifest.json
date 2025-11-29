@@ -1,0 +1,65 @@
+{
+  "manifest_version": 2,
+  "name": "Midori Wallet",
+  "version": "1.0.3",
+  "description": "Midori Wallet - Accede a tu wallet en wallet.astian.org desde tu navegador. Gestiona Bitcoin, Ethereum y más.",
+  "author": "Midori Wallet <contact@astian.org>",
+  "homepage_url": "https://wallet.astian.org/",
+  
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "cookies",
+    "https://wallet.astian.org/*",
+    "https://*.astian.org/*",
+    "<all_urls>"
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "48": "icons/icon-48.png",
+      "96": "icons/icon-96.png"
+    },
+    "default_title": "Midori Wallet",
+    "default_popup": "popup/popup.html",
+    "default_area": "navbar"
+  },
+
+  "background": {
+    "scripts": ["background/background.js"],
+    "persistent": true
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+
+  "web_accessible_resources": [
+    "popup/popup.html",
+    "popup/wallet.html",
+    "icons/*"
+  ],
+
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'self'; frame-src https://wallet.astian.org https://*.astian.org;",
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "midoriwallet@astian.org",
+      "strict_min_version": "78.0"
+    }
+  }
+}
