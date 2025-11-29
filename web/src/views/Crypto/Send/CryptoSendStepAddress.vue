@@ -5,6 +5,7 @@ import CsButton from '../../../components/CsButton.vue';
 import CsButtonGroup from '../../../components/CsButtonGroup.vue';
 import CsFormGroup from '../../../components/CsForm/CsFormGroup.vue';
 import CsFormInput from '../../../components/CsForm/CsFormInput.vue';
+import CsSavedAddresses from '../../../components/CsSavedAddresses.vue';
 import CsStep from '../../../components/CsStep.vue';
 import MainLayout from '../../../layouts/MainLayout.vue';
 
@@ -29,6 +30,7 @@ export default {
     CsButtonGroup,
     CsFormGroup,
     CsFormInput,
+    CsSavedAddresses,
     LocationIcon,
     PasteIcon,
     QrIcon,
@@ -60,12 +62,16 @@ export default {
       addressOrAlias: '',
       address: '',
       alias: '',
+      savedAddressAlias: null,
       destinationTag: undefined,
       error: undefined,
     };
   },
   watch: {
     addressOrAlias: debounce(async function(value) {
+      // Buscar en direcciones guardadas
+      await this.checkSavedAddress(value);
+      
       if (this.isUnaliasSupported) {
         this.isLoading = true;
         const data = await this.$wallet.unalias(value);
@@ -146,6 +152,50 @@ export default {
           this.addressOrAlias = text;
         }, () => {});
     },
+    selectSavedAddress(address) {
+      this.error = undefined;
+      this.addressOrAlias = address.address;
+      this.savedAddressAlias = address.alias;
+      // Incrementar el contador de envíos
+      this.incrementSendCount(address.address, address.cryptoId);
+    },
+    async incrementSendCount(address, cryptoId) {
+      try {
+        await this.$account.request({
+          url: '/api/v4/addresses/increment',
+          method: 'post',
+          data: { address, cryptoId },
+          seed: 'device',
+        });
+      } catch (err) {
+        console.error('Error incrementing send count:', err);
+      }
+    },
+    async checkSavedAddress(address) {
+      if (!address || address.length < 10) {
+        this.savedAddressAlias = null;
+        return;
+      }
+      
+      try {
+        const data = await this.$account.request({
+          url: `/api/v4/addresses/search?query=${encodeURIComponent(address)}&crypto=${this.$wallet.crypto._id}`,
+          method: 'get',
+          seed: 'device',
+        });
+        
+        const exactMatch = data.addresses?.find(addr => addr.address.toLowerCase() === address.toLowerCase());
+        
+        if (exactMatch && exactMatch.alias) {
+          this.savedAddressAlias = exactMatch.alias;
+        } else {
+          this.savedAddressAlias = null;
+        }
+      } catch (err) {
+        console.error('Error checking saved address:', err);
+        this.savedAddressAlias = null;
+      }
+    },
   },
 };
 </script>
@@ -155,6 +205,11 @@ export default {
     :title="$t('Send {symbol}', { symbol: $wallet.crypto.symbol })"
     :description="subtitle"
   >
+    <CsSavedAddresses
+      :crypto-id="$wallet.crypto._id"
+      @select="selectSavedAddress"
+    />
+    
     <CsFormGroup class="&__container">
       <CsFormInput
         v-model="addressOrAlias"
@@ -163,6 +218,14 @@ export default {
         :clear="true"
         @update:modelValue="error = undefined"
       />
+      
+      <div
+        v-if="savedAddressAlias"
+        class="&__saved-contact"
+      >
+        <span class="&__saved-contact-icon">👤</span>
+        <span class="&__saved-contact-text">{{ savedAddressAlias }}</span>
+      </div>
 
       <CsButtonGroup
         class="&__actions"
@@ -221,6 +284,28 @@ export default {
       width: 100%;
       max-width: 25rem;
       align-self: center;
+    }
+
+    &__saved-contact {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-sm $spacing-md;
+      margin-top: $spacing-xs;
+      margin-bottom: $spacing-md;
+      background-color: var(--color-success-bg, rgba(34, 197, 94, 0.1));
+      border-left: 3px solid var(--color-success, #22c55e);
+      border-radius: 0.5rem;
+    }
+
+    &__saved-contact-icon {
+      font-size: 18px;
+    }
+
+    &__saved-contact-text {
+      @include text-sm;
+      font-weight: 500;
+      color: var(--color-success, #22c55e);
     }
   }
 </style>

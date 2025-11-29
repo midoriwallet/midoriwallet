@@ -173,6 +173,13 @@ export default {
       </CsListItem>
     </CsListItems>
 
+    <CsListItems :title="$t('Wallet')">
+      <CsListItem
+        :title="$t('Saved Addresses')"
+        @click="$router.push({ name: 'settings.addresses' })"
+      />
+    </CsListItems>
+
     <CsListItems :title="$t('Connections')">
       <CsListItem
         :title="$t('WalletConnect')"

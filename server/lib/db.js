@@ -54,6 +54,11 @@ await Promise.all([
   db.collection('cache').createIndexes([
     { key: { expire: 1 }, background: true, expireAfterSeconds: 0 },
   ]),
+  db.collection('addresses').createIndexes([
+    { key: { wallet_id: 1 }, background: true },
+    { key: { wallet_id: 1, address: 1, crypto_id: 1 }, background: true, unique: true },
+    { key: { wallet_id: 1, send_count: -1 }, background: true },
+  ]),
 ]);
 
 export function dbMemoize(target, { key, ttl }) {

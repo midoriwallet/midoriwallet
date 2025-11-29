@@ -19,6 +19,7 @@ import CryptoSendView from '../../views/Crypto/Send/CryptoSendView.vue';
 import CryptoStakingView from '../../views/Crypto/Staking/CryptoStakingView.vue';
 
 import SettingsAccountView from '../../views/Settings/Account/SettingsAccountView.vue';
+import SettingsAddressesView from '../../views/Settings/Addresses/SettingsAddressesView.vue';
 import SettingsHardwareView from '../../views/Settings/Hardware/SettingsHardwareView.vue';
 import SettingsPinView from '../../views/Settings/Pin/SettingsPinView.vue';
 import SettingsTorView from '../../views/Settings/Tor/SettingsTorView.vue';
@@ -51,6 +52,10 @@ const app = [
         path: 'account',
         name: 'settings.account',
         component: SettingsAccountView,
+      }, {
+        path: 'addresses',
+        name: 'settings.addresses',
+        component: SettingsAddressesView,
       }, {
         path: 'hardware',
         name: 'settings.hardware',

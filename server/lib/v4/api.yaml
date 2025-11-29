@@ -723,6 +723,204 @@ paths:
                 $ref: '#/components/schemas/StorageList'
         default:
           $ref: '#/components/responses/GeneralError'
+  /addresses:
+    get:
+      x-eov-operation-id: getAddresses
+      x-eov-operation-handler: handlers
+      description: Get all addresses for the wallet
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - in: query
+          name: crypto
+          description: Filter by crypto ID
+          required: false
+          schema:
+            $ref: '#/components/schemas/CryptoId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: List of addresses
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  addresses:
+                    type: array
+                    maxItems: 100
+                    items:
+                      $ref: '#/components/schemas/Address'
+                required:
+                  - addresses
+        default:
+          $ref: '#/components/responses/GeneralError'
+    post:
+      x-eov-operation-id: addAddress
+      x-eov-operation-handler: handlers
+      description: Add a new address
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                address:
+                  $ref: '#/components/schemas/AnyString256'
+                cryptoId:
+                  $ref: '#/components/schemas/CryptoId'
+                alias:
+                  type: string
+                  minLength: 1
+                  maxLength: 50
+              required:
+                - address
+                - cryptoId
+      responses:
+        '201':
+          description: Address created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /addresses/search:
+    get:
+      x-eov-operation-id: searchAddresses
+      x-eov-operation-handler: handlers
+      description: Search addresses by query
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - in: query
+          name: query
+          description: Search query (address or alias)
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+        - in: query
+          name: crypto
+          description: Filter by crypto ID
+          required: false
+          schema:
+            $ref: '#/components/schemas/CryptoId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: List of matching addresses
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  addresses:
+                    type: array
+                    maxItems: 20
+                    items:
+                      $ref: '#/components/schemas/Address'
+                required:
+                  - addresses
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /addresses/{addressId}:
+    patch:
+      x-eov-operation-id: updateAddressAlias
+      x-eov-operation-handler: handlers
+      description: Update address alias
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - in: path
+          name: addressId
+          description: Address ID
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-f0-9]{24}$'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                alias:
+                  type: string
+                  minLength: 0
+                  maxLength: 50
+              required:
+                - alias
+      responses:
+        '200':
+          description: Address updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        default:
+          $ref: '#/components/responses/GeneralError'
+    delete:
+      x-eov-operation-id: deleteAddress
+      x-eov-operation-handler: handlers
+      description: Delete an address
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - in: path
+          name: addressId
+          description: Address ID
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-f0-9]{24}$'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /addresses/increment:
+    post:
+      x-eov-operation-id: incrementSendCount
+      x-eov-operation-handler: handlers
+      description: Increment send count for an address
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                address:
+                  $ref: '#/components/schemas/AnyString256'
+                cryptoId:
+                  $ref: '#/components/schemas/CryptoId'
+              required:
+                - address
+                - cryptoId
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        default:
+          $ref: '#/components/responses/GeneralError'
   /token/device/pin:
     post:
       x-eov-operation-id: tokenDevicePinVerify
@@ -937,6 +1135,37 @@ paths:
           $ref: '#/components/responses/GeneralError'
 components:
   schemas:
+    Address:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          pattern: '^[a-f0-9]{24}$'
+        address:
+          $ref: '#/components/schemas/AnyString256'
+        cryptoId:
+          $ref: '#/components/schemas/CryptoId'
+        alias:
+          type: string
+          maxLength: 50
+          nullable: true
+        sendCount:
+          type: integer
+          format: int32
+          minimum: 0
+        lastUsed:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          $ref: '#/components/schemas/ISODateString'
+      required:
+        - id
+        - address
+        - cryptoId
+        - sendCount
+        - createdAt
     AnyCryptoAddress:
       type: string
       pattern: ^.{1,256}$

@@ -10,7 +10,6 @@ import Sentry from '@sentry/node';
 import express from 'express';
 import { isHttpError } from 'http-errors';
 import middleware from './middleware.js';
-import { applyHardening } from './m_hardening.js';
 
 import apiV1 from './lib/v1/api.js';
 import apiV2 from './lib/v2/api.js';
@@ -18,7 +17,6 @@ import apiV3 from './lib/v3/api.js';
 import apiV4 from './lib/v4/api.js';
 
 const app = express();
-applyHardening(app);
 
 // Normaliza SITE_URL (sin barra final) para logs/uso posterior
 const SITE_URL = process.env.SITE_URL

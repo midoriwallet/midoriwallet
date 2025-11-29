@@ -1,6 +1,7 @@
 import createError from 'http-errors';
 import semver from 'semver';
 
+import addresses from '../addresses.js';
 import cryptos from '../cryptos.js';
 import csFee from '../csFee.js';
 import domain from '../domain.js';
@@ -357,4 +358,56 @@ export async function getDomainAddress(req, res) {
 
 export async function getCountry(req, res) {
   res.status(200).send({ country: req.get('x-client-country') || 'ZZ' });
+}
+
+export async function getAddresses(req, res) {
+  const device = await req.getDevice();
+  const list = await addresses.getAddresses(device.wallet._id, req.query.crypto);
+  res.status(200).send({ addresses: list });
+}
+
+export async function addAddress(req, res) {
+  const device = await req.getDevice();
+  const address = await addresses.addAddress(device.wallet._id, {
+    address: req.body.address,
+    cryptoId: req.body.cryptoId,
+    alias: req.body.alias,
+  });
+  res.status(201).send(address);
+}
+
+export async function updateAddressAlias(req, res) {
+  const device = await req.getDevice();
+  const address = await addresses.updateAddressAlias(
+    device.wallet._id,
+    req.params.addressId,
+    req.body.alias
+  );
+  res.status(200).send(address);
+}
+
+export async function deleteAddress(req, res) {
+  const device = await req.getDevice();
+  await addresses.deleteAddress(device.wallet._id, req.params.addressId);
+  res.status(200).send({ success: true });
+}
+
+export async function searchAddresses(req, res) {
+  const device = await req.getDevice();
+  const list = await addresses.searchAddresses(
+    device.wallet._id,
+    req.query.query,
+    req.query.crypto
+  );
+  res.status(200).send({ addresses: list });
+}
+
+export async function incrementSendCount(req, res) {
+  const device = await req.getDevice();
+  await addresses.incrementSendCount(
+    device.wallet._id,
+    req.body.address,
+    req.body.cryptoId
+  );
+  res.status(200).send({ success: true });
 }
