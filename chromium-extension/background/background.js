@@ -55,10 +55,8 @@ chrome.runtime.onInstalled.addListener((details) => {
   console.log('Midori Wallet Extension installed:', details.reason);
   
   if (details.reason === 'install') {
-    // Primera instalación - abrir wallet
-    chrome.tabs.create({
-      url: WALLET_URL
-    });
+    // Primera instalación - registrar en log solamente
+    console.log('Midori Wallet installed successfully');
   } else if (details.reason === 'update') {
     console.log('Extension updated to version:', chrome.runtime.getManifest().version);
   }
