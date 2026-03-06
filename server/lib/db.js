@@ -54,6 +54,9 @@ await Promise.all([
   db.collection('cache').createIndexes([
     { key: { expire: 1 }, background: true, expireAfterSeconds: 0 },
   ]),
+  db.collection('invitations').createIndexes([
+    { key: { timestamp: 1 }, background: true, expireAfterSeconds: 60 * 60 * 24 * 365 }, // 1 month
+  ]),
   db.collection('addresses').createIndexes([
     { key: { wallet_id: 1 }, background: true },
     { key: { wallet_id: 1, address: 1, crypto_id: 1 }, background: true, unique: true },

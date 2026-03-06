@@ -6,4 +6,5 @@ electron/out
 *.provisionprofile
 .vscode/*
 !.vscode/settings.example.json
+google_key.json
 .env
