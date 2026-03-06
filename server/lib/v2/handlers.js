@@ -2,7 +2,6 @@ import createError from 'http-errors';
 import csFee from '../csFee.js';
 import fee from '../fee.js';
 import mecto from '../mecto.js';
-import moonpay from '../moonpay.js';
 import storage from '../storage.js';
 import tokens from '../tokens.js';
 import { verifyReq } from '../utils.js';
@@ -216,10 +215,6 @@ export async function removeMecto(req, res) {
   res.status(200).send({ success: true });
 }
 
-export async function moonpaySign(req, res) {
-  const urls = moonpay.sign(req.body.urls);
-  res.status(200).send({ urls });
-}
 
 export async function getTokens(req, res) {
   const list = await tokens.getTokens(req.query.network);

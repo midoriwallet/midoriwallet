@@ -140,9 +140,6 @@ VITE_GOOGLE_API_KEY=
 # WalletConnect (para conexión con dApps)
 VITE_WALLETCONNECT_ID=
 
-# MoonPay (para compra/venta de criptomonedas)
-VITE_MOONPAY_API_KEY=
-
 # Changelly (para intercambio de criptomonedas)
 VITE_CHANGELLY_REF=
 

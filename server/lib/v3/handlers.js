@@ -6,9 +6,7 @@ import domain from '../domain.js';
 import fee from '../fee.js';
 import github from '../github.js';
 import mecto from '../mecto.js';
-import moonpay from '../moonpay.js';
 import openalias from '../openalias.js';
-import ramps from './ramps/index.js';
 import semver from 'semver';
 import storage from '../storage.js';
 import { verifyReq } from '../utils.js';
@@ -289,11 +287,6 @@ export async function setStorage(req, res) {
   res.status(200).send({ data });
 }
 
-export async function moonpaySign(req, res) {
-  const urls = moonpay.sign(req.body.urls);
-  res.status(200).send({ urls });
-}
-
 export async function resolveOpenalias(req, res) {
   const data = await openalias.resolveTo(req.query.hostname);
   res.status(200).send(data);
@@ -409,22 +402,3 @@ export async function changellyGetTransactions(req, res) {
   res.status(200).send(data);
 }
 
-export async function getRamps(req, res) {
-  const data = await ramps.getRamps(
-    req.query.countryCode,
-    req.query.crypto,
-    req.query.address
-  );
-  res.status(200).send(data);
-}
-
-export async function getBtcDirectBuyWidget(req, res) {
-  const envSuffix = `${process.env.NODE_ENV === 'production' ? '' : '-sandbox'}`;
-  res.render('btcdirectBuy', {
-    apiKey: process.env.BTCDIRECT_API_KEY,
-    envSuffix,
-    address: req.query.address,
-    baseCurrency: req.query.baseCurrency,
-    fiatAmount: 300,
-  });
-}

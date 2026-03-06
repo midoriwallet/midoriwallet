@@ -4,7 +4,6 @@ import csFee from '../csFee.js';
 import express from 'express';
 import fee from '../fee.js';
 import github from '../github.js';
-import moonpay from './moonpay.js';
 import openalias from '../openalias.js';
 import semver from 'semver';
 import tokens from '../tokens.js';
@@ -144,46 +143,6 @@ api.get('/ethereum/tokens', (req, res) => {
 
 api.all('/location', (req, res) => {
   res.status(410).send({ error: 'Please upgrade the app!' });
-});
-
-api.get('/moonpay/coins', (req, res) => {
-  let id = 'coins';
-  if (req.query.country === 'USA') {
-    id += '_usa';
-  }
-  moonpay.getFromCache(id).then((data) => {
-    res.status(200).send(data);
-  }).catch((err) => {
-    res.status(400).send(err);
-  });
-});
-
-api.get('/moonpay/fiat', (req, res) => {
-  moonpay.getFromCache('fiat').then((data) => {
-    res.status(200).send(data);
-  }).catch((err) => {
-    res.status(400).send(err);
-  });
-});
-
-api.get('/moonpay/countries', (req, res) => {
-  if (!['document', 'allowed'].includes(req.query.type)) {
-    return res.status(400).json({ error: 'Bad request' });
-  }
-  moonpay.getFromCache('countries_' + req.query.type).then((data) => {
-    res.status(200).send(data);
-  }).catch((err) => {
-    res.status(400).send(err);
-  });
-});
-
-api.get('/moonpay/redirectURL', (req, res) => {
-  const { buildType } = req.query;
-  const transactionId = req.query.transactionId || '';
-  if (!['web', 'phonegap', 'electron'].includes(buildType)) {
-    return res.status(400).send('Bad request');
-  }
-  res.render('moonpay', { transactionId, buildType });
 });
 
 // for debug

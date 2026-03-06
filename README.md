@@ -59,7 +59,7 @@ Midori Wallet supports a wide range of cryptocurrencies and tokens:
 
 #### Buy & Sell
 - **Fiat On-Ramps**: Buy cryptocurrency with fiat currency
-- **Multiple Providers**: MoonPay, Onramper, BTC Direct, Guardarian, Bitnovo, Paybis
+- **Provider**: Bridge.xyz (Coming Soon)
 - **Global Support**: Available in multiple countries and regions
 - **Multiple Payment Methods**: Credit cards, bank transfers, and more
 

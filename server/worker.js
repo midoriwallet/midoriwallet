@@ -22,8 +22,6 @@ await Promise.all([
   tasks.cryptosUpdatePrices(60 * 1000), // delay 1 minute
   tasks.cryptosUpdateRank(12 * 60 * 60 * 1000), // delay 12 hours
   tasks.cacheFees(5 * 60 * 1000), // 5 minutes
-  tasks.cacheMoonpayCurrencies(60 * 60 * 1000), // 1 hour
-  tasks.cacheMoonpayCountries(60 * 60 * 1000), // 1 hour
   tasks.cacheGithubReleases(10 * 60 * 1000), // 10 minutes
 ]).catch((error) => {
   console.error('error', error);

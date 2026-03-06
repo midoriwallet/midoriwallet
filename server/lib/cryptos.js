@@ -15,7 +15,7 @@ const CURRENCIES = [
   'SEK', 'SGD', 'THB', 'TRY', 'TWD',
   'UAH', 'USD', 'VEF', 'VND', 'ZAR',
 ];
-const CRYPTO_PROPS = ['coingecko', 'changelly', 'coinmarketcap', 'moonpay'];
+const CRYPTO_PROPS = ['coingecko', 'changelly', 'coinmarketcap'];
 
 function getPlatformName(crypto) {
   return crypto.platformName || crypto.platform

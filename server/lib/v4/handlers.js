@@ -9,7 +9,6 @@ import fee from '../fee.js';
 import github from '../github.js';
 import invitations from '../invitations.js';
 import mecto from '../mecto.js';
-import ramps from '../ramps/index.js';
 import storage from '../storage.js';
 import { verifyReq } from '../utils.js';
 import wallets from '../wallets.js';
@@ -261,18 +260,6 @@ export async function removeMecto(req, res) {
   const device = await req.getDevice();
   await mecto.remove(device);
   res.status(200).send({ success: true });
-}
-
-export async function getRampsBuy(req, res) {
-  const device = await req.getDevice();
-  const data = await ramps.buy(device.wallet._id, req.query);
-  res.status(200).send(data);
-}
-
-export async function getRampsSell(req, res) {
-  const device = await req.getDevice();
-  const data = await ramps.sell(device.wallet._id, req.query);
-  res.status(200).send(data);
 }
 
 export async function getUpdate(req, res) {

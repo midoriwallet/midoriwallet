@@ -582,52 +582,6 @@ paths:
           $ref: '#/components/responses/RegistrationResponse'
         default:
           $ref: '#/components/responses/GeneralError'
-  /ramps/buy:
-    get:
-      x-eov-operation-id: getRampsBuy
-      x-eov-operation-handler: handlers
-      description: Get ramps for buy
-      parameters:
-        - $ref: '#/components/parameters/deviceId'
-        - $ref: '#/components/parameters/countryCode'
-        - $ref: '#/components/parameters/cryptoId'
-        - $ref: '#/components/parameters/address'
-      security:
-        - deviceSignature: []
-      responses:
-        '200':
-          description: Ramps
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Ramp'
-        default:
-          $ref: '#/components/responses/GeneralError'
-  /ramps/sell:
-    get:
-      x-eov-operation-id: getRampsSell
-      x-eov-operation-handler: handlers
-      description: Get ramps for sell
-      parameters:
-        - $ref: '#/components/parameters/deviceId'
-        - $ref: '#/components/parameters/countryCode'
-        - $ref: '#/components/parameters/cryptoId'
-        - $ref: '#/components/parameters/address'
-      security:
-        - deviceSignature: []
-      responses:
-        '200':
-          description: Ramps
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Ramp'
-        default:
-          $ref: '#/components/responses/GeneralError'
   /register:
     post:
       x-eov-operation-id: register
@@ -1296,24 +1250,6 @@ components:
       type: string
       pattern: ^public-key$
       maxLength: 10
-    Ramp:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          $ref: '#/components/schemas/AnyString256'
-        id:
-          $ref: '#/components/schemas/AnyString256'
-        url:
-          $ref: '#/components/schemas/UrlString'
-        description:
-          type: string
-          maxLength: 32
-      required:
-        - id
-        - name
-        - url
-        - description
     RegistrationOptions:
       type: object
       properties:

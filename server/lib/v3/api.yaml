@@ -8,28 +8,6 @@ servers:
   - url: https://wallet.astian.org/api/v3
 
 paths:
-  /btcdirect/buy:
-    get:
-      x-eov-operation-id: getBtcDirectBuyWidget
-      x-eov-operation-handler: handlers
-      description: Get BTC Direct buy widget
-      parameters:
-        - in: query
-          name: query
-          description: Any query params
-          schema:
-            type: object
-            additionalProperties: true
-      security: []
-      responses:
-        '200':
-          description: BTC Direct buy widget
-          content:
-            text/html:
-              schema:
-                type: string
-        default:
-          $ref: '#/components/responses/GeneralError'
   /crossplatform:
     get:
       x-eov-operation-id: listCrossplatformAuthenticators
@@ -535,30 +513,6 @@ paths:
           $ref: '#/components/responses/SuccessResponse'
         default:
           $ref: '#/components/responses/GeneralError'
-  /moonpay/sign:
-    post:
-      x-eov-operation-id: moonpaySign
-      x-eov-operation-handler: handlers
-      description: Sign moonpay urls
-      parameters:
-        - $ref: '#/components/parameters/deviceId'
-      security:
-        - deviceSignature: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MoonpayUrls'
-      responses:
-        '200':
-          description: Signed urls
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MoonpayUrls'
-        default:
-          $ref: '#/components/responses/GeneralError'
   /openalias:
     get:
       x-eov-operation-id: resolveOpenalias
@@ -633,36 +587,6 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/AttestationResponse'
-        default:
-          $ref: '#/components/responses/GeneralError'
-  /ramps:
-    get:
-      x-eov-operation-id: getRamps
-      x-eov-operation-handler: handlers
-      description: Get ramps
-      parameters:
-        - $ref: '#/components/parameters/deviceId'
-        - $ref: '#/components/parameters/countryCode'
-        - $ref: '#/components/parameters/cryptoId'
-        - $ref: '#/components/parameters/address'
-      security:
-        - deviceSignature: []
-      responses:
-        '200':
-          description: Ramps
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: false
-                properties:
-                  buy:
-                    $ref: '#/components/schemas/RampList'
-                  sell:
-                    $ref: '#/components/schemas/RampList'
-                required:
-                  - buy
-                  - sell
         default:
           $ref: '#/components/responses/GeneralError'
   /register:
@@ -1376,16 +1300,6 @@ components:
           - username
           - avatarId
           - address
-    MoonpayUrls:
-      type: object
-      additionalProperties: false
-      properties:
-        urls:
-          type: array
-          items:
-            $ref: '#/components/schemas/UrlString'
-          minItems: 1
-          maxItems: 5
     NullableCryptoAddress:
       type: string
       pattern: ^.{0,256}$
@@ -1423,25 +1337,6 @@ components:
           $ref: '#/components/schemas/Hex128String'
       required:
         - publicToken
-    Ramp:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          $ref: '#/components/schemas/AnyString256'
-        svg:
-          $ref: '#/components/schemas/AnyString256'
-        url:
-          $ref: '#/components/schemas/UrlString'
-      required:
-        - name
-        - svg
-        - url
-    RampList:
-      type: array
-      maxItems: 50
-      items:
-        $ref: '#/components/schemas/Ramp'
     RedirectString:
       type: string
       pattern: ^Found\. Redirecting to (http|https):\/\/.+$
