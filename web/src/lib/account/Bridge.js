@@ -13,7 +13,14 @@ export default class Bridge {
   }
 
   get isApproved() {
-    return this.#customer?.isApproved === true;
+  if (!this.#customer) return false;
+  // Cuando viene de GET /customer → tiene isApproved booleano
+  if (typeof this.#customer.isApproved === 'boolean') {
+    return this.#customer.isApproved;
+  }
+  // Cuando viene de refreshKycStatus → tiene kycStatus y tosStatus
+  return this.#customer.kycStatus === 'approved' &&
+         this.#customer.tosStatus === 'approved';
   }
 
   get supportedCurrencies() {
