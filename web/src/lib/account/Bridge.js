@@ -12,6 +12,10 @@ export default class Bridge {
     return !!this.#customer;
   }
 
+  get isApproved() {
+    return this.#customer?.isApproved === true;
+  }
+
   get supportedCurrencies() {
     return this.#supportedCurrencies || [];
   }
@@ -49,15 +53,25 @@ export default class Bridge {
     }
   }
 
-  async registerCustomer({ firstName, lastName, email, phone, type }) {
-    const customer = await this.#request({
+  async createKycLink({ fullName, email, type }) {
+    const result = await this.#request({
       url: '/api/v4/bridge/customer',
       method: 'post',
-      data: { firstName, lastName, email, phone, type },
+      data: { fullName, email, type },
       seed: 'device',
     });
-    this.#customer = customer;
-    return customer;
+    this.#customer = result;
+    return result;
+  }
+
+  async refreshKycStatus() {
+    const result = await this.#request({
+      url: '/api/v4/bridge/customer/kyc-status',
+      method: 'get',
+      seed: 'device',
+    });
+    this.#customer = result;
+    return result;
   }
 
   async createVirtualAccount({ currency, destinationPaymentRail, destinationCurrency, destinationAddress, developerFeePercent }) {

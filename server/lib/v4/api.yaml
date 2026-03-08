@@ -504,14 +504,14 @@ paths:
     get:
       x-eov-operation-id: bridgeGetCustomer
       x-eov-operation-handler: handlers
-      description: Get Bridge customer info
+      description: Get Bridge customer info and KYC status
       parameters:
         - $ref: '#/components/parameters/deviceId'
       security:
         - deviceSignature: []
       responses:
         '200':
-          description: Customer info
+          description: Customer info with KYC status
           content:
             application/json:
               schema:
@@ -519,18 +519,26 @@ paths:
                 properties:
                   customerId:
                     type: string
-                  firstName:
-                    type: string
-                  lastName:
+                  fullName:
                     type: string
                   email:
                     type: string
+                  kycStatus:
+                    type: string
+                  tosStatus:
+                    type: string
+                  kycLink:
+                    type: string
+                  tosLink:
+                    type: string
+                  isApproved:
+                    type: boolean
         default:
           $ref: '#/components/responses/GeneralError'
     post:
-      x-eov-operation-id: bridgeRegisterCustomer
+      x-eov-operation-id: bridgeCreateKycLink
       x-eov-operation-handler: handlers
-      description: Register as Bridge customer
+      description: Create KYC link for Bridge customer onboarding
       parameters:
         - $ref: '#/components/parameters/deviceId'
       security:
@@ -542,29 +550,22 @@ paths:
             schema:
               type: object
               properties:
-                firstName:
+                fullName:
                   type: string
-                  maxLength: 100
-                lastName:
-                  type: string
-                  maxLength: 100
+                  maxLength: 200
                 email:
                   type: string
                   format: email
                   maxLength: 254
-                phone:
-                  type: string
-                  maxLength: 20
                 type:
                   type: string
                   enum: [individual, business]
               required:
-                - firstName
-                - lastName
+                - fullName
                 - email
       responses:
         '201':
-          description: Customer registered
+          description: KYC link created
           content:
             application/json:
               schema:
@@ -572,9 +573,46 @@ paths:
                 properties:
                   customerId:
                     type: string
-                  firstName:
+                  kycLink:
                     type: string
-                  lastName:
+                  tosLink:
+                    type: string
+                  kycStatus:
+                    type: string
+                  tosStatus:
+                    type: string
+                  alreadyCreated:
+                    type: boolean
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/customer/kyc-status:
+    get:
+      x-eov-operation-id: bridgeRefreshKycStatus
+      x-eov-operation-handler: handlers
+      description: Refresh KYC and TOS status from Bridge API
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Updated KYC status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+                  kycStatus:
+                    type: string
+                  tosStatus:
+                    type: string
+                  kycLink:
+                    type: string
+                  tosLink:
+                    type: string
+                  fullName:
                     type: string
                   email:
                     type: string

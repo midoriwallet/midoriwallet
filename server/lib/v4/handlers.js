@@ -354,21 +354,14 @@ export async function bridgeGetSupportedCurrencies(req, res) {
   res.status(200).send(currencies);
 }
 
-export async function bridgeRegisterCustomer(req, res) {
+export async function bridgeCreateKycLink(req, res) {
   const device = await req.getDevice();
-  const customer = await bridge.findOrCreateCustomer(device.wallet._id, {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+  const result = await bridge.createKycLink(device.wallet._id, {
+    fullName: req.body.fullName,
     email: req.body.email,
-    phone: req.body.phone,
     type: req.body.type,
   });
-  res.status(201).send({
-    customerId: customer.bridge_customer_id,
-    firstName: customer.first_name,
-    lastName: customer.last_name,
-    email: customer.email,
-  });
+  res.status(201).send(result);
 }
 
 export async function bridgeGetCustomer(req, res) {
@@ -376,10 +369,20 @@ export async function bridgeGetCustomer(req, res) {
   const customer = await bridge.getCustomer(device.wallet._id);
   res.status(200).send({
     customerId: customer.bridge_customer_id,
-    firstName: customer.first_name,
-    lastName: customer.last_name,
+    fullName: customer.full_name,
     email: customer.email,
+    kycStatus: customer.kyc_status,
+    tosStatus: customer.tos_status,
+    kycLink: customer.kyc_link,
+    tosLink: customer.tos_link,
+    isApproved: bridge.isCustomerApproved(customer),
   });
+}
+
+export async function bridgeRefreshKycStatus(req, res) {
+  const device = await req.getDevice();
+  const result = await bridge.refreshKycStatus(device.wallet._id);
+  res.status(200).send(result);
 }
 
 export async function bridgeCreateVirtualAccount(req, res) {

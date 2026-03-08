@@ -16,14 +16,20 @@ export default {
   data() {
     return {
       isRegistered: this.$account.bridge.isRegistered,
+      isApproved: this.$account.bridge.isApproved,
     };
+  },
+  mounted() {
+    if (this.isRegistered && !this.isApproved) {
+      this.next('kycPending');
+    }
   },
 };
 </script>
 
 <template>
   <MainLayout :title="$t('Bridge')">
-    <template v-if="!isRegistered">
+    <template v-if="!isRegistered || !isApproved">
       <div class="&__intro">
         <div class="&__intro-title">
           {{ $t('Connect your bank account to crypto') }}

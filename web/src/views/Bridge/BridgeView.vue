@@ -3,6 +3,7 @@ import CsSteps from '../../components/CsSteps.vue';
 
 import BridgeStepIndex from './BridgeStepIndex.vue';
 import BridgeStepRegister from './BridgeStepRegister.vue';
+import BridgeStepKycPending from './BridgeStepKycPending.vue';
 import BridgeStepVirtualAccounts from './BridgeStepVirtualAccounts.vue';
 import BridgeStepCreateVirtualAccount from './BridgeStepCreateVirtualAccount.vue';
 import BridgeStepVirtualAccountDetail from './BridgeStepVirtualAccountDetail.vue';
@@ -17,6 +18,7 @@ export default {
   steps: {
     index: BridgeStepIndex,
     register: BridgeStepRegister,
+    kycPending: BridgeStepKycPending,
     virtualAccounts: BridgeStepVirtualAccounts,
     createVirtualAccount: BridgeStepCreateVirtualAccount,
     virtualAccountDetail: BridgeStepVirtualAccountDetail,

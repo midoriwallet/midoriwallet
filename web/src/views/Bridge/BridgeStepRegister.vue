@@ -16,21 +16,16 @@ export default {
   data() {
     return {
       isLoading: false,
-      firstName: '',
-      lastName: '',
+      fullName: '',
       email: '',
-      phone: '',
       errors: {},
     };
   },
   methods: {
     validate() {
       this.errors = {};
-      if (!this.firstName.trim()) {
-        this.errors.firstName = this.$t('First name is required');
-      }
-      if (!this.lastName.trim()) {
-        this.errors.lastName = this.$t('Last name is required');
+      if (!this.fullName.trim()) {
+        this.errors.fullName = this.$t('Full name is required');
       }
       if (!this.email.trim()) {
         this.errors.email = this.$t('Email is required');
@@ -43,14 +38,13 @@ export default {
       if (!this.validate()) return;
       this.isLoading = true;
       try {
-        await this.$account.bridge.registerCustomer({
-          firstName: this.firstName.trim(),
-          lastName: this.lastName.trim(),
+        const result = await this.$account.bridge.createKycLink({
+          fullName: this.fullName.trim(),
           email: this.email.trim(),
-          phone: this.phone.trim() || undefined,
           type: 'individual',
         });
-        this.next('index');
+        this.updateStorage({ kycResult: result });
+        this.next('kycPending');
       } catch (err) {
         console.error(err);
         this.errors.general = err.message || this.$account.unknownError();
@@ -66,23 +60,14 @@ export default {
   <MainLayout :title="$t('Register with Bridge')">
     <CsFormGroup>
       <CsFormInput
-        v-model="firstName"
-        :label="$t('First Name')"
-        :error="errors.firstName"
-      />
-      <CsFormInput
-        v-model="lastName"
-        :label="$t('Last Name')"
-        :error="errors.lastName"
+        v-model="fullName"
+        :label="$t('Full Name')"
+        :error="errors.fullName"
       />
       <CsFormInput
         v-model="email"
         :label="$t('Email')"
         :error="errors.email"
-      />
-      <CsFormInput
-        v-model="phone"
-        :label="$t('Phone (optional)')"
       />
     </CsFormGroup>
 

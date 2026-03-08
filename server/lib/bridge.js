@@ -30,9 +30,10 @@ async function request(method, path, data = null, headers = {}) {
     return response.data;
   } catch (err) {
     const status = err.response?.status || 500;
-    const message = err.response?.data?.message || err.response?.data?.error || err.message;
-    console.error(`[Bridge API] ${method.toUpperCase()} ${path} failed:`, message);
-    const safeMessage = status === 400 ? message : 'An error occurred with the payment service';
+    const responseData = err.response?.data;
+    const message = responseData?.message || responseData?.error || err.message;
+    console.error(`[Bridge API] ${method.toUpperCase()} ${path} failed (${status}):`, JSON.stringify(responseData || message));
+    const safeMessage = [400, 422].includes(status) ? message : 'An error occurred with the payment service';
     throw createError(status, safeMessage);
   }
 }
@@ -68,38 +69,86 @@ function validateAddress(address) {
 
 // ─── Customer Management ────────────────────────────────────────────────────
 
-async function findOrCreateCustomer(walletId, customerData) {
+async function createKycLink(walletId, { fullName, email, type }) {
   const collection = db.collection('bridge_customers');
 
   const existing = await collection.findOne({ wallet_id: walletId });
   if (existing) {
-    return existing;
+    return {
+      customerId: existing.bridge_customer_id,
+      kycLink: existing.kyc_link,
+      tosLink: existing.tos_link,
+      kycStatus: existing.kyc_status,
+      tosStatus: existing.tos_status,
+      alreadyCreated: true,
+    };
   }
 
-  validateEmail(customerData.email);
+  validateEmail(email);
 
-  const bridgeCustomer = await request('post', '/customers', {
-    type: customerData.type || 'individual',
-    first_name: customerData.firstName,
-    last_name: customerData.lastName,
-    email: customerData.email,
-    ...(customerData.phone ? { phone: customerData.phone } : {}),
+  const result = await request('post', '/kyc_links', {
+    full_name: fullName,
+    email,
+    type: type || 'individual',
   }, {
     'Idempotency-Key': generateIdempotencyKey(),
   });
 
   const record = {
     wallet_id: walletId,
-    bridge_customer_id: bridgeCustomer.id,
-    first_name: customerData.firstName,
-    last_name: customerData.lastName,
-    email: customerData.email,
+    bridge_customer_id: result.customer_id,
+    kyc_link_id: result.id,
+    full_name: fullName,
+    email,
+    kyc_link: result.kyc_link,
+    tos_link: result.tos_link,
+    kyc_status: result.kyc_status || 'not_started',
+    tos_status: result.tos_status || 'pending',
     created_at: new Date(),
     updated_at: new Date(),
   };
 
   await collection.insertOne(record);
-  return record;
+
+  return {
+    customerId: result.customer_id,
+    kycLink: result.kyc_link,
+    tosLink: result.tos_link,
+    kycStatus: result.kyc_status || 'not_started',
+    tosStatus: result.tos_status || 'pending',
+  };
+}
+
+async function refreshKycStatus(walletId) {
+  const collection = db.collection('bridge_customers');
+  const record = await collection.findOne({ wallet_id: walletId });
+  if (!record) {
+    throw createError(404, 'No KYC link found. Please register first.');
+  }
+
+  const result = await request('get', `/kyc_links/${record.kyc_link_id}`);
+
+  const update = {
+    kyc_status: result.kyc_status,
+    tos_status: result.tos_status,
+    updated_at: new Date(),
+  };
+
+  if (result.customer_id && result.customer_id !== record.bridge_customer_id) {
+    update.bridge_customer_id = result.customer_id;
+  }
+
+  await collection.updateOne({ _id: record._id }, { $set: update });
+
+  return {
+    customerId: result.customer_id || record.bridge_customer_id,
+    kycStatus: result.kyc_status,
+    tosStatus: result.tos_status,
+    kycLink: record.kyc_link,
+    tosLink: record.tos_link,
+    fullName: record.full_name,
+    email: record.email,
+  };
 }
 
 async function getCustomer(walletId) {
@@ -108,6 +157,10 @@ async function getCustomer(walletId) {
     throw createError(404, 'Bridge customer not found. Please register first.');
   }
   return record;
+}
+
+function isCustomerApproved(record) {
+  return record.kyc_status === 'approved' && record.tos_status === 'approved';
 }
 
 // ─── Virtual Accounts ───────────────────────────────────────────────────────
@@ -413,8 +466,10 @@ function getSupportedCurrencies() {
 }
 
 export default {
-  findOrCreateCustomer,
+  createKycLink,
+  refreshKycStatus,
   getCustomer,
+  isCustomerApproved,
   createVirtualAccount,
   getVirtualAccounts,
   getVirtualAccount,
