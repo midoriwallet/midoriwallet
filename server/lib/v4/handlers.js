@@ -1,3 +1,4 @@
+import bridge from '../bridge.js';
 import createError from 'http-errors';
 import semver from 'semver';
 
@@ -344,4 +345,95 @@ export async function getInvitationStatus(req, res) {
 export async function sendInvitation(req, res) {
   await invitations.send(req.body.email);
   res.status(200).send({ success: true });
+}
+
+// ─── Bridge ─────────────────────────────────────────────────────────────────
+
+export async function bridgeGetSupportedCurrencies(req, res) {
+  const currencies = bridge.getSupportedCurrencies();
+  res.status(200).send(currencies);
+}
+
+export async function bridgeRegisterCustomer(req, res) {
+  const device = await req.getDevice();
+  const customer = await bridge.findOrCreateCustomer(device.wallet._id, {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    phone: req.body.phone,
+    type: req.body.type,
+  });
+  res.status(201).send({
+    customerId: customer.bridge_customer_id,
+    firstName: customer.first_name,
+    lastName: customer.last_name,
+    email: customer.email,
+  });
+}
+
+export async function bridgeGetCustomer(req, res) {
+  const device = await req.getDevice();
+  const customer = await bridge.getCustomer(device.wallet._id);
+  res.status(200).send({
+    customerId: customer.bridge_customer_id,
+    firstName: customer.first_name,
+    lastName: customer.last_name,
+    email: customer.email,
+  });
+}
+
+export async function bridgeCreateVirtualAccount(req, res) {
+  const device = await req.getDevice();
+  const result = await bridge.createVirtualAccount(device.wallet._id, {
+    currency: req.body.currency,
+    destinationPaymentRail: req.body.destinationPaymentRail,
+    destinationCurrency: req.body.destinationCurrency,
+    destinationAddress: req.body.destinationAddress,
+    developerFeePercent: req.body.developerFeePercent,
+  });
+  res.status(201).send(result);
+}
+
+export async function bridgeGetVirtualAccounts(req, res) {
+  const device = await req.getDevice();
+  const accounts = await bridge.getVirtualAccounts(device.wallet._id);
+  res.status(200).send(accounts);
+}
+
+export async function bridgeGetVirtualAccount(req, res) {
+  const device = await req.getDevice();
+  const account = await bridge.getVirtualAccount(device.wallet._id, req.params.virtualAccountId);
+  res.status(200).send(account);
+}
+
+export async function bridgeGetVirtualAccountHistory(req, res) {
+  const device = await req.getDevice();
+  const history = await bridge.getVirtualAccountHistory(device.wallet._id, req.params.virtualAccountId);
+  res.status(200).send(history);
+}
+
+export async function bridgeCreateTransfer(req, res) {
+  const device = await req.getDevice();
+  const result = await bridge.createTransfer(device.wallet._id, {
+    sourcePaymentRail: req.body.sourcePaymentRail,
+    sourceCurrency: req.body.sourceCurrency,
+    destinationPaymentRail: req.body.destinationPaymentRail,
+    destinationCurrency: req.body.destinationCurrency,
+    destinationAddress: req.body.destinationAddress,
+    amount: req.body.amount,
+    flexibleAmount: req.body.flexibleAmount,
+  });
+  res.status(201).send(result);
+}
+
+export async function bridgeGetTransfer(req, res) {
+  const device = await req.getDevice();
+  const transfer = await bridge.getTransfer(device.wallet._id, req.params.transferId);
+  res.status(200).send(transfer);
+}
+
+export async function bridgeGetTransfers(req, res) {
+  const device = await req.getDevice();
+  const transfers = await bridge.getTransfers(device.wallet._id);
+  res.status(200).send(transfers);
 }

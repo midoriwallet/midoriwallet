@@ -62,6 +62,20 @@ await Promise.all([
     { key: { wallet_id: 1, address: 1, crypto_id: 1 }, background: true, unique: true },
     { key: { wallet_id: 1, send_count: -1 }, background: true },
   ]),
+  db.collection('bridge_customers').createIndexes([
+    { key: { wallet_id: 1 }, background: true, unique: true },
+    { key: { bridge_customer_id: 1 }, background: true, unique: true },
+  ]),
+  db.collection('bridge_virtual_accounts').createIndexes([
+    { key: { wallet_id: 1 }, background: true },
+    { key: { bridge_virtual_account_id: 1 }, background: true, unique: true },
+    { key: { wallet_id: 1, currency: 1 }, background: true },
+  ]),
+  db.collection('bridge_transfers').createIndexes([
+    { key: { wallet_id: 1 }, background: true },
+    { key: { bridge_transfer_id: 1 }, background: true, unique: true },
+    { key: { wallet_id: 1, created_at: -1 }, background: true },
+  ]),
 ]);
 
 export function dbMemoize(target, { key, ttl }) {

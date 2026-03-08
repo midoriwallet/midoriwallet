@@ -7,6 +7,7 @@ import { sha256 } from '@noble/hashes/sha256';
 import { CsWallet, errors } from '@coinspace/cs-common';
 
 import Biometry from './Biometry.js';
+import Bridge from './Bridge.js';
 import Cache from './Cache.js';
 import ClientStorage from '../storage/ClientStorage.js';
 import CryptoDB from './CryptoDB.js';
@@ -108,6 +109,7 @@ export default class Account extends EventEmitter {
   #biometry;
   #hardware;
   #ramps;
+  #bridge;
   #exchanges;
   #needToMigrateV5Balance = false;
   #walletConnect;
@@ -152,6 +154,10 @@ export default class Account extends EventEmitter {
 
   get ramps() {
     return this.#ramps;
+  }
+
+  get bridge() {
+    return this.#bridge;
   }
 
   get exchanges() {
@@ -253,6 +259,10 @@ export default class Account extends EventEmitter {
       request: this.request,
       account: this,
     });
+    this.#bridge = new Bridge({
+      request: this.request,
+      account: this,
+    });
   }
 
   async create(walletSeed, pin) {
@@ -319,6 +329,7 @@ export default class Account extends EventEmitter {
       account: this,
     });
     await this.#exchanges.init();
+    this.#bridge.init().catch((err) => console.error('[Bridge] init error:', err));
     this.#dummy = hex.encode(this.#clientStorage.getDetailsKey())
       === import.meta.env.VITE_DUMMY_ACCOUNT;
 

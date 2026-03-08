@@ -467,6 +467,312 @@ paths:
           $ref: '#/components/responses/SuccessResponse'
         default:
           $ref: '#/components/responses/GeneralError'
+  /bridge/currencies:
+    get:
+      x-eov-operation-id: bridgeGetSupportedCurrencies
+      x-eov-operation-handler: handlers
+      description: Get supported Bridge virtual account currencies
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Supported currencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    currency:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    paymentRails:
+                      type: array
+                      items:
+                        type: string
+                    region:
+                      type: string
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/customer:
+    get:
+      x-eov-operation-id: bridgeGetCustomer
+      x-eov-operation-handler: handlers
+      description: Get Bridge customer info
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Customer info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+        default:
+          $ref: '#/components/responses/GeneralError'
+    post:
+      x-eov-operation-id: bridgeRegisterCustomer
+      x-eov-operation-handler: handlers
+      description: Register as Bridge customer
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  maxLength: 100
+                lastName:
+                  type: string
+                  maxLength: 100
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                phone:
+                  type: string
+                  maxLength: 20
+                type:
+                  type: string
+                  enum: [individual, business]
+              required:
+                - firstName
+                - lastName
+                - email
+      responses:
+        '201':
+          description: Customer registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerId:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/virtual-accounts:
+    get:
+      x-eov-operation-id: bridgeGetVirtualAccounts
+      x-eov-operation-handler: handlers
+      description: List virtual accounts
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Virtual accounts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+    post:
+      x-eov-operation-id: bridgeCreateVirtualAccount
+      x-eov-operation-handler: handlers
+      description: Create a virtual account
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currency:
+                  type: string
+                  enum: [usd, eur, mxn, brl, gbp]
+                destinationPaymentRail:
+                  type: string
+                destinationCurrency:
+                  type: string
+                destinationAddress:
+                  type: string
+                developerFeePercent:
+                  type: string
+              required:
+                - currency
+                - destinationPaymentRail
+                - destinationCurrency
+                - destinationAddress
+      responses:
+        '201':
+          description: Virtual account created
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/virtual-accounts/{virtualAccountId}:
+    get:
+      x-eov-operation-id: bridgeGetVirtualAccount
+      x-eov-operation-handler: handlers
+      description: Get virtual account details
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - name: virtualAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Virtual account details
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/virtual-accounts/{virtualAccountId}/history:
+    get:
+      x-eov-operation-id: bridgeGetVirtualAccountHistory
+      x-eov-operation-handler: handlers
+      description: Get virtual account history
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - name: virtualAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Virtual account history
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/transfers:
+    get:
+      x-eov-operation-id: bridgeGetTransfers
+      x-eov-operation-handler: handlers
+      description: List transfers
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Transfers list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+    post:
+      x-eov-operation-id: bridgeCreateTransfer
+      x-eov-operation-handler: handlers
+      description: Create a one-time payment transfer
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+      security:
+        - deviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sourcePaymentRail:
+                  type: string
+                sourceCurrency:
+                  type: string
+                destinationPaymentRail:
+                  type: string
+                destinationCurrency:
+                  type: string
+                destinationAddress:
+                  type: string
+                amount:
+                  type: string
+                flexibleAmount:
+                  type: boolean
+              required:
+                - sourcePaymentRail
+                - sourceCurrency
+                - destinationPaymentRail
+                - destinationCurrency
+                - destinationAddress
+      responses:
+        '201':
+          description: Transfer created
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
+  /bridge/transfers/{transferId}:
+    get:
+      x-eov-operation-id: bridgeGetTransfer
+      x-eov-operation-handler: handlers
+      description: Get transfer details
+      parameters:
+        - $ref: '#/components/parameters/deviceId'
+        - name: transferId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - deviceSignature: []
+      responses:
+        '200':
+          description: Transfer details
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/GeneralError'
   /market:
     get:
       x-eov-operation-id: getMarket

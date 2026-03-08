@@ -26,6 +26,8 @@ import SettingsTorView from '../../views/Settings/Tor/SettingsTorView.vue';
 import SettingsView from '../../views/Settings/SettingsView.vue';
 import SettingsWalletConnectView from '../../views/Settings/WalletConnect/WalletConnectView.vue';
 
+import BridgeView from '../../views/Bridge/BridgeView.vue';
+
 import NotFound from '../../views/NotFound.vue';
 
 import BaseExchange from '../../lib/exchanges/BaseExchange.js';
@@ -74,7 +76,10 @@ const app = [
         component: SettingsWalletConnectView,
       }],
     }, {
-
+      path: 'bridge',
+      name: 'bridge',
+      component: BridgeView,
+    }, {
       path: `add/${CRYPTO_ID}`,
       redirect(to) {
         return {
