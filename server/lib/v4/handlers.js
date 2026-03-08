@@ -383,10 +383,9 @@ export async function bridgeRefreshKycStatus(req, res) {
   const device = await req.getDevice();
   const result = await bridge.refreshKycStatus(device.wallet._id);
   res.status(200).send({
-  result,
-  isApproved: result.kycStatus === 'approved' && result.tosStatus === 'approved',
+    ...result,
+    isApproved: result.kycStatus === 'approved' && result.tosStatus === 'approved',
   });
-  
 }
 
 export async function bridgeCreateVirtualAccount(req, res) {
