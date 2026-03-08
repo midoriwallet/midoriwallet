@@ -13,16 +13,18 @@ export default {
     CsListItems,
   },
   extends: CsStep,
-  data() {
-    return {
-      isRegistered: this.$account.bridge.isRegistered,
-      isApproved: this.$account.bridge.isApproved,
-    };
+  computed: {
+  isRegistered() {
+    return this.$account.bridge.isRegistered;
+  },
+  isApproved() {
+    return this.$account.bridge.isApproved;
+  },
   },
   mounted() {
-    if (this.isRegistered && !this.isApproved) {
-      this.next('kycPending');
-    }
+  if (this.isRegistered && !this.isApproved) {
+    this.next('kycPending');
+  } 
   },
 };
 </script>
