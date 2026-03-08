@@ -173,6 +173,14 @@ export default {
       </CsListItem>
     </CsListItems>
 
+    <CsListItems :title="$t('Services')">
+      <CsListItem
+        :title="$t('Midori Services')"
+        :description="$t('Virtual accounts & payments')"
+        @click="$router.push({ name: 'bridge' })"
+      />
+    </CsListItems>
+
     <CsListItems :title="$t('Wallet')">
       <CsListItem
         :title="$t('Saved Addresses')"

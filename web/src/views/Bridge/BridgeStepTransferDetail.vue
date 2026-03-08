@@ -38,11 +38,17 @@ export default {
       if (!this.transfer) return '';
       return STATE_LABELS[this.transfer.state] || this.transfer.state;
     },
-    stateClass() {
-      if (!this.transfer) return '';
-      if (['completed', 'payment_processed'].includes(this.transfer.state)) return '&__badge--success';
-      if (['failed', 'returned', 'refunded'].includes(this.transfer.state)) return '&__badge--danger';
-      return '&__badge--pending';
+    isSuccess() {
+      if (!this.transfer) return false;
+      return ['completed', 'payment_processed'].includes(this.transfer.state);
+    },
+    isDanger() {
+      if (!this.transfer) return false;
+      return ['failed', 'returned', 'refunded'].includes(this.transfer.state);
+    },
+    isPending() {
+      if (!this.transfer) return false;
+      return !this.isSuccess && !this.isDanger;
     },
   },
   methods: {
@@ -87,7 +93,11 @@ export default {
       <div class="&__status">
         <span
           class="&__badge"
-          :class="stateClass"
+          :class="{
+            '&__badge--success': isSuccess,
+            '&__badge--danger': isDanger,
+            '&__badge--pending': isPending,
+          }"
         >
           {{ stateLabel }}
         </span>
@@ -217,8 +227,8 @@ export default {
       border-radius: 1rem;
 
       &--success {
-        background-color: $success-light;
-        color: $success;
+        background-color: $primary-light;
+        color: $primary;
       }
 
       &--danger {
@@ -227,8 +237,8 @@ export default {
       }
 
       &--pending {
-        background-color: $warning-light;
-        color: $warning;
+        background-color: $secondary-light;
+        color: $secondary;
       }
     }
 

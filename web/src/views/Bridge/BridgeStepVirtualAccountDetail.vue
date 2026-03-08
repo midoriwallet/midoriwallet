@@ -266,8 +266,8 @@ export default {
       color: $secondary;
 
       &--active {
-        background-color: $success-light;
-        color: $success;
+        background-color: $primary-light;
+        color: $primary;
       }
     }
 
