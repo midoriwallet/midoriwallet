@@ -1,8 +1,14 @@
+import { ref } from 'vue';
+
 export default class Bridge {
   #account;
   #request;
   #customer;
+  #_customerRef = ref(null);
   #supportedCurrencies;
+
+  get #customer() { return this.#_customerRef.value; }
+  set #customer(value) { this.#_customerRef.value = value; }
 
   get customer() {
     return this.#customer;
@@ -30,6 +36,7 @@ export default class Bridge {
   constructor({ request, account }) {
     if (!request) throw new TypeError('request is required');
     if (!account) throw new TypeError('account is required');
+    this.#_customerRef = ref(null);
     this.#account = account;
     this.#request = (config) => request({
       ...config,

@@ -43,6 +43,20 @@ export default {
     },
   },
   methods: {
+    async onContinue() {
+      this.isLoading = true;
+      this.error = '';
+      try {
+        await this.$account.bridge.refreshKycStatus();
+      } catch (err) {
+        console.warn('[KycPending] refresh failed:', err.message);
+      } finally {
+        this.isLoading = false;
+      }
+      if (this.isFullyApproved) {
+        this.next('index');
+      }
+    },
     openLink(url) {
       if (window.cordova?.InAppBrowser) {
         window.cordova.InAppBrowser.open(url, '_system');
@@ -149,7 +163,8 @@ export default {
     <CsButton
       v-if="isFullyApproved"
       type="primary"
-      @click="next('index')"
+      :isLoading="isLoading"
+      @click="onContinue"
     >
       {{ $t('Continue') }}
     </CsButton>

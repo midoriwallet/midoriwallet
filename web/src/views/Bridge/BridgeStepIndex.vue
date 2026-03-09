@@ -26,6 +26,11 @@ export default {
     this.next('kycPending');
   } 
   },
+  activated() {
+    if (this.isRegistered && !this.isApproved) {
+      this.next('kycPending');
+    }
+  },
 };
 </script>
 
