@@ -57,14 +57,10 @@
   "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'self'; frame-src https://wallet.astian.org https://*.astian.org;",
 
   "browser_specific_settings": {
-    "gecko": {
-      "id": "midoriwallet@astian.org",
-      "strict_min_version": "78.0"
+  "gecko": {
+    "data_collection_permissions": {
+      "required": ["none"]
     }
-  },
-
-  "data_collection_permissions": {
-    "collects_data": false,
-    "required": ["cookies"]
   }
+}
 }
