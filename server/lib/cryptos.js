@@ -1,9 +1,8 @@
 import coingecko from './coingecko.js';
 import coinmarketcap from './coinmarketcap.js';
 import cryptoDB from '@coinspace/crypto-db';
-import db from './db.js';
+import { query, queryOne, queryAll } from './pg.js';
 
-const COLLECTION = 'cryptos';
 const CURRENCIES = [
   'AED', 'ARS', 'AUD', 'BDT', 'BHD',
   'BMD', 'BRL', 'CAD', 'CHF', 'CLP',
@@ -29,26 +28,47 @@ function getPlatformName(crypto) {
 async function sync() {
   console.log('crypto sync - started');
   for (const crypto of cryptoDB) {
-    const update = {
-      $set: {
-        ...crypto,
-        platformName: getPlatformName(crypto),
-        supported: typeof crypto.supported === 'string' ? false : crypto.supported !== false,
-        deprecated: crypto.deprecated === true,
-        synchronized_at: new Date(),
-      },
-    };
-    for (const prop of CRYPTO_PROPS) {
-      if (!Object.prototype.hasOwnProperty.call(crypto, prop)) {
-        update['$unset'] = update['$unset'] || {};
-        update['$unset'][prop] = true;
-      }
-    }
-    await db.collection(COLLECTION).updateOne({
-      _id: crypto._id,
-    }, update, {
-      upsert: true,
-    });
+    const platformName = getPlatformName(crypto);
+    const supported = typeof crypto.supported === 'string' ? false : crypto.supported !== false;
+    const deprecated = crypto.deprecated === true;
+
+    await query(
+      `INSERT INTO cryptos (
+         _id, type, name, symbol, decimals, address, platform, "platformName",
+         supported, deprecated, original, coingecko, changelly, coinmarketcap, synchronized_at
+       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,now())
+       ON CONFLICT (_id) DO UPDATE SET
+         type = EXCLUDED.type,
+         name = EXCLUDED.name,
+         symbol = EXCLUDED.symbol,
+         decimals = EXCLUDED.decimals,
+         address = EXCLUDED.address,
+         platform = EXCLUDED.platform,
+         "platformName" = EXCLUDED."platformName",
+         supported = EXCLUDED.supported,
+         deprecated = EXCLUDED.deprecated,
+         original = EXCLUDED.original,
+         coingecko = EXCLUDED.coingecko,
+         changelly = EXCLUDED.changelly,
+         coinmarketcap = EXCLUDED.coinmarketcap,
+         synchronized_at = now()`,
+      [
+        crypto._id,
+        crypto.type || null,
+        crypto.name || null,
+        crypto.symbol || null,
+        crypto.decimals ?? null,
+        crypto.address || null,
+        crypto.platform || null,
+        platformName,
+        supported,
+        deprecated,
+        crypto.original ?? null,
+        crypto.coingecko ? JSON.stringify(crypto.coingecko) : null,
+        crypto.changelly ? JSON.stringify(crypto.changelly) : null,
+        crypto.coinmarketcap ? JSON.stringify(crypto.coinmarketcap) : null,
+      ]
+    );
     console.log(`synced crypto: ${crypto._id}`);
   }
   console.log('crypto sync - finished');
@@ -66,25 +86,14 @@ async function updatePrices() {
   try {
     do {
       logs.push(`crypto update prices - load from db (chunk #${page}) - start`);
-      cryptos = await db.collection(COLLECTION)
-        .aggregate([{
-          $match: {
-            deprecated: false,
-          },
-        }, {
-          $group: {
-            _id: '$coingecko.id',
-          },
-        }, {
-          $sort: {
-            _id: 1,
-          },
-        }, {
-          $skip: PER_PAGE * page,
-        }, {
-          $limit: PER_PAGE,
-        }])
-        .toArray();
+      cryptos = await queryAll(
+        `SELECT DISTINCT coingecko->>'id' AS _id
+         FROM cryptos
+         WHERE deprecated = false AND coingecko IS NOT NULL
+         ORDER BY 1
+         LIMIT $1 OFFSET $2`,
+        [PER_PAGE, PER_PAGE * page]
+      );
       logs.push(`crypto update prices - load from db (chunk #${page}) - finish`);
 
       if (cryptos.length === 0) {
@@ -101,9 +110,9 @@ async function updatePrices() {
       });
       logs.push(`crypto update prices - load prices from coingecko (chunk #${page}) - finish`);
 
-      const operations = [];
       const updatedAt = new Date();
 
+      logs.push(`crypto update prices - update db (chunk #${page}) - start`);
       for (const coingeckoId in data) {
         const prices = {};
         const change = {};
@@ -112,25 +121,11 @@ async function updatePrices() {
           prices[currency] = data[coingeckoId][key];
           change[currency] = data[coingeckoId][`${key}_24h_change`];
         }
-        operations.push({
-          updateMany: {
-            filter: { 'coingecko.id': coingeckoId },
-            update: {
-              $set: {
-                prices,
-                change,
-                'updated_at.prices': updatedAt,
-              },
-            },
-          },
-        });
-        //console.log(`updated crypto prices coingecko id: ${coingeckoId}`);
-      }
-
-      logs.push(`crypto update prices - update db (chunk #${page}) - start`);
-      if (operations.length > 0) {
-        await db.collection(COLLECTION)
-          .bulkWrite(operations, { ordered: false });
+        await query(
+          `UPDATE cryptos SET prices = $1, change = $2, updated_at_prices = $3
+           WHERE coingecko->>'id' = $4`,
+          [JSON.stringify(prices), JSON.stringify(change), updatedAt, coingeckoId]
+        );
       }
       logs.push(`crypto update prices - update db (chunk #${page}) - finish`);
 
@@ -171,43 +166,23 @@ async function updateRank() {
 
     logs.push('crypto update rank - load from db - start');
     const updatedAt = new Date();
-    const cursor = db.collection(COLLECTION)
-      .aggregate([{
-        $match: {
-          deprecated: false,
-        },
-      }, {
-        $group: {
-          _id: '$coinmarketcap.id',
-        },
-      }, {
-        $sort: {
-          _id: 1,
-        },
-      }]);
-    const operations = [];
-
-    for await (const cmc of cursor) {
-      const info = map.find((item) => item.id === cmc._id);
-      operations.push({
-        updateMany: {
-          filter: { 'coinmarketcap.id': cmc._id },
-          update: {
-            $set: {
-              rank: (info && info.rank) || Infinity,
-              'updated_at.rank': updatedAt,
-            },
-          },
-        },
-      });
-      //console.log(`updated crypto rank coinmarketcap id: ${cmc._id}`);
-    }
+    const cmcIds = await queryAll(
+      `SELECT DISTINCT (coinmarketcap->>'id')::int AS _id
+       FROM cryptos
+       WHERE deprecated = false AND coinmarketcap IS NOT NULL
+       ORDER BY 1`
+    );
     logs.push('crypto update rank - load from db - finish');
 
     logs.push('crypto update rank - update db - start');
-    if (operations.length > 0) {
-      await db.collection(COLLECTION)
-        .bulkWrite(operations, { ordered: false });
+    for (const cmc of cmcIds) {
+      const info = map.find((item) => item.id === cmc._id);
+      const rank = (info && info.rank) || 2147483647; // max int instead of Infinity
+      await query(
+        `UPDATE cryptos SET rank = $1, updated_at_rank = $2
+         WHERE (coinmarketcap->>'id')::int = $3`,
+        [rank, updatedAt, cmc._id]
+      );
     }
     logs.push('crypto update rank - update db - finish');
   } finally {
@@ -217,159 +192,113 @@ async function updateRank() {
 }
 
 async function getAll(limit = 0) {
-  const cryptos = await db.collection(COLLECTION)
-    .find({
-      deprecated: false,
-    }, {
-      limit,
-      sort: {
-        rank: 1,
-      },
-      projection: {
-        synchronized_at: false,
-        updated_at: false,
-        deprecated: false,
-        prices: false,
-      },
-    })
-    .toArray();
-  return cryptos;
+  const sql = `SELECT _id, type, name, symbol, decimals, address, platform, "platformName",
+       supported, original, coingecko, changelly, coinmarketcap, rank, change
+     FROM cryptos
+     WHERE deprecated = false
+     ORDER BY rank ASC` + (limit > 0 ? ` LIMIT ${parseInt(limit)}` : '');
+  return queryAll(sql);
 }
 
 async function getAllV4(limit = 0) {
-  const cryptos = await db.collection(COLLECTION)
-    .find({}, {
-      limit,
-      sort: {
-        deprecated: 1,
-        rank: 1,
-        original: -1,
-        _id: 1,
-      },
-      projection: {
-        synchronized_at: false,
-        updated_at: false,
-        prices: false,
-        change: false,
-      },
-    })
-    .toArray();
-  return cryptos;
+  const sql = `SELECT _id, type, name, symbol, decimals, address, platform, "platformName",
+       supported, deprecated, original, coingecko, changelly, coinmarketcap, rank
+     FROM cryptos
+     ORDER BY deprecated ASC, rank ASC, original DESC NULLS LAST, _id ASC`
+     + (limit > 0 ? ` LIMIT ${parseInt(limit)}` : '');
+  return queryAll(sql);
 }
 
-function getTicker(id) {
-  return db.collection(COLLECTION)
-    .findOne({
-      _id: id,
-      // 7 days ago
-      'updated_at.prices': { $gte: new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)) },
-    }, {
-      projection: {
-        prices: 1,
-      },
-    });
+async function getTicker(id) {
+  return queryOne(
+    `SELECT _id, prices FROM cryptos
+     WHERE _id = $1 AND updated_at_prices >= $2`,
+    [id, new Date(Date.now() - (7 * 24 * 60 * 60 * 1000))]
+  );
 }
 
-function getTickers(ids) {
-  return db.collection(COLLECTION)
-    .find({
-      _id: { $in: ids },
-      // 7 days ago
-      'updated_at.prices': { $gte: new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)) },
-    }, {
-      sort: {
-        rank: 1,
-      },
-      projection: {
-        prices: 1,
-      },
-    })
-    .sort()
-    .toArray();
+async function getTickers(ids) {
+  const placeholders = ids.map((_, i) => `$${i + 1}`).join(', ');
+  const sevenDaysAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
+  return queryAll(
+    `SELECT _id, prices FROM cryptos
+     WHERE _id IN (${placeholders}) AND updated_at_prices >= $${ids.length + 1}
+     ORDER BY rank ASC`,
+    [...ids, sevenDaysAgo]
+  );
 }
 
 async function getTickersPublic(ids) {
-  const tickers = await db.collection(COLLECTION)
-    .find({
-      $or: ids.map((id) => {
-        const [asset, platform] = id.split('@');
-        if (['ethereum', 'binance-smart-chain', 'avalanche-c-chain', 'polygon'].includes(platform)
-          && /^0x[a-fA-F0-9]{40}$/.test(asset)) {
-          // ETH, BSC, AVAX, POLYGON address
-          return {
-            address: asset.toLowerCase(),
-            platform,
-          };
-        } else if (['tron'].includes(platform)
-          && /^T[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{33}$/.test(asset)) {
-          // Tron address
-          return {
-            address: asset,
-            platform,
-          };
-        } else if (['solana'].includes(platform)
-          && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(asset)) {
-          // Solana address
-          return {
-            address: asset,
-            platform,
-          };
-        } else {
-          return {
-            _id: id,
-          };
-        }
-      }),
-      // 7 days ago
-      'updated_at.prices': { $gte: new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)) },
-    }, {
-      projection: {
-        prices: 1,
-        address: 1,
-        platform: 1,
-      },
-    })
-    .toArray();
+  // Build OR conditions for address@platform or _id lookups
+  const conditions = [];
+  const params = [];
+  let paramIdx = 1;
+
+  const evmPlatforms = ['ethereum', 'binance-smart-chain', 'avalanche-c-chain', 'polygon'];
+
+  for (const id of ids) {
+    const [asset, platform] = id.split('@');
+    if (evmPlatforms.includes(platform) && /^0x[a-fA-F0-9]{40}$/.test(asset)) {
+      conditions.push(`(address = $${paramIdx} AND platform = $${paramIdx + 1})`);
+      params.push(asset.toLowerCase(), platform);
+      paramIdx += 2;
+    } else if (platform === 'tron'
+      && /^T[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{33}$/.test(asset)) {
+      conditions.push(`(address = $${paramIdx} AND platform = $${paramIdx + 1})`);
+      params.push(asset, platform);
+      paramIdx += 2;
+    } else if (platform === 'solana' && /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(asset)) {
+      conditions.push(`(address = $${paramIdx} AND platform = $${paramIdx + 1})`);
+      params.push(asset, platform);
+      paramIdx += 2;
+    } else {
+      conditions.push(`_id = $${paramIdx}`);
+      params.push(id);
+      paramIdx++;
+    }
+  }
+
+  if (conditions.length === 0) return [];
+
+  const sevenDaysAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
+  params.push(sevenDaysAgo);
+
+  const tickers = await queryAll(
+    `SELECT _id, prices, address, platform FROM cryptos
+     WHERE (${conditions.join(' OR ')}) AND updated_at_prices >= $${paramIdx}`,
+    params
+  );
 
   return ids.map((id) => {
     for (const ticker of tickers) {
       if (id === ticker._id) {
-        return {
-          _id: ticker._id,
-          prices: ticker.prices,
-        };
+        return { _id: ticker._id, prices: ticker.prices };
       } else if (id === `${ticker.address}@${ticker.platform}`) {
-        return {
-          _id: `${ticker.address}@${ticker.platform}`,
-          prices: ticker.prices,
-        };
+        return { _id: `${ticker.address}@${ticker.platform}`, prices: ticker.prices };
       }
     }
   }).filter(Boolean);
 }
 
 async function getMarket(coingeckoIds, currency) {
-  const data = await db.collection(COLLECTION)
-    .aggregate([{
-      $match: {
-        'coingecko.id': { $in: coingeckoIds },
-        // 7 days ago
-        'updated_at.prices': { $gte: new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)) },
-      },
-    }, {
-      $sort: { 'updated_at.prices': -1 },
-    }, {
-      $group: {
-        _id: '$coingecko.id',
-        prices: { $first: '$prices' },
-        change: { $first: '$change' },
-      },
-    }]).toArray();
+  const placeholders = coingeckoIds.map((_, i) => `$${i + 1}`).join(', ');
+  const sevenDaysAgo = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000));
+
+  const data = await queryAll(
+    `SELECT DISTINCT ON (coingecko->>'id')
+       coingecko->>'id' AS _id, prices, change
+     FROM cryptos
+     WHERE coingecko->>'id' IN (${placeholders})
+       AND updated_at_prices >= $${coingeckoIds.length + 1}
+     ORDER BY coingecko->>'id', updated_at_prices DESC`,
+    [...coingeckoIds, sevenDaysAgo]
+  );
+
   return data.map((item) => {
     return {
       id: item._id,
-      current_price: item.prices[currency],
-      price_change_percentage_24h_in_currency: item.change[currency],
+      current_price: item.prices?.[currency],
+      price_change_percentage_24h_in_currency: item.change?.[currency],
     };
   });
 }

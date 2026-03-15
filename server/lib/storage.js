@@ -1,12 +1,9 @@
-import db from './db.js';
-
-const COLLECTION = 'storage';
+import { query, queryOne, queryAll } from './pg.js';
 
 async function getStorage(device, storageName) {
   const id = `${device.wallet._id}_${storageName}`;
-  const doc = await db.collection(COLLECTION)
-    .findOne({ _id: id });
-  return doc && doc.storage.buffer.toString('base64');
+  const row = await queryOne('SELECT storage FROM storage WHERE _id = $1', [id]);
+  return row ? row.storage.toString('base64') : null;
 }
 
 async function getStorages(device, storageNames) {
@@ -14,21 +11,26 @@ async function getStorages(device, storageNames) {
   const ids = storageNames.map((storageName) => {
     return `${device.wallet._id}_${storageName}`;
   });
-  const docs = await db.collection(COLLECTION)
-    .find({ _id: { $in: ids } })
-    .toArray();
-  return docs.map((doc) => {
+  const placeholders = ids.map((_, i) => `$${i + 1}`).join(', ');
+  const rows = await queryAll(
+    `SELECT _id, storage FROM storage WHERE _id IN (${placeholders})`,
+    ids
+  );
+  return rows.map((row) => {
     return {
-      _id: doc._id.replace(`${device.wallet._id}_`, ''),
-      data: doc.storage.buffer.toString('base64'),
+      _id: row._id.replace(`${device.wallet._id}_`, ''),
+      data: row.storage.toString('base64'),
     };
   });
 }
 
 async function setStorage(device, storageName, storage) {
   const id = `${device.wallet._id}_${storageName}`;
-  await db.collection(COLLECTION)
-    .updateOne({ _id: id }, { $set: { storage: Buffer.from(storage, 'base64') } }, { upsert: true });
+  await query(
+    `INSERT INTO storage (_id, storage) VALUES ($1, $2)
+     ON CONFLICT (_id) DO UPDATE SET storage = EXCLUDED.storage`,
+    [id, Buffer.from(storage, 'base64')]
+  );
   return storage;
 }
 

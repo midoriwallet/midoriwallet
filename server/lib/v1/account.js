@@ -1,66 +1,55 @@
 import crypto from 'crypto';
-import db from '../db.js';
+import { query, queryOne } from '../pg.js';
 
-function isExist(walletId) {
-  const collection = db.collection('users');
-  return collection
-    .find({ _id: walletId }, { projection: { _id: 1 } })
-    .limit(1)
-    .next().then((user) => {
-      if (!user) return false;
-      return true;
-    });
+async function isExist(walletId) {
+  const row = await queryOne('SELECT _id FROM users WHERE _id = $1', [walletId]);
+  return !!row;
 }
 
-function remove(id) {
-  return Promise.all([
-    db.collection('users').deleteOne({ _id: id }),
-    db.collection('details').deleteOne({ _id: id }),
+async function remove(id) {
+  await Promise.all([
+    query('DELETE FROM users WHERE _id = $1', [id]),
+    query('DELETE FROM details WHERE _id = $1', [id]),
   ]);
 }
 
-function getDetails(walletId) {
-  const collection = db.collection('details');
-  return collection
-    .find({ _id: walletId })
-    .limit(1)
-    .next().then((doc) => {
-      if (!doc) return doc;
-      return doc.data;
-    });
+async function getDetails(walletId) {
+  const doc = await queryOne('SELECT data FROM details WHERE _id = $1', [walletId]);
+  if (!doc) return doc;
+  return doc.data;
 }
 
-function saveDetails(walletId, data) {
-  const collection = db.collection('details');
-  return collection.updateOne({ _id: walletId }, { $set: { data } }, { upsert: true }).then(() => {
-    return data;
-  });
+async function saveDetails(walletId, data) {
+  await query(
+    `INSERT INTO details (_id, data) VALUES ($1, $2)
+     ON CONFLICT (_id) DO UPDATE SET data = EXCLUDED.data`,
+    [walletId, JSON.stringify(data)]
+  );
+  return data;
 }
 
-function setUsername(walletId, username) {
-  const collection = db.collection('users');
-  return collection
-    .find({ _id: walletId })
-    .limit(1)
-    .next().then((user) => {
-      if (!user) {
-        return Promise.reject({ error: 'error getting doc' });
-      }
-      username = username.toLowerCase().replace(/[^a-z0-9-]/g, '').substr(0, 63);
-      const usernameSha = crypto.createHash('sha1')
-        .update(username + process.env.USERNAME_SALT)
-        .digest('hex');
-      return db.collection('details').updateOne({ _id: user._id }, {
-        $set: { username_sha: usernameSha },
-      }, { upsert: true }).then(() => {
-        return username;
-      }).catch((error) => {
-        if (error && error.message && error.message.match(/E11000 duplicate key error/)) {
-          return Promise.reject({ error: 'username_exists' });
-        }
-        return Promise.reject(error);
-      });
-    });
+async function setUsername(walletId, username) {
+  const user = await queryOne('SELECT _id FROM users WHERE _id = $1', [walletId]);
+  if (!user) {
+    return Promise.reject({ error: 'error getting doc' });
+  }
+  username = username.toLowerCase().replace(/[^a-z0-9-]/g, '').substr(0, 63);
+  const usernameSha = crypto.createHash('sha1')
+    .update(username + process.env.USERNAME_SALT)
+    .digest('hex');
+  try {
+    await query(
+      `INSERT INTO details (_id, username_sha) VALUES ($1, $2)
+       ON CONFLICT (_id) DO UPDATE SET username_sha = EXCLUDED.username_sha`,
+      [user._id, usernameSha]
+    );
+    return username;
+  } catch (error) {
+    if (error.code === '23505') { // unique_violation
+      return Promise.reject({ error: 'username_exists' });
+    }
+    return Promise.reject(error);
+  }
 }
 
 export default {

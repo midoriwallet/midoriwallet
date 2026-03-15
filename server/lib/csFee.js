@@ -1,25 +1,22 @@
 import Big from 'big.js';
 import createError from 'http-errors';
-import db from './db.js';
+import { queryOne } from './pg.js';
 
 async function getCsFee(cryptoId) {
-  const ticker = await db.collection('cryptos')
-    .findOne({
-      _id: cryptoId,
-    }, {
-      projection: {
-        prices: 1,
-        decimals: 1,
-      },
-    });
-  const csFee = await db.collection('cs_fee')
-    .findOne({ _id: cryptoId });
+  const ticker = await queryOne(
+    'SELECT prices, decimals FROM cryptos WHERE _id = $1',
+    [cryptoId]
+  );
+  const csFee = await queryOne(
+    'SELECT * FROM cs_fee WHERE _id = $1',
+    [cryptoId]
+  );
 
   if (!csFee || !ticker) {
     throw createError(404, 'CS fee was not found');
   }
 
-  const rate = ticker['prices']['USD'];
+  const rate = ticker.prices['USD'];
 
   return {
     fee: csFee.fee,
@@ -33,8 +30,10 @@ async function getCsFee(cryptoId) {
 }
 
 async function getCsFeeV4(cryptoId) {
-  const csFee = await db.collection('cs_fee')
-    .findOne({ _id: cryptoId });
+  const csFee = await queryOne(
+    'SELECT * FROM cs_fee WHERE _id = $1',
+    [cryptoId]
+  );
   if (!csFee) {
     throw createError(404, 'CS fee was not found');
   }
@@ -49,8 +48,10 @@ async function getCsFeeV4(cryptoId) {
 }
 
 async function getCsFeeAddressesV4(cryptoId) {
-  const csFee = await db.collection('cs_fee')
-    .findOne({ _id: cryptoId });
+  const csFee = await queryOne(
+    'SELECT addresses FROM cs_fee WHERE _id = $1',
+    [cryptoId]
+  );
   if (!csFee) {
     throw createError(404, 'CS fee was not found');
   }

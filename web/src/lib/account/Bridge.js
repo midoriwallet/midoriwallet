@@ -3,30 +3,27 @@ import { ref } from 'vue';
 export default class Bridge {
   #account;
   #request;
-  #customer;
   #_customerRef = ref(null);
   #supportedCurrencies;
 
-  get #customer() { return this.#_customerRef.value; }
-  set #customer(value) { this.#_customerRef.value = value; }
-
   get customer() {
-    return this.#customer;
+    return this.#_customerRef.value;
   }
 
   get isRegistered() {
-    return !!this.#customer;
+    return !!this.#_customerRef.value;
   }
 
   get isApproved() {
-  if (!this.#customer) return false;
-  // Cuando viene de GET /customer → tiene isApproved booleano
-  if (typeof this.#customer.isApproved === 'boolean') {
-    return this.#customer.isApproved;
-  }
-  // Cuando viene de refreshKycStatus → tiene kycStatus y tosStatus
-  return this.#customer.kycStatus === 'approved' &&
-         this.#customer.tosStatus === 'approved';
+    const customer = this.#_customerRef.value;
+    if (!customer) return false;
+    // Cuando viene de GET /customer → tiene isApproved booleano
+    if (typeof customer.isApproved === 'boolean') {
+      return customer.isApproved;
+    }
+    // Cuando viene de refreshKycStatus → tiene kycStatus y tosStatus
+    return customer.kycStatus === 'approved' &&
+           customer.tosStatus === 'approved';
   }
 
   get supportedCurrencies() {
@@ -57,13 +54,13 @@ export default class Bridge {
     }
 
     try {
-      this.#customer = await this.#request({
+      this.#_customerRef.value = await this.#request({
         url: '/api/v4/bridge/customer',
         method: 'get',
         seed: 'device',
       });
     } catch (err) {
-      this.#customer = null;
+      this.#_customerRef.value = null;
     }
   }
 
@@ -74,7 +71,7 @@ export default class Bridge {
       data: { fullName, email, type },
       seed: 'device',
     });
-    this.#customer = result;
+    this.#_customerRef.value = result;
     return result;
   }
 
@@ -84,7 +81,7 @@ export default class Bridge {
       method: 'get',
       seed: 'device',
     });
-    this.#customer = result;
+    this.#_customerRef.value = result;
     return result;
   }
 

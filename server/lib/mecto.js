@@ -1,28 +1,39 @@
 import createError from 'http-errors';
 import crypto from 'crypto';
-import db from './db.js';
+import { query, queryAll } from './pg.js';
 
-const SEARCH_RADIUS = 1000;
+const SEARCH_RADIUS_KM = 1; // 1 km (was 1000 meters)
 const SEARCH_LIMIT = 15;
-const COLLECTION = 'mecto';
+const EARTH_RADIUS_KM = 6371;
 
-async function search(device, query, legacy = false) {
-  const { lon, lat } = query;
-  const collection = db.collection(COLLECTION);
+// Haversine bounding box + distance SQL
+const HAVERSINE_DIST = `
+  (${EARTH_RADIUS_KM} * acos(
+    LEAST(1.0, cos(radians($2)) * cos(radians(lat)) *
+    cos(radians(lon) - radians($3)) +
+    sin(radians($2)) * sin(radians(lat)))
+  ))`;
 
-  const docs = await collection.find({
-    _id: { $ne: device._id },
-    geometry: {
-      $nearSphere: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [lon, lat],
-        },
-        $minDistance: 0,
-        $maxDistance: SEARCH_RADIUS,
-      },
-    },
-  }).limit(SEARCH_LIMIT).toArray();
+async function _searchNearby(deviceId, lon, lat) {
+  const degDelta = (SEARCH_RADIUS_KM / EARTH_RADIUS_KM) * (180.0 / Math.PI);
+  const lonDelta = degDelta / Math.cos(lat * Math.PI / 180);
+
+  return queryAll(
+    `SELECT address, username, "avatarId", ${HAVERSINE_DIST} AS distance
+     FROM mecto
+     WHERE _id != $1
+       AND lat BETWEEN $2 - $4 AND $2 + $4
+       AND lon BETWEEN $3 - $5 AND $3 + $5
+       AND ${HAVERSINE_DIST} <= $6
+     ORDER BY distance ASC
+     LIMIT $7`,
+    [deviceId, lat, lon, degDelta, lonDelta, SEARCH_RADIUS_KM, SEARCH_LIMIT]
+  );
+}
+
+async function search(device, qry, legacy = false) {
+  const { lon, lat } = qry;
+  const docs = await _searchNearby(device._id, lon, lat);
 
   return docs.map(({ address, username, avatarId }) => {
     if (legacy) {
@@ -32,23 +43,9 @@ async function search(device, query, legacy = false) {
   });
 }
 
-async function searchV4(device, query) {
-  const { lon, lat } = query;
-  const collection = db.collection(COLLECTION);
-
-  const docs = await collection.find({
-    _id: { $ne: device._id },
-    geometry: {
-      $nearSphere: {
-        $geometry: {
-          type: 'Point',
-          coordinates: [lon, lat],
-        },
-        $minDistance: 0,
-        $maxDistance: SEARCH_RADIUS,
-      },
-    },
-  }).limit(SEARCH_LIMIT).toArray();
+async function searchV4(device, qry) {
+  const { lon, lat } = qry;
+  const docs = await _searchNearby(device._id, lon, lat);
 
   return docs.map(({ address, username, avatarId }) => {
     return { address, username, avatar: avatarId };
@@ -71,17 +68,18 @@ async function save(device, body, legacy = false) {
       avatarId = `identicon:${hash}`;
     }
   }
-  await db.collection(COLLECTION).updateOne({ _id: device._id }, { $set: {
-    username,
-    avatarId,
-    address,
-    timestamp: new Date(),
-    geometry: {
-      type: 'Point',
-      coordinates: [lon, lat],
-    } },
-  }, { upsert: true });
-
+  await query(
+    `INSERT INTO mecto (_id, username, "avatarId", address, lon, lat, timestamp)
+     VALUES ($1, $2, $3, $4, $5, $6, now())
+     ON CONFLICT (_id) DO UPDATE SET
+       username = EXCLUDED.username,
+       "avatarId" = EXCLUDED."avatarId",
+       address = EXCLUDED.address,
+       lon = EXCLUDED.lon,
+       lat = EXCLUDED.lat,
+       timestamp = now()`,
+    [device._id, username, avatarId, address, lon, lat]
+  );
   return true;
 }
 
@@ -91,23 +89,24 @@ async function saveV4(device, body) {
   if (hash !== device.wallet.username_sha) {
     throw createError(400, 'Invalid username');
   }
-  await db.collection(COLLECTION).updateOne({ _id: device._id }, { $set: {
-    username,
-    avatarId: avatar,
-    address,
-    timestamp: new Date(),
-    geometry: {
-      type: 'Point',
-      coordinates: [lon, lat],
-    } },
-  }, { upsert: true });
-
+  await query(
+    `INSERT INTO mecto (_id, username, "avatarId", address, lon, lat, timestamp)
+     VALUES ($1, $2, $3, $4, $5, $6, now())
+     ON CONFLICT (_id) DO UPDATE SET
+       username = EXCLUDED.username,
+       "avatarId" = EXCLUDED."avatarId",
+       address = EXCLUDED.address,
+       lon = EXCLUDED.lon,
+       lat = EXCLUDED.lat,
+       timestamp = now()`,
+    [device._id, username, avatar, address, lon, lat]
+  );
   return true;
 }
 
 async function remove(device) {
-  const res = await db.collection(COLLECTION).deleteOne({ _id: device._id });
-  if (res.deletedCount !== 1) {
+  const { rowCount } = await query('DELETE FROM mecto WHERE _id = $1', [device._id]);
+  if (rowCount !== 1) {
     throw createError(404, 'Unknown mecto');
   }
 }

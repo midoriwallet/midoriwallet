@@ -1,6 +1,6 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import db from './db.js';
+import { query, queryOne, queryAll } from './pg.js';
 import semver from 'semver';
 
 const github = axios.create({
@@ -169,35 +169,30 @@ async function sync() {
   if (!updates.length) {
     return;
   }
-  await db.collection('releases')
-    .bulkWrite(updates.map((update) => {
-      return {
-        updateOne: {
-          filter: {
-            distribution: update.distribution,
-            arch: update.arch,
-            app: update.app,
-          },
-          update: {
-            $set: update,
-          },
-          upsert: true,
-        },
-      };
-    }), { ordered: false });
+  for (const update of updates) {
+    await query(
+      `INSERT INTO releases (distribution, arch, app, name, version, url, content)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (distribution, arch, app) DO UPDATE SET
+         name = EXCLUDED.name,
+         version = EXCLUDED.version,
+         url = EXCLUDED.url,
+         content = EXCLUDED.content`,
+      [update.distribution, update.arch, update.app, update.name, update.version, update.url, update.content || null]
+    );
+  }
   console.timeEnd('github sync');
 }
 
 async function getUpdates() {
-  return db.collection('releases').find({}).toArray();
+  return queryAll('SELECT * FROM releases');
 }
 
 async function getUpdate(distribution, arch, app) {
-  return db.collection('releases').findOne({
-    distribution,
-    arch,
-    app,
-  });
+  return queryOne(
+    'SELECT * FROM releases WHERE distribution = $1 AND arch = $2 AND app = $3',
+    [distribution, arch, app]
+  );
 }
 
 async function getLatest() {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import createError from 'http-errors';
 import crypto from 'crypto';
-import db from './db.js';
+import { query, queryOne, queryAll } from './pg.js';
 
 const BRIDGE_API_URL = 'https://api.bridge.xyz/v0';
 const BRIDGE_API_KEY = process.env.BRIDGE_API_KEY;
@@ -70,9 +70,9 @@ function validateAddress(address) {
 // ─── Customer Management ────────────────────────────────────────────────────
 
 async function createKycLink(walletId, { fullName, email, type }) {
-  const collection = db.collection('bridge_customers');
-
-  const existing = await collection.findOne({ wallet_id: walletId });
+  const existing = await queryOne(
+    'SELECT * FROM bridge_customers WHERE wallet_id = $1', [walletId]
+  );
   if (existing) {
     return {
       customerId: existing.bridge_customer_id,
@@ -94,21 +94,16 @@ async function createKycLink(walletId, { fullName, email, type }) {
     'Idempotency-Key': generateIdempotencyKey(),
   });
 
-  const record = {
-    wallet_id: walletId,
-    bridge_customer_id: result.customer_id,
-    kyc_link_id: result.id,
-    full_name: fullName,
-    email,
-    kyc_link: result.kyc_link,
-    tos_link: result.tos_link,
-    kyc_status: result.kyc_status || 'not_started',
-    tos_status: result.tos_status || 'pending',
-    created_at: new Date(),
-    updated_at: new Date(),
-  };
-
-  await collection.insertOne(record);
+  await query(
+    `INSERT INTO bridge_customers
+       (wallet_id, bridge_customer_id, kyc_link_id, full_name, email, kyc_link, tos_link, kyc_status, tos_status, created_at, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())`,
+    [
+      walletId, result.customer_id, result.id, fullName, email,
+      result.kyc_link, result.tos_link,
+      result.kyc_status || 'not_started', result.tos_status || 'pending',
+    ]
+  );
 
   return {
     customerId: result.customer_id,
@@ -120,28 +115,26 @@ async function createKycLink(walletId, { fullName, email, type }) {
 }
 
 async function refreshKycStatus(walletId) {
-  const collection = db.collection('bridge_customers');
-  const record = await collection.findOne({ wallet_id: walletId });
+  const record = await queryOne(
+    'SELECT * FROM bridge_customers WHERE wallet_id = $1', [walletId]
+  );
   if (!record) {
     throw createError(404, 'No KYC link found. Please register first.');
   }
 
   const result = await request('get', `/kyc_links/${record.kyc_link_id}`);
 
-  const update = {
-    kyc_status: result.kyc_status,
-    tos_status: result.tos_status,
-    updated_at: new Date(),
-  };
+  const newCustomerId = (result.customer_id && result.customer_id !== record.bridge_customer_id)
+    ? result.customer_id : record.bridge_customer_id;
 
-  if (result.customer_id && result.customer_id !== record.bridge_customer_id) {
-    update.bridge_customer_id = result.customer_id;
-  }
-
-  await collection.updateOne({ _id: record._id }, { $set: update });
+  await query(
+    `UPDATE bridge_customers SET kyc_status = $1, tos_status = $2, bridge_customer_id = $3, updated_at = now()
+     WHERE id = $4`,
+    [result.kyc_status, result.tos_status, newCustomerId, record.id]
+  );
 
   return {
-    customerId: result.customer_id || record.bridge_customer_id,
+    customerId: newCustomerId,
     kycStatus: result.kyc_status,
     tosStatus: result.tos_status,
     kycLink: record.kyc_link,
@@ -152,7 +145,9 @@ async function refreshKycStatus(walletId) {
 }
 
 async function getCustomer(walletId) {
-  const record = await db.collection('bridge_customers').findOne({ wallet_id: walletId });
+  const record = await queryOne(
+    'SELECT * FROM bridge_customers WHERE wallet_id = $1', [walletId]
+  );
   if (!record) {
     throw createError(404, 'Bridge customer not found. Please register first.');
   }
@@ -201,28 +196,27 @@ async function createVirtualAccount(walletId, { currency, destinationPaymentRail
     { 'Idempotency-Key': generateIdempotencyKey() }
   );
 
-  await db.collection('bridge_virtual_accounts').insertOne({
-    wallet_id: walletId,
-    bridge_customer_id: customer.bridge_customer_id,
-    bridge_virtual_account_id: result.id,
-    currency: currency.toLowerCase(),
-    status: result.status,
-    source_deposit_instructions: result.source_deposit_instructions,
-    destination: result.destination,
-    developer_fee_percent: result.developer_fee_percent,
-    created_at: new Date(),
-    updated_at: new Date(),
-  });
+  await query(
+    `INSERT INTO bridge_virtual_accounts
+       (wallet_id, bridge_customer_id, bridge_virtual_account_id, currency, status,
+        source_deposit_instructions, destination, developer_fee_percent, created_at, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,now(),now())`,
+    [
+      walletId, customer.bridge_customer_id, result.id, currency.toLowerCase(),
+      result.status, JSON.stringify(result.source_deposit_instructions),
+      JSON.stringify(result.destination), result.developer_fee_percent,
+    ]
+  );
 
   return result;
 }
 
 async function getVirtualAccounts(walletId) {
   const customer = await getCustomer(walletId);
-  const accounts = await db.collection('bridge_virtual_accounts')
-    .find({ wallet_id: walletId })
-    .sort({ created_at: -1 })
-    .toArray();
+  const accounts = await queryAll(
+    'SELECT * FROM bridge_virtual_accounts WHERE wallet_id = $1 ORDER BY created_at DESC',
+    [walletId]
+  );
 
   // Sync status from Bridge API for active accounts
   const updated = [];
@@ -233,9 +227,9 @@ async function getVirtualAccounts(walletId) {
         `/customers/${customer.bridge_customer_id}/virtual_accounts/${account.bridge_virtual_account_id}`
       );
       if (remote.status !== account.status) {
-        await db.collection('bridge_virtual_accounts').updateOne(
-          { _id: account._id },
-          { $set: { status: remote.status, updated_at: new Date() } }
+        await query(
+          'UPDATE bridge_virtual_accounts SET status = $1, updated_at = now() WHERE id = $2',
+          [remote.status, account.id]
         );
         account.status = remote.status;
       }
@@ -260,10 +254,10 @@ async function getVirtualAccount(walletId, virtualAccountId) {
   validateUUID(virtualAccountId, 'virtualAccountId');
   const customer = await getCustomer(walletId);
 
-  const account = await db.collection('bridge_virtual_accounts').findOne({
-    wallet_id: walletId,
-    bridge_virtual_account_id: virtualAccountId,
-  });
+  const account = await queryOne(
+    'SELECT * FROM bridge_virtual_accounts WHERE wallet_id = $1 AND bridge_virtual_account_id = $2',
+    [walletId, virtualAccountId]
+  );
 
   if (!account) {
     throw createError(404, 'Virtual account not found');
@@ -274,9 +268,9 @@ async function getVirtualAccount(walletId, virtualAccountId) {
     `/customers/${customer.bridge_customer_id}/virtual_accounts/${virtualAccountId}`
   );
 
-  await db.collection('bridge_virtual_accounts').updateOne(
-    { _id: account._id },
-    { $set: { status: remote.status, updated_at: new Date() } }
+  await query(
+    'UPDATE bridge_virtual_accounts SET status = $1, updated_at = now() WHERE id = $2',
+    [remote.status, account.id]
   );
 
   return {
@@ -294,10 +288,10 @@ async function getVirtualAccountHistory(walletId, virtualAccountId) {
   validateUUID(virtualAccountId, 'virtualAccountId');
   const customer = await getCustomer(walletId);
 
-  const account = await db.collection('bridge_virtual_accounts').findOne({
-    wallet_id: walletId,
-    bridge_virtual_account_id: virtualAccountId,
-  });
+  const account = await queryOne(
+    'SELECT * FROM bridge_virtual_accounts WHERE wallet_id = $1 AND bridge_virtual_account_id = $2',
+    [walletId, virtualAccountId]
+  );
 
   if (!account) {
     throw createError(404, 'Virtual account not found');
@@ -351,19 +345,18 @@ async function createTransfer(walletId, {
     'Idempotency-Key': generateIdempotencyKey(),
   });
 
-  await db.collection('bridge_transfers').insertOne({
-    wallet_id: walletId,
-    bridge_customer_id: customer.bridge_customer_id,
-    bridge_transfer_id: result.id,
-    state: result.state,
-    source: result.source,
-    destination: result.destination,
-    source_deposit_instructions: result.source_deposit_instructions,
-    amount: amount || null,
-    flexible_amount: flexibleAmount || false,
-    created_at: new Date(),
-    updated_at: new Date(),
-  });
+  await query(
+    `INSERT INTO bridge_transfers
+       (wallet_id, bridge_customer_id, bridge_transfer_id, state, source, destination,
+        source_deposit_instructions, amount, flexible_amount, created_at, updated_at)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())`,
+    [
+      walletId, customer.bridge_customer_id, result.id, result.state,
+      JSON.stringify(result.source), JSON.stringify(result.destination),
+      JSON.stringify(result.source_deposit_instructions),
+      amount || null, flexibleAmount || false,
+    ]
+  );
 
   return {
     id: result.id,
@@ -378,10 +371,10 @@ async function createTransfer(walletId, {
 
 async function getTransfer(walletId, transferId) {
   validateUUID(transferId, 'transferId');
-  const account = await db.collection('bridge_transfers').findOne({
-    wallet_id: walletId,
-    bridge_transfer_id: transferId,
-  });
+  const account = await queryOne(
+    'SELECT * FROM bridge_transfers WHERE wallet_id = $1 AND bridge_transfer_id = $2',
+    [walletId, transferId]
+  );
 
   if (!account) {
     throw createError(404, 'Transfer not found');
@@ -389,9 +382,9 @@ async function getTransfer(walletId, transferId) {
 
   const remote = await request('get', `/transfers/${transferId}`);
 
-  await db.collection('bridge_transfers').updateOne(
-    { _id: account._id },
-    { $set: { state: remote.state, updated_at: new Date() } }
+  await query(
+    'UPDATE bridge_transfers SET state = $1, updated_at = now() WHERE id = $2',
+    [remote.state, account.id]
   );
 
   return {
@@ -407,11 +400,10 @@ async function getTransfer(walletId, transferId) {
 }
 
 async function getTransfers(walletId) {
-  const transfers = await db.collection('bridge_transfers')
-    .find({ wallet_id: walletId })
-    .sort({ created_at: -1 })
-    .limit(50)
-    .toArray();
+  const transfers = await queryAll(
+    'SELECT * FROM bridge_transfers WHERE wallet_id = $1 ORDER BY created_at DESC LIMIT 50',
+    [walletId]
+  );
 
   return transfers.map((t) => ({
     id: t.bridge_transfer_id,

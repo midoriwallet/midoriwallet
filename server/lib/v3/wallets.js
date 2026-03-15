@@ -1,6 +1,5 @@
 import createError from 'http-errors';
 import crypto from 'crypto';
-import db from '../db.js';
 import fs from 'fs/promises';
 import {
   generateAssertionOptions,
@@ -12,9 +11,9 @@ import {
   generateChallenge,
   generateUser,
 } from '../utils.js';
+import { query, queryOne, queryAll, transaction } from '../pg.js';
 const pkg = JSON.parse(await fs.readFile(new URL('../../package.json', import.meta.url)));
 
-const COLLECTION = 'wallets';
 const MAX_FAILED_ATTEMPTS = 3;
 const MAX_DEVICES = 100;
 const MAX_AUTHENTICATORS = 10;
@@ -50,76 +49,62 @@ const fidoAlgorithmIDs = [
 
 
 async function register(walletId, deviceId, pinHash) {
-  const wallets = db.collection(COLLECTION);
-
   const publicToken = crypto.randomBytes(64).toString('hex');
   const privateToken = crypto.randomBytes(64).toString('hex');
 
-  await wallets.updateOne({
-    _id: walletId,
-    'devices._id': { $ne: deviceId },
-  }, {
-    $setOnInsert: {
-      authenticators: [],
-      details: null,
-      settings: {
-        '1fa_wallet': true,
-      },
-    },
-    $push: {
-      devices: {
-        $each: [{
-          _id: deviceId,
-          pin_hash: pinHash,
-          authenticator: null,
-          device_token: publicToken,
-          wallet_token: privateToken,
-          failed_attempts: {},
-          challenges: {},
-          date: new Date(),
-        }],
-        $sort: { date: -1 },
-        $slice: MAX_DEVICES,
-      },
-    },
-  }, {
-    upsert: true,
-  }).catch((err) => {
-    if (err.name === 'MongoError' && err.code === 11000) {
-      throw createError(400, err.message, { expose: false });
-    }
-    throw err;
-  });
+  return transaction(async (client) => {
+    await client.query(
+      `INSERT INTO wallets (_id, settings)
+       VALUES ($1, '{"1fa_wallet": true}')
+       ON CONFLICT (_id) DO NOTHING`,
+      [walletId]
+    );
 
-  return {
-    publicToken,
-    privateToken,
-  };
+    const existing = await client.query('SELECT 1 FROM devices WHERE _id = $1', [deviceId]);
+    if (existing.rows.length > 0) {
+      throw createError(400, 'Device already registered', { expose: false });
+    }
+
+    const { rows: [{ count }] } = await client.query(
+      'SELECT COUNT(*)::int AS count FROM devices WHERE wallet_id = $1', [walletId]
+    );
+    if (count >= MAX_DEVICES) {
+      await client.query(
+        `DELETE FROM devices WHERE _id IN (
+           SELECT _id FROM devices WHERE wallet_id = $1 ORDER BY date ASC LIMIT $2
+         )`,
+        [walletId, count - MAX_DEVICES + 1]
+      );
+    }
+
+    await client.query(
+      `INSERT INTO devices (_id, wallet_id, pin_hash, device_token, wallet_token, failed_attempts, challenges, date)
+       VALUES ($1, $2, $3, $4, $5, '{}', '{}', now())`,
+      [deviceId, walletId, pinHash, publicToken, privateToken]
+    );
+
+    return { publicToken, privateToken };
+  });
 }
 
 async function logoutOthers(device) {
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $pull: { devices: { _id: { $ne: device._id } } },
-  });
+  await query(
+    'DELETE FROM devices WHERE wallet_id = $1 AND _id != $2',
+    [device.wallet._id, device._id]
+  );
 }
 
 async function pinVerify(device, pinHash, type) {
   if (device.pin_hash !== pinHash) {
     await _unsuccessfulAuth(device, type, 'pin');
   }
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      [`devices.$.failed_attempts.${type}_pin`]: 0,
-      [`devices.$.failed_attempts.${type}_platform`]: 0,
-      'devices.$.date': new Date(),
-    },
-  });
+  await query(
+    `UPDATE devices SET
+       failed_attempts = jsonb_set(jsonb_set(failed_attempts, $1, '0'::jsonb), $2, '0'::jsonb),
+       date = now()
+     WHERE _id = $3`,
+    [`{${type}_pin}`, `{${type}_platform}`, device._id]
+  );
 }
 
 async function platformOptions(device, type) {
@@ -129,7 +114,6 @@ async function platformOptions(device, type) {
       allowCredentials: [_mapAuthenticator(device.authenticator)],
     });
     await _setChallenge(device, options.challenge, type, 'platform');
-
     return options;
   } else {
     throw createError(400, 'No authenticator');
@@ -151,18 +135,19 @@ async function platformVerify(device, body, type) {
   if (!verified) {
     await _unsuccessfulAuth(device, type, 'platform');
   }
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      [`devices.$.failed_attempts.${type}_pin`]: 0,
-      [`devices.$.failed_attempts.${type}_platform`]: 0,
-      [`devices.$.challenges.${type}_platform`]: null,
-      'devices.$.authenticator.counter': authenticatorInfo.counter,
-      'devices.$.date': new Date(),
-    },
-  });
+  const updatedAuth = { ...device.authenticator, counter: authenticatorInfo.counter };
+  await query(
+    `UPDATE devices SET
+       failed_attempts = jsonb_set(jsonb_set(failed_attempts, $1, '0'::jsonb), $2, '0'::jsonb),
+       challenges = jsonb_set(challenges, $3, 'null'::jsonb),
+       authenticator = $4,
+       date = now()
+     WHERE _id = $5`,
+    [
+      `{${type}_pin}`, `{${type}_platform}`, `{${type}_platform}`,
+      JSON.stringify(updatedAuth), device._id,
+    ]
+  );
 }
 
 async function crossplatformOptions(device, type) {
@@ -172,9 +157,7 @@ async function crossplatformOptions(device, type) {
       challenge: generateChallenge(),
       allowCredentials: wallet.authenticators.map(_mapAuthenticator),
     });
-
     await _setChallenge(device, options.challenge, type, 'crossplatform');
-
     return options;
   } else {
     throw createError(400, 'No authenticator');
@@ -185,7 +168,7 @@ async function crossplatformVerify(device, body, type) {
   const { wallet } = device;
 
   const authenticator = wallet.authenticators.find(authenticator =>
-    authenticator.credentialID === body.id
+    authenticator.credential_id === body.id
   );
   if (!authenticator) {
     throw createError(400, 'Incorrect authenticator');
@@ -197,31 +180,25 @@ async function crossplatformVerify(device, body, type) {
     expectedRPID: RP_ID,
     authenticator: {
       ...authenticator,
-      publicKey: authenticator.credentialPublicKey,
+      publicKey: authenticator.credential_public_key,
     },
   });
 
   if (!verified) {
     await _unsuccessfulAuth(device, type, 'crossplatform');
   }
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      [`devices.$.failed_attempts.${type}_crossplatform`]: 0,
-      [`devices.$.challenges.${type}_crossplatform`]: null,
-      'devices.$.date': new Date(),
-    },
-  });
-  await wallets.updateOne({
-    _id: device.wallet._id,
-    'authenticators.credentialID': authenticatorInfo.base64CredentialID,
-  }, {
-    $set: {
-      'authenticators.$.counter': authenticatorInfo.counter,
-    },
-  });
+  await query(
+    `UPDATE devices SET
+       failed_attempts = jsonb_set(jsonb_set(failed_attempts, $1, '0'::jsonb), $2, '0'::jsonb),
+       challenges = jsonb_set(challenges, $3, 'null'::jsonb),
+       date = now()
+     WHERE _id = $4`,
+    [`{${type}_crossplatform}`, `{${type}_crossplatform}`, `{${type}_crossplatform}`, device._id]
+  );
+  await query(
+    'UPDATE authenticators SET counter = $1 WHERE wallet_id = $2 AND credential_id = $3',
+    [authenticatorInfo.counter, device.wallet._id, authenticatorInfo.base64CredentialID]
+  );
 }
 
 // Attestation
@@ -242,7 +219,6 @@ async function platformAttestationOptions(device) {
     },
   });
   await _setChallenge(device, options.challenge, 'attestation', 'platform');
-
   return options;
 }
 
@@ -256,21 +232,20 @@ async function platformAttestationVerify(device, body) {
   if (!verified) {
     throw createError(400, 'Attestation response not verified');
   }
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      'devices.$.challenges.attestation_platform': null,
-      'devices.$.authenticator': {
-        credentialID: authenticatorInfo.base64CredentialID,
-        credentialPublicKey: authenticatorInfo.base64PublicKey,
-        counter: authenticatorInfo.counter,
-        transports: body.transports,
-        date: new Date(),
-      },
-    },
-  });
+  const newAuth = {
+    credentialID: authenticatorInfo.base64CredentialID,
+    credentialPublicKey: authenticatorInfo.base64PublicKey,
+    counter: authenticatorInfo.counter,
+    transports: body.transports,
+    date: new Date().toISOString(),
+  };
+  await query(
+    `UPDATE devices SET
+       challenges = jsonb_set(challenges, '{attestation_platform}', 'null'::jsonb),
+       authenticator = $1
+     WHERE _id = $2`,
+    [JSON.stringify(newAuth), device._id]
+  );
 }
 
 async function crossplatformAttestationOptions(device) {
@@ -293,11 +268,13 @@ async function crossplatformAttestationOptions(device) {
       authenticatorAttachment: 'cross-platform',
       userVerification: 'discouraged',
     },
-    excludeCredentials: wallet.authenticators ? wallet.authenticators.map(_mapAuthenticator) : undefined,
+    excludeCredentials: wallet.authenticators ? wallet.authenticators.map((a) => _mapAuthenticator({
+      credentialID: a.credential_id,
+      transports: a.transports,
+    })) : undefined,
   });
 
   await _setChallenge(device, options.challenge, 'attestation', 'crossplatform');
-
   return options;
 }
 
@@ -317,54 +294,42 @@ async function crossplatformAttestationVerify(device, body) {
   if (!verified) {
     throw createError(400, 'Attestation response not verified');
   }
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      'devices.$.challenges.attestation_crossplatform': null,
-    },
-    $push: {
-      authenticators: {
-        credentialID: authenticatorInfo.base64CredentialID,
-        credentialPublicKey: authenticatorInfo.base64PublicKey,
-        counter: authenticatorInfo.counter,
-        transports: body.transports,
-        date: new Date(),
-      },
-    },
-  });
+  await query(
+    `UPDATE devices SET challenges = jsonb_set(challenges, '{attestation_crossplatform}', 'null'::jsonb)
+     WHERE _id = $1`,
+    [device._id]
+  );
+  await query(
+    `INSERT INTO authenticators (wallet_id, credential_id, credential_public_key, counter, transports, date)
+     VALUES ($1, $2, $3, $4, $5, now())`,
+    [
+      wallet._id,
+      authenticatorInfo.base64CredentialID,
+      authenticatorInfo.base64PublicKey,
+      authenticatorInfo.counter,
+      body.transports || null,
+    ]
+  );
 }
 
 async function removePlatformAuthenticator(device) {
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: {
-      'devices.$.authenticator': null,
-    },
-  });
+  await query('UPDATE devices SET authenticator = NULL WHERE _id = $1', [device._id]);
 }
 
 async function listCrossplatformAuthenticators(device) {
   return device.wallet.authenticators.map(item => {
     return {
-      credentialID: item.credentialID,
-      date: item.date.toISOString(),
+      credentialID: item.credential_id,
+      date: item.date instanceof Date ? item.date.toISOString() : item.date,
     };
   });
 }
 
 async function removeCrossplatformAuthenticator(device, credentialID) {
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-    'authenticators.credentialID': credentialID,
-  }, {
-    // It doesn't works with dot notation =(
-    $pull: { authenticators: { credentialID } },
-  });
+  await query(
+    'DELETE FROM authenticators WHERE wallet_id = $1 AND credential_id = $2',
+    [device.wallet._id, credentialID]
+  );
 }
 
 async function setSettings(device, data) {
@@ -372,14 +337,18 @@ async function setSettings(device, data) {
     ...device.wallet.settings,
     ...data,
   };
-  await db.collection(COLLECTION)
-    .updateOne({ _id: device.wallet._id }, { $set: { settings } });
+  await query(
+    'UPDATE wallets SET settings = $1 WHERE _id = $2',
+    [JSON.stringify(settings), device.wallet._id]
+  );
   return settings;
 }
 
 async function setDetails(device, details) {
-  await db.collection(COLLECTION)
-    .updateOne({ _id: device.wallet._id }, { $set: { details } });
+  await query(
+    'UPDATE wallets SET details = $1 WHERE _id = $2',
+    [details, device.wallet._id]
+  );
   return details;
 }
 
@@ -389,36 +358,30 @@ async function setUsername(device, username) {
     .update(username + process.env.USERNAME_SALT)
     .digest('hex');
 
-  await db.collection(COLLECTION)
-    .updateOne({ _id: device.wallet._id }, { $set: { username_sha: usernameSha } })
-    .catch((err) => {
-      if (err.name === 'MongoError' && err.code === 11000) {
-        throw createError(400, 'Username already taken');
-      }
-      throw err;
-    });
+  try {
+    await query(
+      'UPDATE wallets SET username_sha = $1 WHERE _id = $2',
+      [usernameSha, device.wallet._id]
+    );
+  } catch (err) {
+    if (err.code === '23505') {
+      throw createError(400, 'Username already taken');
+    }
+    throw err;
+  }
   return username;
 }
 
 async function removeDevice(device) {
-  const wallets = db.collection(COLLECTION);
-  const res = await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    // It doesn't works with dot notation =(
-    $pull: { devices: { _id: device._id } },
-  });
-  if (res.modifiedCount !== 1) {
+  const { rowCount } = await query('DELETE FROM devices WHERE _id = $1', [device._id]);
+  if (rowCount !== 1) {
     throw createError(404, 'Unknown device');
   }
 }
 
 async function removeWallet(device) {
-  const wallets = db.collection(COLLECTION);
-  const res = await wallets.removeOne({
-    'devices._id': device._id,
-  });
-  if (res.deletedCount !== 1) {
+  const { rowCount } = await query('DELETE FROM wallets WHERE _id = $1', [device.wallet._id]);
+  if (rowCount !== 1) {
     throw createError(404, 'Unknown wallet');
   }
 }
@@ -427,16 +390,21 @@ async function getDevice(deviceId) {
   if (!deviceId) {
     throw createError(400, 'Unknown wallet');
   }
-  const wallets = db.collection(COLLECTION);
-  const wallet = await wallets.findOne({
-    'devices._id': deviceId,
-  });
+  const device = await queryOne('SELECT * FROM devices WHERE _id = $1', [deviceId]);
+  if (!device) {
+    throw createError(404, 'Unknown wallet');
+  }
 
+  const wallet = await queryOne('SELECT * FROM wallets WHERE _id = $1', [device.wallet_id]);
   if (!wallet) {
     throw createError(404, 'Unknown wallet');
   }
-  // Current device
-  const device = wallet.devices.find(item => item._id === deviceId);
+
+  wallet.authenticators = await queryAll(
+    'SELECT * FROM authenticators WHERE wallet_id = $1 ORDER BY date ASC',
+    [wallet._id]
+  );
+
   device.wallet = wallet;
   return device;
 }
@@ -444,38 +412,33 @@ async function getDevice(deviceId) {
 // Internal
 
 async function _unsuccessfulAuth(device, tokenType, authType) {
-  const wallets = db.collection(COLLECTION);
-  const attempt = (device.failed_attempts || {})[`${tokenType}_${authType}`] || 0;
+  const key = `${tokenType}_${authType}`;
+  const attempt = (device.failed_attempts || {})[key] || 0;
 
   if (attempt + 1 >= MAX_FAILED_ATTEMPTS) {
-    await wallets.updateOne({
-      'devices._id': device._id,
-    }, {
-      // It doesn't works with dot notation =(
-      $pull: { devices: { _id: device._id } },
-    });
+    await query('DELETE FROM devices WHERE _id = $1', [device._id]);
     throw createError(410, 'Removed by max failed attempts');
   } else {
-    await wallets.updateOne({
-      'devices._id': device._id,
-    }, {
-      $inc: { [`devices.$.failed_attempts.${tokenType}_${authType}`]: 1 },
-    });
+    await query(
+      `UPDATE devices SET failed_attempts = jsonb_set(
+         failed_attempts, $1, to_jsonb(COALESCE((failed_attempts->>$2)::int, 0) + 1)
+       ) WHERE _id = $3`,
+      [`{${key}}`, key, device._id]
+    );
     throw createError(401, 'Unauthorized device');
   }
 }
+
 async function _setChallenge(device, challenge, tokenType, authType) {
-  const wallets = db.collection(COLLECTION);
-  await wallets.updateOne({
-    'devices._id': device._id,
-  }, {
-    $set: { [`devices.$.challenges.${tokenType}_${authType}`]: challenge },
-  });
+  await query(
+    `UPDATE devices SET challenges = jsonb_set(challenges, $1, $2::jsonb) WHERE _id = $3`,
+    [`{${tokenType}_${authType}}`, JSON.stringify(challenge), device._id]
+  );
 }
 
 function _mapAuthenticator(authenticator) {
   return {
-    id: authenticator.credentialID,
+    id: authenticator.credentialID || authenticator.credential_id,
     type: 'public-key',
     transports: authenticator.transports || undefined,
   };

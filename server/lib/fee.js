@@ -1,6 +1,6 @@
 import axios from 'axios';
 import createError from 'http-errors';
-import db from './db.js';
+import { query, queryOne } from './pg.js';
 
 const API = {
   'bitcoin@bitcoin': process.env.API_BTC_URL,
@@ -31,21 +31,18 @@ async function estimatefee(cryptoId) {
 
 async function updateFees() {
   for (const id of CRYPTO) {
-    const item = await db.collection('fee')
-      .findOne({ _id: id });
+    const item = await queryOne('SELECT * FROM fee WHERE _id = $1', [id]);
     if (item && item.manual === true) {
-      // Not update fee
       continue;
     }
 
     const fee = await estimatefee(id);
     if (fee) {
-      await db.collection('fee')
-        .updateOne({
-          _id: id,
-        }, {
-          $set: { fee },
-        }, { upsert: true });
+      await query(
+        `INSERT INTO fee (_id, fee, manual) VALUES ($1, $2, false)
+         ON CONFLICT (_id) DO UPDATE SET fee = EXCLUDED.fee`,
+        [id, JSON.stringify(fee)]
+      );
       console.log(`${id} updated:`, fee);
     } else {
       console.error(`${id} not updated!`);
@@ -57,8 +54,7 @@ async function getFees(cryptoId) {
   if (!CRYPTO.includes(cryptoId)) {
     throw createError(400, 'Coin fee is not supported');
   }
-  const fees = await db.collection('fee')
-    .findOne({ _id: cryptoId });
+  const fees = await queryOne('SELECT * FROM fee WHERE _id = $1', [cryptoId]);
   if (!fees) {
     throw createError(404, 'Coin fee was not found');
   }
