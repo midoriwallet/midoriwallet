@@ -18,6 +18,7 @@
     "server:watch": "nodemon -e js,yaml -w ./ -x node -r dotenv/config ./server.js dotenv_config_path=./.env.local",
     "worker": "node ./worker.js",
     "worker:watch": "nodemon -e js,yaml -w ./ -x node -r dotenv/config ./worker.js dotenv_config_path=./.env.local",
+    "migrate": "node ./scripts/migrate-mongo-to-pg.js",
     "lint": "eslint .",
     "lint:api": "spectral lint ./lib/v*/*.yaml"
   },
@@ -48,6 +49,7 @@
     "nodemailer": "^7.0.13",
     "p-forever": "^3.0.1",
     "p-memoize": "^7.1.1",
+    "pg": "^8.20.0",
     "semver": "^7.3.2"
   },
   "devDependencies": {
