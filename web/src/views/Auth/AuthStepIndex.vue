@@ -99,26 +99,26 @@ export default {
     &__frame {
       display: flex;
       width: 100%;
+      flex: 1;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding-top: clamp($spacing-xs, 2vh, $spacing-lg);
-      gap: $spacing-md;
+      justify-content: center;
+      padding-bottom: $spacing-2xl;
+      gap: $spacing-lg;
       @include breakpoint(lg) {
         max-width: 26rem;
-        padding-top: clamp($spacing-sm, 2.5vh, $spacing-xl);
       }
     }
 
     &__logo-wrapper {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      margin-bottom: 0;
+      align-items: center;
     }
 
     &__logo {
       width: 6.5rem;
+      height: 6.5rem;
       filter: drop-shadow(0 1rem 2rem rgb(0 0 0 / 28%));
     }
 
