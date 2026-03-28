@@ -5,250 +5,479 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Midori Wallet</title>
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     :root {
       --c-primary: #049c66;
-      --c-primary-dark: #037a50;
-      --c-text: #152019;
-      --c-text-secondary: #506057;
-      --c-bg: #f7faf8;
+      --c-primary-strong: #037a50;
+      --c-primary-soft: #daf4e9;
+      --c-bg-top: #f4f7f5;
+      --c-bg-bottom: #edf3ef;
       --c-surface: #ffffff;
-      --c-border: #e4ece6;
-      --c-danger: #d63b2b;
-      --c-toolbar-h: 40px;
-      --radius: 6px;
-      --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+      --c-surface-alt: #f6faf7;
+      --c-border: #dbe7df;
+      --c-text: #16221a;
+      --c-text-secondary: #5a6b61;
+      --c-danger: #c83e31;
+      --c-danger-soft: #fdeae8;
+      --shadow-1: 0 10px 30px rgba(16, 36, 26, 0.08);
+      --toolbar-height: 54px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+      --font-ui: "Plus Jakarta Sans", "Segoe UI", "Noto Sans", sans-serif;
+      --font-data: "JetBrains Mono", "Cascadia Mono", "Consolas", monospace;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --c-primary: #07bb7a;
-        --c-primary-dark: #049c66;
-        --c-text: #e7efe9;
-        --c-text-secondary: #95a89d;
-        --c-bg: #0f1512;
-        --c-surface: #141d18;
-        --c-border: #223027;
-        --c-danger: #f26b5c;
+        --c-primary: #22c486;
+        --c-primary-strong: #13a06a;
+        --c-primary-soft: rgba(34, 196, 134, 0.18);
+        --c-bg-top: #0d1511;
+        --c-bg-bottom: #121d17;
+        --c-surface: #14201a;
+        --c-surface-alt: #182720;
+        --c-border: #273a2f;
+        --c-text: #e3f0e7;
+        --c-text-secondary: #94ab9e;
+        --c-danger: #f0796f;
+        --c-danger-soft: rgba(240, 121, 111, 0.2);
+        --shadow-1: 0 16px 38px rgba(0, 0, 0, 0.45);
       }
     }
 
-    html, body {
+    html,
+    body {
       width: 420px;
       height: 600px;
       overflow: hidden;
-      font-family: var(--font);
-      background-color: var(--c-bg);
+      font-family: var(--font-ui);
       color: var(--c-text);
+      background: linear-gradient(165deg, var(--c-bg-top), var(--c-bg-bottom));
     }
 
-    /* ---- Loading state ---- */
-    #loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    body {
+      position: relative;
+      isolation: isolate;
+      line-height: 1.4;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    body::before {
+      width: 240px;
+      height: 240px;
+      top: -120px;
+      right: -110px;
+      background: radial-gradient(circle, rgba(4, 156, 102, 0.34) 0%, rgba(4, 156, 102, 0) 70%);
+    }
+
+    body::after {
+      width: 190px;
+      height: 190px;
+      bottom: -100px;
+      left: -70px;
+      background: radial-gradient(circle, rgba(2, 122, 81, 0.26) 0%, rgba(2, 122, 81, 0) 75%);
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 100%;
-      gap: 16px;
-      background-color: var(--c-surface);
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      gap: 10px;
     }
 
-    #loading.hidden { display: none; }
-
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid var(--c-border);
-      border-top-color: var(--c-primary);
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
+    .hidden {
+      display: none !important;
     }
 
-    .loading-label {
-      font-size: 13px;
-      color: var(--c-text-secondary);
-      letter-spacing: 0.02em;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ---- Toolbar ---- */
     #toolbar {
+      min-height: var(--toolbar-height);
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, var(--c-surface), var(--c-surface-alt));
+      box-shadow: var(--shadow-1);
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: var(--c-toolbar-h);
-      padding: 0 12px;
-      background-color: var(--c-surface);
-      border-bottom: 1px solid var(--c-border);
-      font-size: 12px;
-      color: var(--c-text-secondary);
+      gap: 8px;
     }
-
-    #toolbar.hidden { display: none; }
 
     .toolbar-left {
+      min-width: 0;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
     }
 
-    .toolbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 500;
-      color: var(--c-text);
-    }
-
-    .toolbar-brand-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: var(--c-primary);
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
       flex-shrink: 0;
+      background: linear-gradient(145deg, var(--c-primary), var(--c-primary-strong));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
     }
 
-    .toolbar-url {
-      font-size: 11px;
+    .brand-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--c-text);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .brand-url {
+      font-family: var(--font-data);
+      font-size: 10px;
       color: var(--c-text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-pill {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: 8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--c-border);
+      background: rgba(255, 255, 255, 0.45);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--c-text-secondary);
+      white-space: nowrap;
+    }
+
+    .status-pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.65;
+    }
+
+    .status-pill.is-online {
+      color: var(--c-primary-strong);
+      border-color: rgba(4, 156, 102, 0.35);
+      background: var(--c-primary-soft);
     }
 
     .toolbar-right {
       display: flex;
-      gap: 4px;
-    }
-
-    .toolbar-right button {
-      display: flex;
       align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      background: none;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 1px solid var(--c-border);
+      background: transparent;
       color: var(--c-text-secondary);
-      border: 1px solid transparent;
-      border-radius: var(--radius);
-      font-size: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
     }
 
-    .toolbar-right button:hover {
-      background-color: var(--c-bg);
-      border-color: var(--c-border);
+    .icon-btn:hover {
       color: var(--c-text);
+      border-color: rgba(4, 156, 102, 0.4);
+      background: var(--c-primary-soft);
+      transform: translateY(-1px);
     }
 
-    /* ---- Frame container ---- */
+    .icon-btn:active {
+      transform: translateY(0);
+    }
+
     #frame-container {
-      width: 100%;
-      height: calc(100% - var(--c-toolbar-h));
       display: none;
+      flex: 1;
+      min-height: 0;
     }
 
-    #frame-container.show { display: block; }
+    #frame-container.show {
+      display: block;
+    }
+
+    .frame-shell {
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      background: var(--c-surface);
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+    }
 
     #wallet-frame {
       width: 100%;
       height: 100%;
       border: none;
       display: none;
+      background: var(--c-surface);
     }
 
-    #wallet-frame.loaded { display: block; }
+    #wallet-frame.loaded {
+      display: block;
+    }
 
-    /* ---- Error state ---- */
-    #error {
-      display: none;
-      flex-direction: column;
+    .state-panel {
+      flex: 1;
+      display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 0;
+    }
+
+    .state-card {
       width: 100%;
-      height: 100%;
-      padding: 32px 24px;
+      max-width: 372px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, var(--c-surface), var(--c-surface-alt));
+      box-shadow: var(--shadow-1);
+      padding: 26px 22px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 12px;
-      background-color: var(--c-surface);
     }
 
-    #error.show { display: flex; }
-
-    .error-icon {
-      font-size: 32px;
-      line-height: 1;
-    }
-
-    #error h2 {
-      font-size: 15px;
+    .state-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--c-text-secondary);
       font-weight: 600;
-      color: var(--c-danger);
     }
 
-    #error p {
+    .state-title {
+      font-size: 16px;
+      letter-spacing: 0.01em;
+      font-weight: 700;
+      color: var(--c-text);
+    }
+
+    .state-description {
+      max-width: 280px;
       font-size: 13px;
       color: var(--c-text-secondary);
-      max-width: 280px;
-      line-height: 1.5;
     }
 
-    #retry-btn {
-      margin-top: 8px;
-      padding: 9px 24px;
-      background-color: var(--c-primary);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #error {
+      display: none;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    #error.show {
+      display: flex;
+    }
+
+    .error-card {
+      width: 100%;
+      max-width: 372px;
+      border: 1px solid rgba(200, 62, 49, 0.25);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, var(--c-surface), var(--c-danger-soft));
+      box-shadow: var(--shadow-1);
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .error-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--c-danger-soft);
+      color: var(--c-danger);
+      border: 1px solid rgba(200, 62, 49, 0.35);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .error-title {
+      font-size: 16px;
+      color: var(--c-danger);
+      font-weight: 700;
+    }
+
+    .error-copy {
+      font-size: 13px;
+      color: var(--c-text-secondary);
+      max-width: 300px;
+    }
+
+    .actions {
+      width: 100%;
+      margin-top: 4px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      min-height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
-    #retry-btn:hover { background-color: var(--c-primary-dark); }
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(140deg, var(--c-primary), var(--c-primary-strong));
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-secondary {
+      border-color: var(--c-border);
+      background: transparent;
+      color: var(--c-text);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(4, 156, 102, 0.35);
+      background: var(--c-primary-soft);
+    }
+
+    .popup-footnote {
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--c-text-secondary);
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
   </style>
 </head>
 <body>
-  <!-- Loading -->
-  <div id="loading">
-    <div class="spinner"></div>
-    <span class="loading-label">Connecting with Midori Wallet...</span>
-  </div>
-
-  <!-- Toolbar -->
-  <div id="toolbar" class="hidden">
-    <div class="toolbar-left">
-      <div class="toolbar-brand">
-        <span class="toolbar-brand-dot"></span>
-        Midori Wallet
+  <div class="app-shell">
+    <!-- Loading -->
+    <div id="loading" class="state-panel">
+      <div class="state-card">
+        <div class="brand-mark">M</div>
+        <p class="state-eyebrow">Midori Wallet</p>
+        <div class="spinner"></div>
+        <h1 class="state-title">Conectando wallet seguro</h1>
+        <p class="state-description" id="loading-label">Iniciando la sesion remota y verificando conectividad.</p>
       </div>
-      <span class="toolbar-url">wallet.astian.org</span>
     </div>
-    <div class="toolbar-right">
-      <button id="refresh-btn" title="Recargar">↺</button>
-      <button id="open-tab-btn" title="Abrir en nueva pestaña">↗</button>
+
+    <!-- Toolbar -->
+    <div id="toolbar" class="hidden">
+      <div class="toolbar-left">
+        <div class="brand-mark">M</div>
+        <div class="brand-copy">
+          <span class="brand-title">Midori 2.0</span>
+          <span class="brand-url">wallet.astian.org</span>
+        </div>
+        <span id="connection-status" class="status-pill">Sincronizando</span>
+      </div>
+      <div class="toolbar-right">
+        <button id="refresh-btn" class="icon-btn" title="Recargar wallet" aria-label="Recargar wallet">↻</button>
+        <button id="open-tab-btn" class="icon-btn" title="Abrir en nueva pestana" aria-label="Abrir en nueva pestana">↗</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Wallet Frame Container -->
-  <div id="frame-container">
-    <iframe
-      id="wallet-frame"
-      src="https://wallet.astian.org/"
-      allow="clipboard-read; clipboard-write; camera; microphone"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
-    ></iframe>
-  </div>
+    <!-- Wallet Frame Container -->
+    <div id="frame-container">
+      <div class="frame-shell">
+        <iframe
+          id="wallet-frame"
+          src="https://wallet.astian.org/"
+          allow="clipboard-read; clipboard-write; camera; microphone"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
+        ></iframe>
+      </div>
+    </div>
 
-  <!-- Error -->
-  <div id="error">
-    <span class="error-icon">⚠</span>
-    <h2>Error de Conexión</h2>
-    <p id="error-message">No se pudo conectar con wallet.astian.org</p>
-    <button id="retry-btn">Reintentar</button>
+    <!-- Error -->
+    <div id="error">
+      <div class="error-card">
+        <span class="error-icon">!</span>
+        <h2 class="error-title">Conexion no disponible</h2>
+        <p id="error-message" class="error-copy">No se pudo conectar con wallet.astian.org</p>
+        <div class="actions">
+          <button id="retry-btn" class="btn btn-primary">Reintentar</button>
+          <button id="error-open-tab-btn" class="btn btn-secondary">Abrir en tab</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="popup-footnote">Shell de extension Midori Wallet</p>
   </div>
 
   <script src="popup.js"></script>

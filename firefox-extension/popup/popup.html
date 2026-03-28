@@ -7,43 +7,60 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <!-- Loading -->
-  <div id="loading">
-    <div class="spinner"></div>
-    <span class="loading-label">Connecting with Midori Wallet...</span>
-  </div>
-
-  <!-- Toolbar -->
-  <div id="toolbar" class="hidden">
-    <div class="toolbar-left">
-      <div class="toolbar-brand">
-        <span class="toolbar-brand-dot"></span>
-        Midori Wallet
+  <div class="app-shell">
+    <!-- Loading -->
+    <div id="loading" class="state-panel">
+      <div class="state-card">
+        <div class="brand-mark">M</div>
+        <p class="state-eyebrow">Midori Wallet</p>
+        <div class="spinner"></div>
+        <h1 class="state-title">Conectando wallet seguro</h1>
+        <p class="state-description" id="loading-label">Iniciando la sesion remota y verificando conectividad.</p>
       </div>
-      <span class="toolbar-url">wallet.astian.org</span>
     </div>
-    <div class="toolbar-right">
-      <button id="refresh-btn" title="Recargar">↺</button>
-      <button id="open-tab-btn" title="Abrir en nueva pestaña">↗</button>
+
+    <!-- Toolbar -->
+    <div id="toolbar" class="hidden">
+      <div class="toolbar-left">
+        <div class="brand-mark">M</div>
+        <div class="brand-copy">
+          <span class="brand-title">Midori 2.0</span>
+          <span class="brand-url">wallet.astian.org</span>
+        </div>
+        <span id="connection-status" class="status-pill">Sincronizando</span>
+      </div>
+      <div class="toolbar-right">
+        <button id="refresh-btn" class="icon-btn" title="Recargar wallet" aria-label="Recargar wallet">↻</button>
+        <button id="open-tab-btn" class="icon-btn" title="Abrir en nueva pestana" aria-label="Abrir en nueva pestana">↗</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Wallet Frame Container -->
-  <div id="frame-container">
-    <iframe
-      id="wallet-frame"
-      src="https://wallet.astian.org/"
-      allow="clipboard-read; clipboard-write; camera; microphone"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
-    ></iframe>
-  </div>
+    <!-- Wallet Frame Container -->
+    <div id="frame-container">
+      <div class="frame-shell">
+        <iframe
+          id="wallet-frame"
+          src="https://wallet.astian.org/"
+          allow="clipboard-read; clipboard-write; camera; microphone"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
+        ></iframe>
+      </div>
+    </div>
 
-  <!-- Error -->
-  <div id="error">
-    <span class="error-icon">⚠</span>
-    <h2>Error de Conexión</h2>
-    <p id="error-message">No se pudo conectar con wallet.astian.org</p>
-    <button id="retry-btn">Reintentar</button>
+    <!-- Error -->
+    <div id="error">
+      <div class="error-card">
+        <span class="error-icon">!</span>
+        <h2 class="error-title">Conexion no disponible</h2>
+        <p id="error-message" class="error-copy">No se pudo conectar con wallet.astian.org</p>
+        <div class="actions">
+          <button id="retry-btn" class="btn btn-primary">Reintentar</button>
+          <button id="error-open-tab-btn" class="btn btn-secondary">Abrir en tab</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="popup-footnote">Shell de extension Midori Wallet</p>
   </div>
 
   <script src="popup.js"></script>

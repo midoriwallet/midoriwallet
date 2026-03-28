@@ -13,41 +13,61 @@ const frameContainer = document.getElementById('frame-container');
 const walletFrame = document.getElementById('wallet-frame');
 const errorDiv = document.getElementById('error');
 const errorMessage = document.getElementById('error-message');
+const loadingLabel = document.getElementById('loading-label');
+const connectionStatus = document.getElementById('connection-status');
 const retryBtn = document.getElementById('retry-btn');
 const refreshBtn = document.getElementById('refresh-btn');
 const openTabBtn = document.getElementById('open-tab-btn');
+const errorOpenTabBtn = document.getElementById('error-open-tab-btn');
 
 let loadTimeout;
+let listenersBound = false;
+
+function setConnectionStatus(text, isOnline = false) {
+  if (!connectionStatus) {
+    return;
+  }
+
+  connectionStatus.textContent = text;
+  connectionStatus.classList.toggle('is-online', isOnline);
+}
 
 // Inicializar
 function initialize() {
   console.log('Midori Wallet - Iniciando popup');
-  
-  // Mostrar loading
+
+  if (!listenersBound) {
+    walletFrame.addEventListener('load', onFrameLoad);
+    walletFrame.addEventListener('error', onFrameError);
+    listenersBound = true;
+  }
+
   showLoading();
-  
-  // Configurar timeout
+  startLoadSequence();
+}
+
+function startLoadSequence() {
+  clearTimeout(loadTimeout);
+  setConnectionStatus('Sincronizando', false);
+
+  if (loadingLabel) {
+    loadingLabel.textContent = 'Iniciando la sesion remota y verificando conectividad.';
+  }
+
   loadTimeout = setTimeout(() => {
     console.error('Timeout al cargar wallet.astian.org');
-    showError('Tiempo de espera agotado. Verifica tu conexión a internet.');
+    showError('Tiempo de espera agotado. Verifica tu conexion a internet.');
   }, LOAD_TIMEOUT);
-  
-  // Escuchar cuando el iframe cargue
-  walletFrame.addEventListener('load', onFrameLoad);
-  walletFrame.addEventListener('error', onFrameError);
-  
-  // Intentar cargar el iframe
+
   loadWallet();
 }
 
 // Cargar wallet
 function loadWallet() {
   console.log('Cargando wallet desde:', WALLET_URL);
-  
-  // Asegurarse de que el src esté configurado
-  if (walletFrame.src !== WALLET_URL) {
-    walletFrame.src = WALLET_URL;
-  }
+
+  walletFrame.classList.remove('loaded');
+  walletFrame.src = WALLET_URL;
 }
 
 // Cuando el iframe carga exitosamente
@@ -79,7 +99,7 @@ function onFrameLoad() {
 function onFrameError(e) {
   console.error('Error al cargar wallet:', e);
   clearTimeout(loadTimeout);
-  showError('No se pudo cargar wallet.astian.org. Verifica tu conexión.');
+  showError('No se pudo cargar wallet.astian.org. Verifica tu conexion.');
 }
 
 // Mostrar loading
@@ -87,7 +107,10 @@ function showLoading() {
   loading.classList.remove('hidden');
   toolbar.classList.add('hidden');
   frameContainer.classList.remove('show');
+  walletFrame.classList.remove('loaded');
   errorDiv.classList.remove('show');
+
+  setConnectionStatus('Sincronizando', false);
 }
 
 // Mostrar wallet
@@ -97,7 +120,9 @@ function showWallet() {
   frameContainer.classList.add('show');
   walletFrame.classList.add('loaded');
   errorDiv.classList.remove('show');
-  
+
+  setConnectionStatus('Online', true);
+
   console.log('Wallet visible');
 }
 
@@ -106,9 +131,12 @@ function showError(message) {
   loading.classList.add('hidden');
   toolbar.classList.add('hidden');
   frameContainer.classList.remove('show');
+  walletFrame.classList.remove('loaded');
   errorDiv.classList.add('show');
   errorMessage.textContent = message;
-  
+
+  setConnectionStatus('Sin conexion', false);
+
   console.error('Error mostrado:', message);
 }
 
@@ -118,18 +146,19 @@ function showError(message) {
 retryBtn.addEventListener('click', () => {
   console.log('Reintentando carga...');
   showLoading();
-  
-  // Recargar el iframe
+
   walletFrame.src = '';
   setTimeout(() => {
-    initialize();
-  }, 100);
+    startLoadSequence();
+  }, 120);
 });
 
 // Botón de refrescar
 refreshBtn.addEventListener('click', () => {
   console.log('Refrescando wallet...');
-  walletFrame.src = walletFrame.src; // Recargar
+  setConnectionStatus('Actualizando', false);
+  walletFrame.classList.remove('loaded');
+  walletFrame.src = WALLET_URL;
 });
 
 // Botón de abrir en nueva pestaña
@@ -137,6 +166,12 @@ openTabBtn.addEventListener('click', () => {
   console.log('Abriendo en nueva pestaña');
   chrome.tabs.create({ url: WALLET_URL });
 });
+
+if (errorOpenTabBtn) {
+  errorOpenTabBtn.addEventListener('click', () => {
+    chrome.tabs.create({ url: WALLET_URL });
+  });
+}
 
 // Comunicación con el iframe
 window.addEventListener('message', (event) => {
