@@ -13,6 +13,25 @@ import { createApp } from './lib/app.js';
 import router from './router/router.js';
 import i18n, { setLanguage } from './lib/i18n/i18n.js';
 
+function showStartupError(err) {
+  console.error(err);
+  const appElement = document.getElementById('app');
+  const errorElement = document.getElementById('error');
+  const messageElement = errorElement?.querySelector('.error__message');
+
+  if (messageElement) {
+    messageElement.textContent = 'The app could not finish loading. Please restart and try again.';
+  }
+
+  if (appElement) {
+    appElement.remove();
+  }
+
+  if (errorElement) {
+    errorElement.style.display = 'block';
+  }
+}
+
 async function main() {
   document.addEventListener('touchstart', () => {}, false); // fix safari :active css bug
   if (import.meta.env.VITE_BUILD_TYPE === 'phonegap') {
@@ -26,7 +45,7 @@ async function main() {
   app.use(i18n);
   app.use(router);
   app.mount('#app');
-  
+
   // Force apply dark mode styles after Vue mounts
   setTimeout(() => {
     const theme = localStorage.getItem('_cs_theme') || 'auto';
@@ -36,7 +55,7 @@ async function main() {
     } else if (theme === 'auto') {
       isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-    
+
     if (isDark) {
       const bgColor = window.innerWidth >= 1024 ? '#1e2421' : '#121614';
       // Apply to body
@@ -52,4 +71,4 @@ async function main() {
   }, 100);
 }
 
-main().catch(console.error);
+main().catch(showStartupError);
