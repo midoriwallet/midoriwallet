@@ -60,6 +60,12 @@ export default {
 
     &__note {
       @include text-md;
+      padding: $spacing-lg;
+      border: 1px solid color-mix(in srgb, var(--color-danger) 35%, var(--border-default));
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+      color: color-mix(in srgb, var(--color-danger) 82%, var(--color-text));
+      line-height: 1.5;
     }
   }
 </style>

@@ -105,7 +105,12 @@ export default {
       @include ellipsis;
       width: 100%;
       flex-grow: 1;
+      border: none;
+      appearance: none;
+      background: transparent;
+      box-shadow: none;
       color: var(--color-text);
+      outline: none;
 
       &::placeholder {
         color: var(--color-secondary);

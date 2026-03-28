@@ -77,14 +77,19 @@ export default {
     :title="title"
     @back="done"
   >
-    <div class="&__icon-wrapper">
-      <component
-        :is="icon"
-        class="&__icon"
-      />
-    </div>
-    <div class="&__text">
-      {{ text }}
+    <div class="&__panel">
+      <div class="&__icon-wrapper">
+        <component
+          :is="icon"
+          class="&__icon"
+        />
+      </div>
+      <div class="&__text">
+        {{ text }}
+      </div>
+      <div class="&__hint">
+        {{ $t('You can turn this on or off later in Security settings.') }}
+      </div>
     </div>
     <CsButtonGroup>
       <CsButton
@@ -105,18 +110,37 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    &__panel {
+      display: flex;
+      flex-direction: column;
+      padding: $spacing-lg;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+      gap: $spacing-md;
+    }
+
     &__icon-wrapper {
       display: flex;
-      flex-grow: 1;
       justify-content: center;
     }
 
     &__icon {
-      width: $spacing-8xl;
+      width: $spacing-7xl;
     }
 
     &__text {
       @include text-md;
+      color: var(--color-secondary);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    &__hint {
+      @include text-sm;
+      color: var(--color-text);
+      font-weight: 500;
+      text-align: center;
     }
   }
 </style>

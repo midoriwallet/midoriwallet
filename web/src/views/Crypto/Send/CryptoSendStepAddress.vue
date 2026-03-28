@@ -51,12 +51,13 @@ export default {
       this.storage.temp.address = undefined;
     }
     this.isQrScanAvailable = await isQrScanAvailable();
+    await this.checkClipboardAvailability();
   },
   data() {
     return {
       isLoading: false,
       isUnaliasSupported: this.$wallet.isUnaliasSupported,
-      isPasteAvailable: typeof navigator.clipboard?.readText === 'function',
+      isPasteAvailable: false,
       isQrScanAvailable: false,
       subtitle: cryptoSubtitle(this.$wallet),
       addressOrAlias: '',
@@ -71,7 +72,7 @@ export default {
     addressOrAlias: debounce(async function(value) {
       // Buscar en direcciones guardadas
       await this.checkSavedAddress(value);
-      
+
       if (this.isUnaliasSupported) {
         this.isLoading = true;
         const data = await this.$wallet.unalias(value);
@@ -145,12 +146,27 @@ export default {
         this.isLoading = false;
       }
     },
-    paste() {
-      navigator.clipboard.readText()
-        .then((text) => {
-          this.error = undefined;
-          this.addressOrAlias = text;
-        }, () => {});
+    async checkClipboardAvailability() {
+      if (typeof navigator.clipboard?.readText !== 'function') return;
+      try {
+        const status = await navigator.permissions.query({ name: 'clipboard-read' });
+        this.isPasteAvailable = status.state !== 'denied';
+        status.onchange = () => {
+          this.isPasteAvailable = status.state !== 'denied';
+        };
+      } catch {
+        this.isPasteAvailable = true;
+      }
+    },
+    async paste() {
+      try {
+        const text = await navigator.clipboard.readText();
+        this.error = undefined;
+        this.addressOrAlias = text;
+      } catch {
+        // Permission denied — ocultar botón para las próximas veces
+        this.isPasteAvailable = false;
+      }
     },
     selectSavedAddress(address) {
       this.error = undefined;
@@ -176,16 +192,16 @@ export default {
         this.savedAddressAlias = null;
         return;
       }
-      
+
       try {
         const data = await this.$account.request({
           url: `/api/v4/addresses/search?query=${encodeURIComponent(address)}&crypto=${this.$wallet.crypto._id}`,
           method: 'get',
           seed: 'device',
         });
-        
+
         const exactMatch = data.addresses?.find(addr => addr.address.toLowerCase() === address.toLowerCase());
-        
+
         if (exactMatch && exactMatch.alias) {
           this.savedAddressAlias = exactMatch.alias;
         } else {
@@ -206,10 +222,10 @@ export default {
     :description="subtitle"
   >
     <CsSavedAddresses
-      :crypto-id="$wallet.crypto._id"
+      :cryptoId="$wallet.crypto._id"
       @select="selectSavedAddress"
     />
-    
+
     <CsFormGroup class="&__container">
       <CsFormInput
         v-model="addressOrAlias"
@@ -218,12 +234,11 @@ export default {
         :clear="true"
         @update:modelValue="error = undefined"
       />
-      
+
       <div
         v-if="savedAddressAlias"
         class="&__saved-contact"
       >
-        <span class="&__saved-contact-icon">👤</span>
         <span class="&__saved-contact-text">{{ savedAddressAlias }}</span>
       </div>
 
@@ -278,11 +293,16 @@ export default {
 
     &__container {
       flex-grow: 1;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(180deg, rgb(4 156 102 / 5%), transparent 60%), var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__actions {
       width: 100%;
-      max-width: 25rem;
+      max-width: 28rem;
       align-self: center;
     }
 
@@ -293,9 +313,9 @@ export default {
       padding: $spacing-sm $spacing-md;
       margin-top: $spacing-xs;
       margin-bottom: $spacing-md;
-      background-color: var(--color-success-bg, rgba(34, 197, 94, 0.1));
-      border-left: 3px solid var(--color-success, #22c55e);
-      border-radius: 0.5rem;
+      background-color: var(--surface-primary-soft);
+      border-left: 3px solid var(--color-primary);
+      border-radius: var(--border-radius-md);
     }
 
     &__saved-contact-icon {
@@ -304,8 +324,8 @@ export default {
 
     &__saved-contact-text {
       @include text-sm;
-      font-weight: 500;
-      color: var(--color-success, #22c55e);
+      @include text-bold;
+      color: var(--color-primary);
     }
   }
 </style>

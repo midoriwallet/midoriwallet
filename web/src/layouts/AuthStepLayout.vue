@@ -61,6 +61,10 @@ export default {
 
 <template>
   <div class="&">
+    <div
+      class="&__ambient"
+      aria-hidden="true"
+    />
     <div class="&__frame">
       <div class="&__container">
         <CsNavbar
@@ -84,11 +88,16 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    position: relative;
     display: flex;
     height: 100%;
     flex-direction: column;
     align-items: center;
     padding-top: env(safe-area-inset-top);
+    background:
+      radial-gradient(80rem 32rem at 50% -16%, rgb(4 156 102 / 14%), transparent 58%),
+      var(--surface-0);
+    isolation: isolate;
 
     @include breakpoint(lg) {
       padding:
@@ -99,6 +108,20 @@ export default {
       overflow-y: auto;
     }
 
+    &__ambient {
+      position: absolute;
+      z-index: -1;
+      top: -6rem;
+      right: 50%;
+      width: 26rem;
+      height: 26rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgb(4 156 102 / 20%) 0%, rgb(4 156 102 / 0%) 72%);
+      content: "";
+      pointer-events: none;
+      transform: translateX(50%);
+    }
+
     &__frame {
       display: flex;
       width: 100%;
@@ -106,13 +129,16 @@ export default {
       flex-direction: column;
       flex-grow: 1;
       align-items: center;
-      background-color: $background-color;
+      background-color: var(--surface-1);
 
       @include breakpoint(lg) {
         max-width: $desktop-max-width;
         height: auto;
-        padding-top: $spacing-6xl;
-        border-radius: 0.625rem;
+        min-height: calc(100% - #{$spacing-md});
+        padding-top: $spacing-4xl;
+        border: 1px solid var(--border-default);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
       }
     }
 
@@ -133,15 +159,15 @@ export default {
       height: 100%;
       flex-direction: column;
       padding:
-        $spacing-3xl
+        $spacing-2xl
         max($spacing-xl, env(safe-area-inset-right))
-        $spacing-3xl
+        $spacing-2xl
         max($spacing-xl, env(safe-area-inset-left));
-      gap: $spacing-3xl;
+      gap: $spacing-xl;
       overflow-y: auto;
 
       @include breakpoint(lg) {
-        padding: $spacing-3xl $spacing-xl;
+        padding: $spacing-2xl $spacing-xl;
       }
     }
   }

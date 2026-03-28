@@ -106,6 +106,15 @@ export default {
   <MainLayout
     :title="labels.title"
   >
+    <div class="&__summary">
+      <div class="&__summary-title">
+        {{ $t('Security controls') }}
+      </div>
+      <div class="&__summary-text">
+        <!-- eslint-disable-next-line max-len -->
+        {{ $t('Protect access and sensitive actions with PIN, biometrics and additional confirmation for critical operations.') }}
+      </div>
+    </div>
     <CsListItems>
       <CsListItem
         v-if="$account.biometry.isAvailable"
@@ -139,3 +148,31 @@ export default {
     </CsListItems>
   </MainLayout>
 </template>
+
+<style lang="scss">
+  .#{ $filename } {
+    &__summary {
+      display: flex;
+      flex-direction: column;
+      padding: $spacing-lg;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+      gap: $spacing-xs;
+    }
+
+    &__summary-title {
+      @include text-sm;
+      color: var(--color-text);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    &__summary-text {
+      @include text-sm;
+      color: var(--color-secondary);
+      line-height: 1.45;
+    }
+  }
+</style>

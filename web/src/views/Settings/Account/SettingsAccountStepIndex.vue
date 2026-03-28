@@ -114,7 +114,18 @@ export default {
     }
 
     &__note {
-      @include text-md;
+      @include text-sm;
+      padding: $spacing-md;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
+      line-height: 1.5;
+
+      a {
+        color: var(--color-primary);
+        text-decoration: underline;
+      }
     }
   }
 </style>

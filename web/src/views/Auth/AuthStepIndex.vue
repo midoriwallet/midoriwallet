@@ -34,6 +34,17 @@ export default {
       <div class="&__logo-wrapper">
         <LogoIcon class="&__logo" />
       </div>
+      <div class="&__intro">
+        <div class="&__eyebrow">
+          {{ $t('Secure self-custody wallet') }}
+        </div>
+        <h1 class="&__title">
+          {{ $t('Your crypto. Your keys. Your control.') }}
+        </h1>
+        <p class="&__text">
+          {{ $t('Create a new wallet or restore an existing one in a few guided steps.') }}
+        </p>
+      </div>
       <CsButtonGroup class="&__button-group">
         <CsButton
           type="primary"
@@ -58,16 +69,18 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     display: flex;
+    width: 100%;
     height: 100%;
     flex-direction: column;
     align-items: center;
     padding:
-      $spacing-3xl
+      $spacing-xl
       max($spacing-xl, env(safe-area-inset-right))
-      $spacing-3xl
+      $spacing-xl
       max($spacing-xl, env(safe-area-inset-left));
-    background-color: $background-color-dark;
-    gap: $spacing-5xl;
+    background:
+      radial-gradient(40rem 20rem at 50% -10%, rgb(4 156 102 / 24%), rgb(4 156 102 / 0%) 65%),
+      linear-gradient(180deg, #122018 0%, #1a2a22 44%, #132019 100%);
     overflow-y: auto;
 
     &.slide-left-leave-active {
@@ -87,38 +100,79 @@ export default {
       display: flex;
       width: 100%;
       flex-direction: column;
-      flex-grow: 1;
       align-items: center;
-      gap: $spacing-5xl;
+      justify-content: flex-start;
+      padding-top: clamp($spacing-xs, 2vh, $spacing-lg);
+      gap: $spacing-md;
       @include breakpoint(lg) {
-        justify-content: center;
+        max-width: 26rem;
+        padding-top: clamp($spacing-sm, 2.5vh, $spacing-xl);
       }
     }
 
     &__logo-wrapper {
       display: flex;
       flex-direction: column;
-      flex-grow: 1;
-      justify-content: center;
-      @include breakpoint(lg) {
-        flex-grow: 0;
-      }
+      justify-content: flex-start;
+      margin-bottom: 0;
     }
 
     &__logo {
-      width: 10rem;
+      width: 6.5rem;
+      filter: drop-shadow(0 1rem 2rem rgb(0 0 0 / 28%));
+    }
+
+    &__intro {
+      display: flex;
+      width: 100%;
+      max-width: 22rem;
+      flex-direction: column;
+      align-items: center;
+      gap: $spacing-xs;
+      text-align: center;
+    }
+
+    &__eyebrow {
+      @include text-xs;
+      padding: $spacing-2xs $spacing-sm;
+      border: 1px solid rgb(255 255 255 / 18%);
+      border-radius: 999px;
+      background-color: rgb(255 255 255 / 7%);
+      color: rgb(255 255 255 / 88%);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    &__title {
+      @include text-xl;
+      margin: 0;
+      color: $white;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    &__text {
+      @include text-md;
+      max-width: 24rem;
+      margin: 0;
+      color: rgb(255 255 255 / 76%);
+      line-height: 1.4;
     }
 
     &__button-group {
       width: 100%;
+      max-width: 22rem;
+      margin-top: $spacing-2xs;
       @include breakpoint(lg) {
-        width: auto;
+        width: 100%;
       }
     }
 
     &__copyright {
       @include text-xs;
-      color: $white;
+      padding-top: $spacing-md;
+      margin-top: $spacing-lg;
+      color: rgb(255 255 255 / 62%);
     }
   }
 </style>

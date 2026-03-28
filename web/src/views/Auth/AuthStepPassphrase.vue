@@ -47,7 +47,7 @@ export default {
     :title="$t('Your passphrase')"
     :description="$t('12 words')"
   >
-    <div class="&__passphrase_wrapper">
+    <div class="&__passphrase-wrapper">
       <CsFormTextareaReadonly
         class="&__passphrase"
         :value="storage.passphrase"
@@ -61,6 +61,14 @@ export default {
     </div>
 
     <div class="&__container">
+      <div class="&__recovery-note">
+        <div class="&__recovery-title">
+          {{ $t('Recovery key') }}
+        </div>
+        <div class="&__recovery-text">
+          {{ $t('Only this passphrase can restore your wallet on a new device.') }}
+        </div>
+      </div>
       <CsWarning>
         <!-- eslint-disable-next-line max-len -->
         {{ $t('Your passphrase will not be shown again. You will lose access to your wallet without the passphrase.') }}
@@ -72,6 +80,7 @@ export default {
           type="checkbox"
           value="backup"
           class="&__default-checkbox"
+          :aria-label="$t('I have written down or otherwise securely stored my passphrase')"
         >
         <div class="&__checkbox">
           <TickIcon class="&__check" />
@@ -85,6 +94,7 @@ export default {
           type="checkbox"
           value="terms"
           class="&__default-checkbox"
+          :aria-label="$t('I agree to the terms of service')"
         >
         <div class="&__checkbox">
           <TickIcon class="&__check" />
@@ -118,27 +128,52 @@ export default {
   .#{ $filename } {
     $self: &;
 
-    &__passphrase_wrapper {
+    &__passphrase-wrapper {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      gap: $spacing-xs;
+      gap: $spacing-sm;
     }
 
     &__passphrase {
       @include text-bold;
+      min-height: 8.5rem;
     }
 
     &__copy {
       @include text-xs;
       justify-content: center;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__container {
       display: flex;
       flex-direction: column;
       gap: $spacing-md;
+    }
+
+    &__recovery-note {
+      display: flex;
+      flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      gap: $spacing-2xs;
+    }
+
+    &__recovery-title {
+      @include text-sm;
+      color: var(--color-text);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    &__recovery-text {
+      @include text-sm;
+      color: var(--color-secondary);
+      line-height: 1.45;
     }
 
     &__warning {
@@ -161,15 +196,28 @@ export default {
       align-items: flex-start;
       cursor: pointer;
       gap: $spacing-md;
+      line-height: 1.45;
+
+      a {
+        color: var(--color-primary);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+      }
     }
 
     &__default-checkbox {
       position: absolute;
       opacity: 0;
       pointer-events: none;
+
+      &:focus-visible ~ #{ $self }__checkbox {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
       &:checked ~ #{ $self }__checkbox {
         border: none;
-        background-color: $primary-brand;
+        background-color: var(--color-primary);
         #{ $self }__check {
           display: block;
         }
@@ -183,7 +231,7 @@ export default {
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      border: 1px solid $gray;
+      border: 1px solid var(--border-strong);
       border-radius: 0.25rem;
       margin-top: $spacing-2xs;
     }

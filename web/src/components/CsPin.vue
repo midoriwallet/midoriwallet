@@ -300,10 +300,11 @@ export default {
 
     &__dots {
       display: flex;
+      min-height: $spacing-8xl;
       flex-grow: 1;
       align-items: center;
       justify-content: center;
-      gap: $spacing-lg;
+      gap: $spacing-md;
 
       &--wrong {
         animation: shake-x 0.7s;
@@ -311,7 +312,8 @@ export default {
 
       &--loading {
         #{ $self }__dot {
-          background-color: $primary-brand;
+          border-color: var(--color-primary);
+          background-color: var(--color-primary);
         }
         #{ $self }__dot:nth-child(1) {
           animation: pulse-4 0.6s ease-in-out alternate infinite;
@@ -329,14 +331,17 @@ export default {
     }
 
     &__dot {
-      width: $spacing-md;
-      height: $spacing-md;
+      width: $spacing-sm;
+      height: $spacing-sm;
+      border: 2px solid var(--border-default);
       border-radius: 50%;
-      background-color: $gray;
+      background-color: var(--surface-2);
+      transition: all 0.2s ease;
 
       &--active {
+        border-color: var(--color-primary);
         animation: scale-dot 0.2s;
-        background-color: $primary-brand;
+        background-color: var(--color-primary);
         opacity: 1;
       }
     }
@@ -344,135 +349,69 @@ export default {
     &__keyboard {
       display: flex;
       flex-direction: column;
-      gap: $spacing-sm;
+      gap: $spacing-md;
     }
 
     &__row {
       display: flex;
       justify-content: center;
-      gap: $spacing-lg;
+      gap: $spacing-md;
     }
 
     &__key {
       @include text-xl;
-      width: $spacing-6xl;
-      height: $spacing-6xl;
+      width: 4.25rem;
+      height: 4.25rem;
       border-radius: 50%;
       font-weight: $font-weight-regular;
       transition: all 0.2s ease;
 
+      &.cs-button {
+        border: 1px solid var(--border-default);
+        background-color: var(--surface-1);
+        box-shadow: var(--shadow-sm);
+      }
+
+      &.cs-button--secondary {
+        background-color: var(--surface-2);
+        color: var(--color-text);
+
+        @include hover {
+          background-color: var(--surface-3);
+          transform: translateY(-1px);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
       &--disabled {
+        border: none;
         background-color: transparent;
+        box-shadow: none;
         pointer-events: none;
       }
 
       &--named {
         @include text-sm;
+        color: var(--color-secondary);
+        font-weight: 600;
       }
     }
 
     &__biometry {
       height: $spacing-2xl;
       margin: 0 auto;
+      color: var(--color-primary);
     }
 
     &__error {
       @include text-md;
-    }
-  }
-
-  // Dark mode styles - theme-consistent design
-  html.theme--dark,
-  html.theme--auto {
-    @media (prefers-color-scheme: dark) {
-      .#{ $filename } {
-        &__key {
-          // Number buttons - subtle gray/green background with bright green text
-          &.cs-button--secondary {
-            color: var(--color-primary) !important; // Bright green numbers
-            background-color: var(--color-secondary-light) !important; // Subtle gray background
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-            
-            &:hover {
-              background-color: var(--color-primary-light) !important; // Soft green on hover
-              transform: scale(1.05);
-            }
-            
-            &:active {
-              background-color: var(--color-primary-light) !important;
-              transform: scale(0.98);
-              box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-            }
-          }
-          
-          // Named buttons (Log out, Delete) - use theme colors
-          &--named {
-            color: var(--color-primary) !important;
-            background-color: transparent !important;
-            
-            &:hover {
-              background-color: var(--color-primary-light) !important;
-            }
-          }
-        }
-        
-        // PIN dots
-        &__dot {
-          background-color: var(--color-divider);
-          border: 2px solid var(--color-divider);
-          
-          &--active {
-            background-color: var(--color-primary);
-            border-color: var(--color-primary);
-            animation: scale-dot 0.2s;
-          }
-        }
-      }
-    }
-  }
-
-  // Force dark theme (always apply)
-  html.theme--dark {
-    .#{ $filename } {
-      &__key {
-        &.cs-button--secondary {
-          color: var(--color-primary) !important; // Bright green numbers
-          background-color: var(--color-secondary-light) !important; // Subtle gray background
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-          font-weight: 600;
-          
-          &:hover {
-            background-color: var(--color-primary-light) !important; // Soft green on hover
-            transform: scale(1.05);
-          }
-          
-          &:active {
-            background-color: var(--color-primary-light) !important;
-            transform: scale(0.98);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-          }
-        }
-        
-        &--named {
-          color: var(--color-primary) !important;
-          background-color: transparent !important;
-          
-          &:hover {
-            background-color: var(--color-primary-light) !important;
-          }
-        }
-      }
-      
-      &__dot {
-        background-color: var(--color-divider);
-        border: 2px solid var(--color-divider);
-        
-        &--active {
-          background-color: var(--color-primary);
-          border-color: var(--color-primary);
-        }
-      }
+      color: var(--color-danger);
+      font-weight: 500;
+      text-align: center;
     }
   }
 </style>

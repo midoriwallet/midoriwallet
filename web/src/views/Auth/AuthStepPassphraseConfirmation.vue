@@ -53,6 +53,14 @@ export default {
     <div class="&__description">
       {{ $t('Almost done! Enter the following words from your passphrase.') }}
     </div>
+    <div class="&__targets">
+      <div class="&__target">
+        {{ $t('Word #{index}', { index: firstIndex + 1 }) }}
+      </div>
+      <div class="&__target">
+        {{ $t('Word #{index}', { index: secondIndex + 1 }) }}
+      </div>
+    </div>
     <CsFormGroup class="&__words">
       <CsFormInput
         v-model="firstWord"
@@ -90,10 +98,45 @@ export default {
   .#{ $filename } {
     &__description {
       @include text-md;
+      color: var(--color-secondary);
+      line-height: 1.5;
+    }
+
+    &__targets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-xs;
+    }
+
+    &__target {
+      @include text-sm;
+      padding: $spacing-2xs $spacing-sm;
+      border: 1px solid color-mix(in srgb, var(--color-primary) 34%, var(--border-default));
+      border-radius: 999px;
+      background-color: var(--surface-primary-soft);
+      color: var(--color-text);
+      font-weight: 600;
     }
 
     &__words {
       flex-grow: 1;
+
+      .cs-form-element__label {
+        color: var(--color-secondary) !important;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .cs-form-element__box {
+        border-color: var(--border-default) !important;
+        background-color: var(--surface-1) !important;
+        box-shadow: var(--shadow-sm) !important;
+      }
+
+      .cs-form-element--writable .cs-form-element__box:focus-within {
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 16%, transparent) !important;
+      }
     }
   }
 </style>

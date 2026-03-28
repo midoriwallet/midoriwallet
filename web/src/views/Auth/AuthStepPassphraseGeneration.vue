@@ -38,8 +38,13 @@ export default {
       <div class="&__text">
         {{ $t('This allows you to open your wallet on multiple devices and keeps it secure.') }}
       </div>
-      <div class="&__text">
-        {{ $t('It is very important to write down the passphrase.') }}
+      <div class="&__security-note">
+        <div class="&__security-title">
+          {{ $t('Important') }}
+        </div>
+        <div class="&__security-text">
+          {{ $t('It is very important to write down the passphrase.') }}
+        </div>
       </div>
     </div>
     <CsButton
@@ -74,7 +79,7 @@ export default {
     &__container {
       display: flex;
       flex-direction: column;
-      gap: $spacing-md;
+      gap: $spacing-lg;
       @include breakpoint(lg) {
         flex-grow: 1;
       }
@@ -83,10 +88,37 @@ export default {
     &__header {
       @include text-lg;
       @include text-bold;
+      line-height: 1.35;
     }
 
     &__text {
       @include text-md;
+      color: var(--color-secondary);
+      line-height: 1.5;
+    }
+
+    &__security-note {
+      display: flex;
+      flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid color-mix(in srgb, var(--color-primary) 22%, var(--border-default));
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-primary-soft);
+      gap: $spacing-2xs;
+    }
+
+    &__security-title {
+      @include text-sm;
+      color: var(--color-text);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    &__security-text {
+      @include text-sm;
+      color: var(--color-secondary);
+      line-height: 1.45;
     }
 
     &__generate {

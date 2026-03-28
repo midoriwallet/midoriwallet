@@ -141,7 +141,11 @@ export default {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      gap: $spacing-xl;
+      padding: $spacing-lg;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+      gap: $spacing-md;
     }
 
     &__suggestions {
@@ -151,10 +155,18 @@ export default {
     }
 
     &__suggestion {
-      @include text-md;
-      padding: $spacing-xs $spacing-lg;
-      border-radius: 0.75rem;
-      box-shadow: 0 0.75rem 2.5rem rgb(0 0 0 / 7%);
+      @include text-sm;
+      padding: $spacing-xs $spacing-md;
+      border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--border-default));
+      border-radius: 999px;
+      background-color: var(--surface-primary-soft);
+      color: var(--color-text);
+      font-weight: 600;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
     }
 
     &__buttons {
