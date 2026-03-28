@@ -43,6 +43,7 @@ export default {
     position: relative;
     display: flex;
     padding: 0 $spacing-xl;
+    gap: $spacing-xs;
 
     @include breakpoint(lg) {
       max-width: 30rem;
@@ -62,10 +63,11 @@ export default {
       opacity: 0;
       pointer-events: none;
       &:checked ~ #{ $self }__button {
+        z-index: 1;
         background-color: var(--color-secondary-light);
+        box-shadow: 0 0 0 2px var(--color-primary);
         color: var(--color-primary);
         font-weight: 600;
-        box-shadow: 0 0 0 2px var(--color-primary);
       }
     }
 
@@ -76,12 +78,12 @@ export default {
       align-items: center;
       justify-content: center;
       border-radius: 0.5rem;
-      cursor: pointer;
       background-color: var(--color-secondary-light);
       color: var(--color-secondary);
-      transition: all 0.2s;
+      cursor: pointer;
       font-weight: 500;
-      
+      transition: all 0.2s;
+
       &:hover {
         background-color: var(--color-divider);
         color: var(--color-text);
