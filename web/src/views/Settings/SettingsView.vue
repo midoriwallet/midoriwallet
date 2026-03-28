@@ -53,7 +53,7 @@ export default {
     },
   },
   watch: {
-    '$theme': {
+    $theme: {
       handler(newValue) {
         // Sync local theme with global theme
         if (this.theme !== newValue) {
@@ -252,29 +252,123 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
-    &__header {
+    position: relative;
+
+    &::before {
+      position: absolute;
       z-index: 0;
+      top: -$spacing-3xl;
+      right: 50%;
+      width: 20rem;
+      height: 20rem;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgb(4 156 102 / 15%) 0%, rgb(4 156 102 / 0%) 68%);
+      content: '';
+      transform: translateX(50%);
+      pointer-events: none;
+    }
+
+    &__header {
+      position: relative;
+      z-index: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: $spacing-lg;
+      padding: $spacing-xl $spacing-lg;
+      border: 1px solid var(--border-default);
+      border-radius: var(--border-radius-lg);
+      background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+      box-shadow: var(--shadow-md);
+      gap: $spacing-md;
     }
 
     &__header-avatar {
-      z-index: -1;
+      z-index: 1;
       width: $spacing-6xl;
       height: $spacing-6xl;
+      border: 2px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+      box-shadow: 0 0 0 8px rgb(4 156 102 / 8%);
     }
 
     &__header-username {
       @include text-md;
       @include ellipsis;
       max-width: 100%;
+      color: var(--color-text);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-align: center;
+    }
+
+    &__header-button {
+      min-width: 6.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    > .cs-list-items {
+      position: relative;
+      z-index: 1;
+      border-color: var(--border-default);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-md);
+    }
+
+    > .cs-list-items .cs-list-items__title-wrapper {
+      padding-right: $spacing-lg;
+      padding-left: $spacing-lg;
+      color: var(--color-secondary);
+    }
+
+    > .cs-list-items .cs-list-items__title {
+      @include text-xs;
+      padding: $spacing-md 0 $spacing-sm;
+      border-bottom-color: var(--border-default);
+      color: var(--color-secondary);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    > .cs-list-items .cs-list-item {
+      min-height: 4.5rem;
+      padding-right: $spacing-lg;
+      padding-left: $spacing-lg;
+    }
+
+    > .cs-list-items .cs-list-item__content {
+      padding-top: $spacing-lg;
+      padding-bottom: $spacing-lg;
+    }
+
+    > .cs-list-items .cs-list-item__title {
+      font-weight: 600;
+      letter-spacing: 0.005em;
+      line-height: 1.4;
+    }
+
+    > .cs-list-items .cs-list-item__description {
+      margin-top: $spacing-3xs;
+      color: var(--color-secondary);
+    }
+
+    &__logout {
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+
+      @include hover {
+        background-color: color-mix(in srgb, var(--surface-danger-soft) 86%, #fff);
+      }
     }
 
     &__version {
       @include text-sm;
-      color: $secondary;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: 999px;
+      margin-top: $spacing-xs;
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
+      letter-spacing: 0.03em;
       text-align: center;
     }
   }

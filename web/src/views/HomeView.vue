@@ -25,13 +25,15 @@
     &__placeholder {
       display: flex;
       width: 100%;
-      max-width: 30rem;
+      max-width: 32rem;
       flex-direction: column;
       align-items: center;
       padding: $spacing-4xl $spacing-xl;
       border: 1px solid var(--border-subtle);
       border-radius: var(--border-radius-lg);
-      background-color: var(--surface-1);
+      background:
+        radial-gradient(circle at top center, rgb(4 156 102 / 9%), transparent 58%),
+        var(--surface-1);
       box-shadow: var(--shadow-md);
       gap: $spacing-sm;
       text-align: center;

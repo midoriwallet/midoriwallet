@@ -66,18 +66,22 @@ export default {
     flex-direction: column;
     padding: $spacing-md;
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius-md);
-    background-color: var(--surface-1);
+    border-radius: var(--border-radius-lg);
+    background:
+      linear-gradient(180deg, rgb(4 156 102 / 8%) 0, transparent 72%),
+      var(--surface-1);
     box-shadow: var(--shadow-sm);
-    gap: $spacing-2xs;
+    gap: $spacing-xs;
 
     @include breakpoint(lg) {
       padding: $spacing-lg;
     }
 
     &__header {
-      @include text-sm;
+      @include text-xs;
       color: var(--color-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     &__balance {
@@ -91,16 +95,16 @@ export default {
     }
 
     &__amount {
-      @include text-md;
+      @include text-xl;
       @include text-bold;
       @include ellipsis;
-
       display: flex;
       gap: $spacing-xs;
+      letter-spacing: 0.01em;
     }
 
     &__fiat {
-      @include text-sm;
+      @include text-md;
       @include text-bold;
       @include ellipsis;
       color: var(--color-secondary);

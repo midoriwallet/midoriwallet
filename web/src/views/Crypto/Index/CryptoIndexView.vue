@@ -200,7 +200,9 @@ export default {
       padding: $spacing-lg;
       border: 1px solid var(--border-subtle);
       border-radius: var(--border-radius-lg);
-      background-color: var(--surface-1);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 7%), transparent 68%),
+        var(--surface-1);
       box-shadow: var(--shadow-sm);
       gap: $spacing-lg;
 

@@ -150,9 +150,11 @@ export default {
 
     &__header {
       @include text-sm;
-      margin-bottom: $spacing-2xs;
+      margin-bottom: $spacing-sm;
       color: var(--color-secondary);
       font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     &__list {
@@ -160,7 +162,7 @@ export default {
       flex-wrap: wrap;
       justify-content: flex-start;
       padding: 0;
-      margin: 0 (-$spacing-sm);
+      margin: 0;
       gap: $spacing-2xs;
       list-style: none;
 
@@ -174,24 +176,39 @@ export default {
       display: flex;
       flex: 0 0 100%;
       align-items: flex-start;
-      padding: $spacing-sm;
-
-      border-radius: 0.625rem;
+      padding: $spacing-sm $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       cursor: pointer;
       gap: $spacing-sm;
       overflow-x: hidden;
+      transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
 
       @include hover {
-        background-color: var(--color-secondary-light);
+        border-color: var(--border-default);
+        background-color: var(--surface-2);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
       }
 
       &:active {
-        background-color: var(--color-secondary-light);
+        background-color: var(--surface-2);
+        box-shadow: var(--shadow-sm);
+        transform: translateY(0);
       }
 
       &--selected {
-        background-color: var(--color-secondary-light);
-        border-left: 3px solid var(--color-primary);
+        border-color: rgb(4 156 102 / 45%);
+        background:
+          linear-gradient(0deg, rgb(4 156 102 / 4%), rgb(4 156 102 / 4%)),
+          var(--surface-1);
+        box-shadow: var(--shadow-md);
 
         .cs-crypto-list__title,
         .#{ $filename }__title {
@@ -213,7 +230,7 @@ export default {
       width: $spacing-3xl;
       height: $spacing-3xl;
       flex: 0 0 auto;
-      margin: $spacing-2xs 0;
+      margin: $spacing-3xs 0;
     }
 
     &__content {
@@ -233,6 +250,7 @@ export default {
       @include text-bold;
       @include ellipsis;
       color: var(--color-text);
+      letter-spacing: 0.01em;
 
       &:first-child {
         flex: 0 0 auto;
@@ -270,14 +288,21 @@ export default {
     }
 
     &__change {
-      padding-left: $spacing-xs;
+      display: inline-flex;
+      padding: 0 $spacing-2xs;
+      margin-left: $spacing-xs;
+      border-radius: 999px;
+      background-color: var(--surface-2);
+      font-weight: 500;
 
       &--positive {
         color: var(--color-primary);
+        background-color: var(--surface-primary-soft);
       }
 
       &--negative {
         color: var(--color-danger);
+        background-color: var(--surface-danger-soft);
       }
     }
 

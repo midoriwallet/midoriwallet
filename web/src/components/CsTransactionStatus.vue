@@ -172,7 +172,7 @@ export default {
       }
 
       &--success {
-        background-color: $primary-light;
+        background-color: var(--surface-primary-soft);
 
         path {
           animation: status-success-path 0.3s ease-in 0.15s forwards;
@@ -180,7 +180,7 @@ export default {
       }
 
       &--failed {
-        background-color: $danger-light;
+        background-color: var(--surface-danger-soft);
 
         path {
           animation: status-failed-path 0.3s ease-in 0.15s forwards;
@@ -192,15 +192,17 @@ export default {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      padding: $spacing-md;
+      padding: $spacing-lg;
       border: 1px solid var(--border-subtle);
-      border-radius: var(--border-radius-md);
-      background: var(--surface-1);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 6%), transparent 75%),
+        var(--surface-1);
       gap: $spacing-md;
     }
 
     &__info-header {
-      @include text-lg;
+      @include text-xl;
       @include text-bold;
       color: var(--color-text);
     }

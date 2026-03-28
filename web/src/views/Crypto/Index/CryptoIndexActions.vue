@@ -72,12 +72,15 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     width: 100%;
-    max-width: 25rem;
+    max-width: 28rem;
     padding: $spacing-sm;
     border: 1px solid var(--border-subtle);
-    border-radius: var(--border-radius-md);
-    background-color: var(--surface-1);
+    border-radius: var(--border-radius-lg);
+    background:
+      linear-gradient(180deg, rgb(4 156 102 / 6%), transparent 75%),
+      var(--surface-1);
     box-shadow: var(--shadow-sm);
+
     @include breakpoint(lg) {
       align-self: flex-start;
     }

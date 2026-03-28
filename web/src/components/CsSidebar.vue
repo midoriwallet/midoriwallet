@@ -148,7 +148,9 @@ export default {
     height: 100%;
     flex-direction: column;
     border: 1px solid var(--border-subtle);
-    background-color: var(--surface-1);
+    background:
+      radial-gradient(circle at top right, rgb(4 156 102 / 8%), transparent 52%),
+      var(--surface-1);
     box-shadow: var(--shadow-sm);
     overflow-y: auto;
 
@@ -170,9 +172,11 @@ export default {
       padding:
         max($spacing-2xl, env(safe-area-inset-top))
         max($spacing-xl, env(safe-area-inset-right))
-        $spacing-xl
+        $spacing-lg
         max($spacing-xl, env(safe-area-inset-left));
       border-bottom: 1px solid var(--border-subtle);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 10%), transparent 78%);
     }
 
     &__identity-top {
@@ -184,13 +188,16 @@ export default {
     &__settings-btn {
       padding: 0;
       border: none;
+      border-radius: 999px;
       background: none;
     }
 
     &__avatar {
       width: 2.5rem;
       height: 2.5rem;
+      border: 1px solid var(--border-subtle);
       border-radius: 50%;
+      box-shadow: var(--shadow-sm);
     }
 
     &__portfolio-amount {
@@ -199,9 +206,15 @@ export default {
       color: var(--color-text);
       cursor: pointer;
       text-align: left;
+      letter-spacing: 0.01em;
 
-      &--large { @include text-lg; }
-      &--normal { @include text-2xl; }
+      &--large {
+        @include text-xl;
+      }
+
+      &--normal {
+        @include text-2xl;
+      }
     }
 
     &__portfolio-meta {
@@ -221,9 +234,19 @@ export default {
     &__portfolio-change {
       @include text-xs;
       @include text-bold;
+      padding: 0 $spacing-2xs;
+      border-radius: 999px;
+      background-color: var(--surface-2);
 
-      &--positive { color: var(--color-primary); }
-      &--negative { color: var(--color-danger); }
+      &--positive {
+        color: var(--color-primary);
+        background-color: var(--surface-primary-soft);
+      }
+
+      &--negative {
+        color: var(--color-danger);
+        background-color: var(--surface-danger-soft);
+      }
     }
 
     /* ---- Asset list ---- */
@@ -255,6 +278,7 @@ export default {
         max($spacing-xl, env(safe-area-inset-bottom))
         max($spacing-xl, env(safe-area-inset-left));
       border-top: 1px solid var(--border-subtle);
+      background-color: var(--surface-1);
       gap: $spacing-3xs;
     }
   }

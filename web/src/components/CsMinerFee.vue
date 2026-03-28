@@ -74,13 +74,15 @@ export default {
 
 <template>
   <CsFormGroup class="&">
-    <CsFormSelect
-      v-model="value"
-      :options="options"
-      :label="$t('Transaction speed')"
-    />
-    <div class="&__info">
-      {{ $t('The higher the speed, the faster transaction is processed by the network.') }}
+    <div class="&__card">
+      <CsFormSelect
+        v-model="value"
+        :options="options"
+        :label="$t('Transaction speed')"
+      />
+      <div class="&__info">
+        {{ $t('The higher the speed, the faster transaction is processed by the network.') }}
+      </div>
     </div>
   </CsFormGroup>
   <CsButton
@@ -96,8 +98,18 @@ export default {
     $self: &;
     flex-grow: 1;
 
+    &__card {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
+      gap: $spacing-xs;
+    }
+
     &__info {
-      @include text-md;
+      @include text-sm;
+      color: var(--color-secondary);
     }
   }
 </style>

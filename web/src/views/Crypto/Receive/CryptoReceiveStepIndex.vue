@@ -276,6 +276,13 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: $spacing-sm;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 6%), transparent 74%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__location {
@@ -288,8 +295,10 @@ export default {
       height: 12rem;
       flex-shrink: 0;
       padding: $spacing-md;
-      border: 1px solid $gray;
-      border-radius: 0.625rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--color-white);
+      box-shadow: var(--shadow-sm);
     }
 
     &__address-type-button {
@@ -315,8 +324,13 @@ export default {
     &__actions {
       position: relative;
       width: 100%;
-      max-width: 25rem;
+      max-width: 28rem;
       align-self: center;
+      padding: $spacing-xs;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__mecto {

@@ -62,11 +62,22 @@ export default {
     border: 1px solid var(--border-subtle);
     border-radius: var(--border-radius-sm);
     background-color: var(--surface-1);
+    box-shadow: var(--shadow-sm);
     gap: $spacing-xs;
+    transition:
+      border-color 0.15s ease-in-out,
+      background-color 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
+
+    &:focus-within {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+    }
 
     &__label {
       @include text-sm;
-      color: var(--color-secondary);
+      color: var(--color-text);
+      font-weight: 500;
     }
 
     &__select {

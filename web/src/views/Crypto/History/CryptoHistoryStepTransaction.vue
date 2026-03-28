@@ -278,36 +278,44 @@ export default {
       flex-direction: column;
       align-items: center;
       gap: $spacing-2xs;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 7%), transparent 75%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
       text-align: center;
     }
 
     &__amount-crypto {
-      @include text-lg;
+      @include text-xl;
+      @include text-bold;
       @include ellipsis;
       width: 100%;
 
       &--positive {
-        color: $primary;
+        color: var(--color-primary);
       }
 
       &--negative {
-        color: $danger;
+        color: var(--color-danger);
       }
     }
 
     &__amount-fiat {
-      @include text-sm;
+      @include text-md;
       @include ellipsis;
       width: 100%;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__status {
       @include text-sm;
-      color: $secondary;
+      color: var(--color-secondary);
 
       &--danger {
-        color: $danger;
+        color: var(--color-danger);
       }
     }
 
@@ -327,6 +335,11 @@ export default {
 
     &__info {
       flex-grow: 1;
+      padding: $spacing-sm;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
   }
 </style>
