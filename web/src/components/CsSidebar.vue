@@ -66,18 +66,22 @@ export default {
     class="&"
     :class="{ '&--active': active }"
   >
-    <div class="&__navbar">
-      <CsButton
-        @click="$router.push({ name: 'settings' })"
-      >
-        <CsAvatar
-          class="&__avatar"
-          :avatar="$user.avatar"
-          own
-          :size="48"
-          :alt="$t('Settings')"
-        />
-      </CsButton>
+    <!-- Identity / portfolio header -->
+    <div class="&__identity">
+      <div class="&__identity-top">
+        <CsButton
+          class="&__settings-btn"
+          @click="$router.push({ name: 'settings' })"
+        >
+          <CsAvatar
+            class="&__avatar"
+            :avatar="$user.avatar"
+            own
+            :size="40"
+            :alt="$t('Settings')"
+          />
+        </CsButton>
+      </div>
       <div
         class="&__portfolio-amount"
         :class="`&__portfolio-amount--${portfolioBalanceSize}`"
@@ -87,25 +91,26 @@ export default {
           currency: $currency,
         }) }}
       </div>
-      <div class="&__portfolio-label">
-        {{ $t('Portfolio value') }}
-      </div>
-      <div
-        class="&__portfolio-change"
-        :class="{
-          '&__portfolio-change--positive': !$isHiddenBalance && portfolioBalanceChangePercent > 0,
-          '&__portfolio-change--negative': !$isHiddenBalance && portfolioBalanceChangePercent < 0
-        }"
-      >
-        <template v-if="!$isHiddenBalance">
-          {{ $n(portfolioBalanceChangePercent, 'percent') }} ({{ $t('1 day') }})
-        </template>
-        <template v-else>
-          *****
-        </template>
+      <div class="&__portfolio-meta">
+        <span class="&__portfolio-label">{{ $t('Portfolio value') }}</span>
+        <span
+          class="&__portfolio-change"
+          :class="{
+            '&__portfolio-change--positive': !$isHiddenBalance && portfolioBalanceChangePercent > 0,
+            '&__portfolio-change--negative': !$isHiddenBalance && portfolioBalanceChangePercent < 0
+          }"
+        >
+          <template v-if="!$isHiddenBalance">
+            {{ $n(portfolioBalanceChangePercent, 'percent') }}&nbsp;({{ $t('1 day') }})
+          </template>
+          <template v-else>
+            *****
+          </template>
+        </span>
       </div>
     </div>
 
+    <!-- Asset list -->
     <div class="&__content">
       <CsCryptoList
         class="&__content-list"
@@ -115,21 +120,23 @@ export default {
         :changePeriod="changePeriod"
         @select="(id) => $router.push({ name: 'crypto', params: { cryptoId: id }})"
       />
-      <div class="&__add-crypto">
-        <CsButton
-          type="primary-link"
-          @click="$router.push({ name: 'crypto.add', force: true })"
-        >
-          <PlusIcon />
-          {{ $t('Add crypto') }}
-        </CsButton>
-        <CsButton
-          type="primary-link"
-          @click="$router.push({ name: 'bridge', force: true })"
-        >
-          {{ $t('Bridge') }}
-        </CsButton>
-      </div>
+    </div>
+
+    <!-- Footer actions -->
+    <div class="&__footer">
+      <CsButton
+        type="primary-link"
+        @click="$router.push({ name: 'crypto.add', force: true })"
+      >
+        <PlusIcon />
+        {{ $t('Add crypto') }}
+      </CsButton>
+      <CsButton
+        type="primary-link"
+        @click="$router.push({ name: 'bridge', force: true })"
+      >
+        {{ $t('Bridge') }}
+      </CsButton>
     </div>
   </div>
 </template>
@@ -140,89 +147,115 @@ export default {
     width: 100%;
     height: 100%;
     flex-direction: column;
-    background-color: $background-color;
+    border: 1px solid var(--border-subtle);
+    background-color: var(--surface-1);
+    box-shadow: var(--shadow-sm);
     overflow-y: auto;
 
     @include breakpoint(lg) {
       display: flex;
-      width: 22.5rem;
+      width: 22rem;
       flex-shrink: 0;
-      border-radius: 0.625rem;
+      border-radius: var(--border-radius-lg);
+      overflow-y: hidden;
     }
 
     &--active {
       display: flex;
     }
 
-    &__navbar {
+    /* ---- Identity / portfolio header ---- */
+    &__identity {
+      flex-shrink: 0;
       padding:
-        $spacing-3xl
+        max($spacing-2xl, env(safe-area-inset-top))
         max($spacing-xl, env(safe-area-inset-right))
         $spacing-xl
         max($spacing-xl, env(safe-area-inset-left));
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    &__identity-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: $spacing-md;
+    }
+
+    &__settings-btn {
+      padding: 0;
+      border: none;
+      background: none;
     }
 
     &__avatar {
-      width: $spacing-4xl;
-      height: $spacing-4xl;
-      margin-bottom: $spacing-3xl;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
     }
 
     &__portfolio-amount {
       @include ellipsis;
-      margin-bottom: $spacing-2xs;
+      margin-bottom: $spacing-3xs;
+      color: var(--color-text);
       cursor: pointer;
-      text-align: center;
+      text-align: left;
+
       &--large { @include text-lg; }
-      &--normal { @include text-3xl; }
+      &--normal { @include text-2xl; }
+    }
+
+    &__portfolio-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: $spacing-2xs;
     }
 
     &__portfolio-label {
-      @include text-sm;
-      margin-bottom: $spacing-2xs;
-      color: $secondary;
-      text-align: center;
+      @include text-xs;
+      color: var(--color-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     &__portfolio-change {
-      @include text-sm;
-      overflow-wrap: break-word;
-      text-align: center;
+      @include text-xs;
+      @include text-bold;
 
-      &--positive {
-        color: $primary;
-      }
-
-      &--negative {
-        color: $danger;
-      }
+      &--positive { color: var(--color-primary); }
+      &--negative { color: var(--color-danger); }
     }
 
+    /* ---- Asset list ---- */
     &__content {
       display: flex;
-      flex: 1 1 100%;
+      flex: 1 1 0;
       flex-direction: column;
       padding:
-        $spacing-xl
+        $spacing-sm
         max($spacing-xl, env(safe-area-inset-right))
-        $spacing-3xl
+        $spacing-sm
         max($spacing-xl, env(safe-area-inset-left));
-      gap: $spacing-2xs;
-      @include breakpoint(lg) {
-        overflow-y: auto;
-        scrollbar-width: thin;
-      }
+      overflow-y: auto;
+      scrollbar-width: thin;
     }
 
     &__content-list {
       flex-grow: 1;
     }
 
-    &__add-crypto {
+    /* ---- Footer actions ---- */
+    &__footer {
       display: flex;
       flex-direction: column;
-      flex-grow: 1;
-      justify-content: flex-end;
+      flex-shrink: 0;
+      padding:
+        $spacing-xs
+        max($spacing-xl, env(safe-area-inset-right))
+        max($spacing-xl, env(safe-area-inset-bottom))
+        max($spacing-xl, env(safe-area-inset-left));
+      border-top: 1px solid var(--border-subtle);
+      gap: $spacing-3xs;
     }
   }
 </style>

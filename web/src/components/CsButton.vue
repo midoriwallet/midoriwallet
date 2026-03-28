@@ -63,20 +63,25 @@ export default {
   %base-button {
     display: flex;
     overflow: hidden;
-    height: 3.5rem;
+    height: 3.25rem;
     align-items: center;
     justify-content: center;
     padding: 0 $spacing-lg;
-    border-radius: 0.625rem;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-md);
     gap: $spacing-md;
     line-height: 1.2;
-    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    transition:
+      background-color 0.15s ease-in-out,
+      color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out,
+      transform 0.15s ease-in-out;
 
     @include text-md;
     @include text-bold;
 
     &:disabled {
-      opacity: 0.4;
+      opacity: 0.45;
     }
 
     svg {
@@ -102,19 +107,20 @@ export default {
 
     &__circle {
       display: flex;
-      width: 3.5rem;
-      height: 3.5rem;
+      width: 3.25rem;
+      height: 3.25rem;
       align-items: center;
       justify-content: center;
+      border: 1px solid var(--border-subtle);
       border-radius: 50%;
-      background-color: $secondary-light;
+      background-color: var(--surface-2);
 
       @include hover {
-        background-color: darker($secondary-light, 5%);
+        background-color: var(--surface-3);
       }
 
       &:active {
-        background-color: darker($secondary-light, 10%);
+        transform: scale(0.98);
       }
     }
 
@@ -124,41 +130,48 @@ export default {
 
     &--primary {
       @extend %base-button;
-      background-color: $primary-brand;
+      background-color: var(--color-primary-brand);
+      color: #fff;
 
       @include hover {
-        background-color: darker($primary-brand, 10%);
+        background-color: darker($primary-brand, 8%);
+        transform: translateY(-1px);
       }
 
       &:active {
-        background-color: darker($primary-brand, 15%);
+        background-color: darker($primary-brand, 12%);
+        transform: translateY(0);
       }
     }
 
     &--secondary {
       @extend %base-button;
-      background-color: $secondary-light;
+      border-color: var(--border-subtle);
+      background-color: var(--surface-2);
+      color: var(--color-text);
 
       @include hover {
-        background-color: darker($secondary-light, 5%);
+        border-color: var(--border-default);
+        background-color: var(--surface-3);
       }
 
       &:active {
-        background-color: darker($secondary-light, 7%);
+        transform: scale(0.99);
       }
     }
 
     &--primary-light {
       @extend %base-button;
-      background-color: $primary-light;
-      color: $primary;
+      border-color: rgb(4 156 102 / 25%);
+      background-color: var(--surface-primary-soft);
+      color: var(--color-primary);
 
       @include hover {
-        background-color: darker($primary-light, 5%);
+        background-color: darker($primary-light, 3%);
       }
 
       &:active {
-        background-color: darker($primary-light, 7%);
+        transform: scale(0.99);
       }
 
       svg {
@@ -174,15 +187,16 @@ export default {
 
     &--danger-light {
       @extend %base-button;
-      background-color: $danger-light;
-      color: $danger;
+      border-color: rgb(214 59 43 / 20%);
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
 
       @include hover {
-        background-color: darker($danger-light, 5%);
+        background-color: darker($danger-light, 3%);
       }
 
       &:active {
-        background-color: darker($danger-light, 7%);
+        transform: scale(0.99);
       }
 
       svg {
@@ -199,14 +213,15 @@ export default {
     &--primary-link {
       @extend %base-button;
       background-color: transparent;
-      color: $primary;
+      color: var(--color-primary);
 
       @include hover {
-        color: darker($primary, 10%);
+        background-color: var(--surface-primary-soft);
+        color: darker($primary, 8%);
       }
 
       &:active {
-        color: darker($primary, 15%);
+        color: darker($primary, 12%);
       }
 
       svg {
@@ -223,23 +238,23 @@ export default {
     &--white-link {
       @extend %base-button;
       background-color: transparent;
-      color: $white;
+      color: var(--color-text);
 
       @include hover {
-        color: darker($white, 10%);
+        background-color: var(--surface-2);
       }
 
       &:active {
-        color: darker($white, 15%);
+        transform: scale(0.99);
       }
 
       svg {
         [stroke] {
-          stroke: $white;
+          stroke: var(--color-text);
         }
 
         [fill] {
-          fill: $white;
+          fill: var(--color-text);
         }
       }
     }
@@ -247,14 +262,14 @@ export default {
     &--danger-link {
       @extend %base-button;
       background-color: transparent;
-      color: $danger;
+      color: var(--color-danger);
 
       @include hover {
         color: darker($danger, 10%);
       }
 
       &:active {
-        color: darker($danger, 15%);
+        color: darker($danger, 12%);
       }
 
       svg {
@@ -283,7 +298,7 @@ export default {
     }
 
     &--small {
-      height: 2.75rem;
+      height: 2.5rem;
     }
 
     &--loading {

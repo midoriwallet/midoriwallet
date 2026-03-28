@@ -32,7 +32,7 @@ export default {
 
 <template>
   <div class="&">
-    <div class="&__action">
+    <div class="&__zone &__zone--left">
       <slot
         v-if="$slots.left"
         name="left"
@@ -47,17 +47,20 @@ export default {
       </CsNavbarButton>
     </div>
     <div
-      class="&__content"
-      :class="{'&__content--centered': centered}"
+      class="&__zone &__zone--center"
+      :class="{'&__zone--forced-center': centered}"
     >
       <div class="&__title">
         {{ title }}
       </div>
-      <div class="&__description">
+      <div
+        v-if="description"
+        class="&__description"
+      >
         {{ description }}
       </div>
     </div>
-    <div class="&__action">
+    <div class="&__zone &__zone--right">
       <slot name="right" />
     </div>
   </div>
@@ -65,45 +68,59 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
-    display: flex;
+    display: grid;
     width: 100%;
-    height: $spacing-5xl;
-    flex-direction: row;
+    min-height: $spacing-5xl;
     align-items: center;
+    padding: $spacing-2xs 0;
+    background-color: var(--surface-1);
+    grid-template-columns: $spacing-5xl 1fr $spacing-5xl;
 
-    &__action {
+    &__zone {
       display: flex;
       height: 100%;
-      flex-basis: $spacing-5xl;
-      flex-shrink: 0;
       align-items: center;
-      justify-content: center;
-    }
 
-    &__content {
-      min-width: 20%;
-      flex-grow: 1;
-      text-align: center;
-      @include breakpoint(lg) {
-        text-align: left;
+      &--left {
+        justify-content: flex-start;
+        padding-left: $spacing-xs;
       }
 
-      &--centered {
+      &--center {
+        overflow: hidden;
+        text-align: center;
+
+        @include breakpoint(lg) {
+          text-align: left;
+        }
+      }
+
+      &--forced-center {
         @include breakpoint(lg) {
           text-align: center;
         }
       }
+
+      &--right {
+        justify-content: flex-end;
+        padding-right: $spacing-xs;
+      }
     }
 
     &__title {
-      @include text-md;
       @include text-bold;
       @include ellipsis;
+      color: var(--color-text);
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      line-height: 1.4;
     }
 
     &__description {
       @include text-sm;
       @include ellipsis;
+      margin-top: 0.0625rem;
+      color: var(--color-secondary);
     }
   }
 </style>

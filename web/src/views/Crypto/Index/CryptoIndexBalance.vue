@@ -64,11 +64,20 @@ export default {
   .#{ $filename } {
     display: flex;
     flex-direction: column;
+    padding: $spacing-md;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-1);
+    box-shadow: var(--shadow-sm);
     gap: $spacing-2xs;
+
+    @include breakpoint(lg) {
+      padding: $spacing-lg;
+    }
 
     &__header {
       @include text-sm;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__balance {
@@ -76,6 +85,7 @@ export default {
       flex-wrap: wrap;
       align-items: baseline;
       justify-content: space-between;
+      padding: $spacing-xs 0;
       column-gap: $spacing-md;
       cursor: pointer;
     }
@@ -93,6 +103,11 @@ export default {
       @include text-sm;
       @include text-bold;
       @include ellipsis;
+      color: var(--color-secondary);
+    }
+
+    a {
+      color: var(--color-primary);
     }
   }
 </style>

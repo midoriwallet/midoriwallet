@@ -51,7 +51,10 @@ export default {
       :crypto="$wallet.crypto"
       :platform="$wallet.platform"
     />
-    <div v-if="$wallet.crypto.coingecko">
+    <div
+      v-if="$wallet.crypto.coingecko"
+      class="&__meta"
+    >
       <div
         class="&__price"
         :title="fiat"
@@ -90,10 +93,21 @@ export default {
   .#{ $filename } {
     display: flex;
     flex-basis: 100%;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-2);
     gap: $spacing-md;
 
     @include breakpoint(md) {
       flex-basis: auto;
+    }
+
+    &__meta {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-2xs;
     }
 
     &__crypto-logo {
@@ -105,6 +119,7 @@ export default {
     &__price {
       @include text-md;
       @include text-bold;
+      color: var(--color-text);
     }
 
     &__change {
@@ -114,11 +129,11 @@ export default {
       gap: $spacing-2xs;
 
       &--positive {
-        color: $primary;
+        color: var(--color-primary);
       }
 
       &--negative {
-        color: $danger;
+        color: var(--color-danger);
       }
 
       &::after {
@@ -134,7 +149,7 @@ export default {
 
     &__timestamp {
       @include text-sm;
-      color: $secondary;
+      color: var(--color-secondary);
     }
   }
 </style>

@@ -197,7 +197,16 @@ export default {
     &__header-container {
       display: flex;
       flex-direction: column;
+      padding: $spacing-lg;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-lg;
+
+      @include breakpoint(lg) {
+        padding: $spacing-xl;
+      }
     }
 
     &__header {
@@ -210,6 +219,11 @@ export default {
 
     &__error {
       @include text-md;
+      padding: $spacing-md;
+      border: 1px solid rgb(214 59 43 / 25%);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
     }
   }
 </style>

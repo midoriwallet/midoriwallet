@@ -1,92 +1,122 @@
 // Theme system using CSS custom properties
 :root {
   // Light theme (default)
-  --color-text: #222;
-  --color-secondary: #616763;
-  --color-secondary-light: #f6f8fa;
-  --color-primary: #05a76b;
-  --color-primary-brand: #05a76b;
-  --color-primary-light: #f0f9f2;
-  --color-danger: #dd230e;
-  --color-danger-light: #fcf5ef;
-  --color-divider: #f0f0f0;
-  --color-background: #fff;
-  --color-background-dark: #2c3832;
+  --color-text: #152019;
+  --color-secondary: #506057;
+  --color-secondary-light: #eef3ef;
+  --color-primary: #049c66;
+  --color-primary-brand: #049c66;
+  --color-primary-light: #e7f7ef;
+  --color-danger: #d63b2b;
+  --color-danger-light: #fcefeb;
+  --color-divider: #dde6df;
+  --color-background: #f7faf8;
+  --color-background-dark: #223128;
   --color-white: #fff;
   --color-black: #000;
-  --color-gray: #d3d3d3;
-  
+  --color-gray: #c5d0c9;
+
+  // Surfaces
+  --surface-0: #f7faf8;
+  --surface-1: #fff;
+  --surface-2: #f1f6f2;
+  --surface-3: #e8f0ea;
+  --surface-primary-soft: #e5f7ee;
+  --surface-danger-soft: #fdeeea;
+
+  // Borders
+  --border-subtle: #e4ece6;
+  --border-default: #d4dfd8;
+  --border-strong: #c2d0c8;
+
   // Shadows
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 5%);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 6%);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 5%);
-  
+  --shadow-sm: 0 1px 2px 0 rgb(12 28 19 / 6%);
+  --shadow-md: 0 6px 14px -8px rgb(12 28 19 / 14%);
+  --shadow-lg: 0 16px 28px -14px rgb(12 28 19 / 20%);
+
   // Border radius
-  --border-radius-sm: 0.375rem;
-  --border-radius-md: 0.5rem;
-  --border-radius-lg: 0.625rem;
+  --border-radius-sm: 0.5rem;
+  --border-radius-md: 0.75rem;
+  --border-radius-lg: 1rem;
 }
 
 // Dark theme
 html.theme--dark {
-  --color-text: #e8e8e8;
-  --color-secondary: #a8aaa9;
-  --color-secondary-light: #1e2421;
-  --color-primary: #06c97f;
-  --color-primary-brand: #06c97f;
-  --color-primary-light: #0d2e22;
-  --color-danger: #ff4d36;
-  --color-danger-light: #2d1915;
-  --color-divider: #2d3330;
-  --color-background: #121614;
-  --color-background-dark: #1a1e1c;
-  --color-white: #1a1e1c;
-  --color-black: #e8e8e8;
-  --color-gray: #4a4a4a;
-  
+  --color-text: #e7efe9;
+  --color-secondary: #95a89d;
+  --color-secondary-light: #17201b;
+  --color-primary: #07bb7a;
+  --color-primary-brand: #07bb7a;
+  --color-primary-light: #0f2d21;
+  --color-danger: #f26b5c;
+  --color-danger-light: #2b1b18;
+  --color-divider: #26332b;
+  --color-background: #0f1512;
+  --color-background-dark: #141d18;
+  --color-white: #18231d;
+  --color-black: #e7efe9;
+  --color-gray: #3f4f46;
+  --surface-0: #0f1512;
+  --surface-1: #141d18;
+  --surface-2: #1a2620;
+  --surface-3: #223128;
+  --surface-primary-soft: #113327;
+  --surface-danger-soft: #2b1b18;
+  --border-subtle: #223027;
+  --border-default: #2a3a2f;
+  --border-strong: #36483c;
+
   // Shadows for dark mode
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 30%);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 40%), 0 2px 4px -1px rgb(0 0 0 / 30%);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 50%), 0 4px 6px -2px rgb(0 0 0 / 40%);
+  --shadow-md: 0 8px 18px -10px rgb(0 0 0 / 55%);
+  --shadow-lg: 0 20px 32px -16px rgb(0 0 0 / 65%);
 }
 
 // Force background color on body for dark theme
 html.theme--dark body {
-  background-color: #121614 !important;
-  
+  background-color: #0f1512 !important;
+
   @media (min-width: 1024px) {
-    background-color: #1e2421 !important;
+    background-color: #141d18 !important;
   }
 }
 
 // Auto theme (follows system preference)
 @media (prefers-color-scheme: dark) {
   html.theme--auto {
-    --color-text: #e8e8e8;
-    --color-secondary: #a8aaa9;
-    --color-secondary-light: #1e2421;
-    --color-primary: #06c97f;
-    --color-primary-brand: #06c97f;
-    --color-primary-light: #0d2e22;
-    --color-danger: #ff4d36;
-    --color-danger-light: #2d1915;
-    --color-divider: #2d3330;
-    --color-background: #121614;
-    --color-background-dark: #1a1e1c;
-    --color-white: #1a1e1c;
-    --color-black: #e8e8e8;
-    --color-gray: #4a4a4a;
-    
+    --color-text: #e7efe9;
+    --color-secondary: #95a89d;
+    --color-secondary-light: #17201b;
+    --color-primary: #07bb7a;
+    --color-primary-brand: #07bb7a;
+    --color-primary-light: #0f2d21;
+    --color-danger: #f26b5c;
+    --color-danger-light: #2b1b18;
+    --color-divider: #26332b;
+    --color-background: #0f1512;
+    --color-background-dark: #141d18;
+    --color-white: #18231d;
+    --color-black: #e7efe9;
+    --color-gray: #3f4f46;
+    --surface-0: #0f1512;
+    --surface-1: #141d18;
+    --surface-2: #1a2620;
+    --surface-3: #223128;
+    --surface-primary-soft: #113327;
+    --surface-danger-soft: #2b1b18;
+    --border-subtle: #223027;
+    --border-default: #2a3a2f;
+    --border-strong: #36483c;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 30%);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 40%), 0 2px 4px -1px rgb(0 0 0 / 30%);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 50%), 0 4px 6px -2px rgb(0 0 0 / 40%);
+    --shadow-md: 0 8px 18px -10px rgb(0 0 0 / 55%);
+    --shadow-lg: 0 20px 32px -16px rgb(0 0 0 / 65%);
   }
-  
+
   html.theme--auto body {
-    background-color: #121614 !important;
-    
+    background-color: #0f1512 !important;
+
     @media (min-width: 1024px) {
-      background-color: #1e2421 !important;
+      background-color: #141d18 !important;
     }
   }
 }

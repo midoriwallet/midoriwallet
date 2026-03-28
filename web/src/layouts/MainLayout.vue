@@ -60,7 +60,7 @@ export default {
 
 <template>
   <div class="&">
-    <div class="&__navbar">
+    <div class="&__header">
       <slot
         v-if="$slots.navbar"
         name="navbar"
@@ -102,11 +102,23 @@ export default {
     display: flex;
     width: 100%;
     height: 100%;
+    min-height: 0;
     flex-direction: column;
+    background-color: var(--surface-1);
+
+    &__header {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--surface-1);
+    }
 
     &__container {
       display: flex;
-      height: 100%;
+      min-height: 0;
+      flex: 1 1 auto;
       flex-direction: column;
       align-items: center;
       overflow-y: auto;
@@ -119,15 +131,16 @@ export default {
       flex-basis: 100%;
       flex-direction: column;
       padding:
-        $spacing-3xl
+        $spacing-2xl
         max($spacing-xl, env(safe-area-inset-right))
         $spacing-3xl
         max($spacing-xl, env(safe-area-inset-left));
-      gap: $spacing-3xl;
+      background-color: var(--surface-1);
+      gap: $spacing-2xl;
+
       @include breakpoint(lg) {
-        // ~ max-height limited by 720px
         flex-basis: 45rem;
-        padding: $spacing-3xl $spacing-xl;
+        padding: $spacing-2xl $spacing-xl $spacing-3xl;
       }
 
       &--narrow {
@@ -137,14 +150,9 @@ export default {
       }
     }
 
-    &__navbar {
-      @include breakpoint(lg) {
-        border-bottom: 1px solid $divider;
-      }
-    }
-
     &__error {
       @include text-md;
+      color: var(--color-danger);
     }
   }
 </style>

@@ -4,3 +4,29 @@
 @import "themes";
 @import "dark-mode-overrides";
 @import "animations";
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--surface-0);
+  color: var(--color-text);
+  font-family: "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizelegibility;
+}
+
+a {
+  color: inherit;
+}
+
+* {
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::selection {
+  background-color: rgb(4 156 102 / 20%);
+}

@@ -73,6 +73,11 @@ export default {
   .#{ $filename } {
     width: 100%;
     max-width: 25rem;
+    padding: $spacing-sm;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-md);
+    background-color: var(--surface-1);
+    box-shadow: var(--shadow-sm);
     @include breakpoint(lg) {
       align-self: flex-start;
     }
