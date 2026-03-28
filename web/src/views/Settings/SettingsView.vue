@@ -113,139 +113,142 @@ export default {
 
 <template>
   <MainLayout :title="$t('Settings')">
-    <div class="&__header">
-      <CsAvatar
-        class="&__header-avatar"
-        :avatar="$user.avatar"
-        own
-        :class="{ '&__header-avatar--tor': $isOnion }"
-        :size="80"
-        :alt="$t('Account')"
-      />
-      <div
-        v-if="$user.username"
-        class="&__header-username"
-      >
-        {{ $user.username }}
+    <div class="&">
+      <div class="&__header">
+        <CsAvatar
+          class="&__header-avatar"
+          :avatar="$user.avatar"
+          own
+          :class="{ '&__header-avatar--tor': $isOnion }"
+          :size="80"
+          :alt="$t('Account')"
+        />
+        <div
+          v-if="$user.username"
+          class="&__header-username"
+        >
+          {{ $user.username }}
+        </div>
+        <CsButton
+          class="&__header-button"
+          type="primary-light"
+          small
+          @click="$router.push({ name: 'settings.account' })"
+        >
+          {{ $t('Edit') }}
+        </CsButton>
       </div>
-      <CsButton
-        class="&__header-button"
-        type="primary-light"
-        small
-        @click="$router.push({ name: 'settings.account' })"
+
+      <CsListItems :title="$t('General')">
+        <CsListItem
+          :title="$t('Theme')"
+        >
+          <template #after>
+            <CsListItemDropdown
+              v-model="theme"
+              :options="themes"
+              :aria-label="$t('Theme')"
+            />
+          </template>
+        </CsListItem>
+        <CsListItem
+          :title="$t('Local currency')"
+        >
+          <template #after>
+            <CsListItemDropdown
+              v-model="currency"
+              :options="currencies"
+              :aria-label="$t('Local currency')"
+            />
+          </template>
+        </CsListItem>
+        <CsListItem
+          :title="$t('Language')"
+        >
+          <template #after>
+            <CsListItemDropdown
+              v-model="language"
+              :options="languages"
+              :aria-label="$t('Language')"
+            />
+          </template>
+        </CsListItem>
+      </CsListItems>
+
+      <CsListItems :title="$t('Services')">
+        <CsListItem
+          :title="$t('Midori Services')"
+          :description="$t('Virtual accounts & payments')"
+          @click="$router.push({ name: 'bridge' })"
+        />
+      </CsListItems>
+
+      <CsListItems :title="$t('Wallet')">
+        <CsListItem
+          :title="$t('Saved Addresses')"
+          @click="$router.push({ name: 'settings.addresses' })"
+        />
+      </CsListItems>
+
+      <CsListItems :title="$t('Connections')">
+        <CsListItem
+          :title="$t('WalletConnect')"
+          @click="$router.push({ name: 'settings.walletconnect' })"
+        />
+      </CsListItems>
+
+      <CsListItems :title="$t('Security')">
+        <CsListItem
+          :title="securityPinTitle"
+          @click="$router.push({ name: 'settings.pin' })"
+        />
+        <CsListItem
+          :title="$t('Hardware security')"
+          @click="$router.push({ name: 'settings.hardware' })"
+        />
+      </CsListItems>
+
+      <CsListItems
+        v-if="['phonegap', 'electron'].includes(env.VITE_BUILD_TYPE)"
+        :title="$t('Privacy')"
       >
-        {{ $t('Edit') }}
-      </CsButton>
-    </div>
-    <CsListItems :title="$t('General')">
-      <CsListItem
-        :title="$t('Theme')"
-      >
-        <template #after>
-          <CsListItemDropdown
-            v-model="theme"
-            :options="themes"
-            :aria-label="$t('Theme')"
-          />
-        </template>
-      </CsListItem>
-      <CsListItem
-        :title="$t('Local currency')"
-      >
-        <template #after>
-          <CsListItemDropdown
-            v-model="currency"
-            :options="currencies"
-            :aria-label="$t('Local currency')"
-          />
-        </template>
-      </CsListItem>
-      <CsListItem
-        :title="$t('Language')"
-      >
-        <template #after>
-          <CsListItemDropdown
-            v-model="language"
-            :options="languages"
-            :aria-label="$t('Language')"
-          />
-        </template>
-      </CsListItem>
-    </CsListItems>
+        <CsListItem
+          :title="$t('Tor')"
+          @click="$router.push({ name: 'settings.tor' })"
+        />
+      </CsListItems>
 
-    <CsListItems :title="$t('Services')">
-      <CsListItem
-        :title="$t('Midori Services')"
-        :description="$t('Virtual accounts & payments')"
-        @click="$router.push({ name: 'bridge' })"
-      />
-    </CsListItems>
+      <CsListItems :title="$t('Support')">
+        <CsListItem
+          :title="$t('Support (English)')"
+          @click="support"
+        />
+      </CsListItems>
 
-    <CsListItems :title="$t('Wallet')">
-      <CsListItem
-        :title="$t('Saved Addresses')"
-        @click="$router.push({ name: 'settings.addresses' })"
-      />
-    </CsListItems>
+      <CsListItems :title="$t('About')">
+        <CsListItem
+          :title="$t('Terms of Service')"
+          @click="$safeOpen(`${$account.siteUrl}terms-of-service/`)"
+        />
+        <CsListItem
+          :title="$t('Privacy Policy')"
+          @click="$safeOpen(`${$account.siteUrl}privacy-policy/`)"
+        />
+      </CsListItems>
 
-    <CsListItems :title="$t('Connections')">
-      <CsListItem
-        :title="$t('WalletConnect')"
-        @click="$router.push({ name: 'settings.walletconnect' })"
-      />
-    </CsListItems>
+      <CsListItems>
+        <CsListItem
+          :arrow="false"
+          type="danger"
+          :title="$t('Log out')"
+          class="&__logout"
+          @click="logout"
+        />
+      </CsListItems>
 
-    <CsListItems :title="$t('Security')">
-      <CsListItem
-        :title="securityPinTitle"
-        @click="$router.push({ name: 'settings.pin' })"
-      />
-      <CsListItem
-        :title="$t('Hardware security')"
-        @click="$router.push({ name: 'settings.hardware' })"
-      />
-    </CsListItems>
-
-    <CsListItems
-      v-if="['phonegap', 'electron'].includes(env.VITE_BUILD_TYPE)"
-      :title="$t('Privacy')"
-    >
-      <CsListItem
-        :title="$t('Tor')"
-        @click="$router.push({ name: 'settings.tor' })"
-      />
-    </CsListItems>
-
-    <CsListItems :title="$t('Support')">
-      <CsListItem
-        :title="$t('Support (English)')"
-        @click="support"
-      />
-    </CsListItems>
-
-    <CsListItems :title="$t('About')">
-      <CsListItem
-        :title="$t('Terms of Service')"
-        @click="$safeOpen(`${$account.siteUrl}terms-of-service/`)"
-      />
-      <CsListItem
-        :title="$t('Privacy Policy')"
-        @click="$safeOpen(`${$account.siteUrl}privacy-policy/`)"
-      />
-    </CsListItems>
-
-    <CsListItems>
-      <CsListItem
-        :arrow="false"
-        type="danger"
-        :title="$t('Log out')"
-        class="&__logout"
-        @click="logout"
-      />
-    </CsListItems>
-
-    <div class="&__version">
-      {{ version }}
+      <div class="&__version">
+        {{ version }}
+      </div>
     </div>
   </MainLayout>
 </template>
@@ -253,6 +256,13 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+
+    @include breakpoint(lg) {
+      gap: $desktop-spacing-xl;
+    }
 
     &::before {
       position: absolute;
@@ -274,12 +284,17 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: $spacing-xl $spacing-lg;
+      padding: $spacing-2xl $spacing-xl;
       border: 1px solid var(--border-default);
       border-radius: var(--border-radius-lg);
       background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
       box-shadow: var(--shadow-md);
       gap: $spacing-md;
+
+      @include breakpoint(lg) {
+        padding: $desktop-spacing-xl $desktop-spacing-lg;
+        gap: $desktop-spacing-md;
+      }
     }
 
     &__header-avatar {
@@ -314,30 +329,50 @@ export default {
     }
 
     > .cs-list-items .cs-list-items__title-wrapper {
-      padding-right: $spacing-lg;
-      padding-left: $spacing-lg;
+      padding-right: $spacing-xl;
+      padding-left: $spacing-xl;
       color: var(--color-secondary);
+
+      @include breakpoint(lg) {
+        padding-right: $desktop-spacing-lg;
+        padding-left: $desktop-spacing-lg;
+      }
     }
 
     > .cs-list-items .cs-list-items__title {
       @include text-xs;
-      padding: $spacing-md 0 $spacing-sm;
+      padding: $spacing-lg 0 $spacing-sm;
       border-bottom-color: var(--border-default);
       color: var(--color-secondary);
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-weight: 700;
+      letter-spacing: 0.09em;
       text-transform: uppercase;
+
+      @include breakpoint(lg) {
+        padding: $desktop-spacing-lg 0 $desktop-spacing-sm;
+      }
     }
 
     > .cs-list-items .cs-list-item {
       min-height: 4.5rem;
-      padding-right: $spacing-lg;
-      padding-left: $spacing-lg;
+      padding-right: $spacing-xl;
+      padding-left: $spacing-xl;
+
+      @include breakpoint(lg) {
+        min-height: 3.25rem;
+        padding-right: $desktop-spacing-lg;
+        padding-left: $desktop-spacing-lg;
+      }
     }
 
     > .cs-list-items .cs-list-item__content {
       padding-top: $spacing-lg;
       padding-bottom: $spacing-lg;
+
+      @include breakpoint(lg) {
+        padding-top: $desktop-spacing-md;
+        padding-bottom: $desktop-spacing-md;
+      }
     }
 
     > .cs-list-items .cs-list-item__title {
