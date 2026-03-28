@@ -134,3 +134,36 @@ export function chunks(array, chunkSize) {
   }
   return chunks;
 }
+
+export function isStablecoinCrypto(crypto) {
+  if (!crypto) return false;
+
+  if (crypto.meta?.stablecoin === true || crypto.stablecoin === true) {
+    return true;
+  }
+
+  const symbol = (crypto.symbol || '').toUpperCase();
+  const id = (crypto._id || '').toLowerCase();
+  const name = (crypto.name || '').toLowerCase();
+
+  const stableSymbols = new Set([
+    'USDT',
+    'USDC',
+    'DAI',
+    'TUSD',
+    'USDP',
+    'FDUSD',
+    'BUSD',
+    'GUSD',
+    'USDD',
+    'LUSD',
+    'PYUSD',
+  ]);
+
+  if (stableSymbols.has(symbol)) {
+    return true;
+  }
+
+  return /(^|[-_@])(usdt|usdc|dai|tusd|usdp|fdusd|busd|gusd|usdd|lusd|pyusd)([-_@]|$)/.test(id)
+    || /\b(usd coin|tether|stablecoin|pax dollar|trueusd|usd[dtcp]?|paypal usd)\b/.test(name);
+}

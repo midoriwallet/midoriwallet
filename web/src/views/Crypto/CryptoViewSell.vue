@@ -4,7 +4,10 @@ import CsLoader from '../../components/CsLoader.vue';
 import CsProviderList from '../../components/CsProviderList.vue';
 import MainLayout from '../../layouts/MainLayout.vue';
 
-import { cryptoSubtitle } from '../../lib/helpers.js';
+import {
+  cryptoSubtitle,
+  isStablecoinCrypto,
+} from '../../lib/helpers.js';
 
 export default {
   components: {
@@ -22,6 +25,11 @@ export default {
       providers: [],
     };
   },
+  computed: {
+    isStablecoin() {
+      return isStablecoinCrypto(this.$wallet.crypto);
+    },
+  },
   async mounted() {
     this.countryCode = await this.$account.ramps.getCountryCode();
     this.load();
@@ -31,20 +39,16 @@ export default {
       this.isLoading = true;
       try {
         this.$account.ramps.setCountryCode(this.countryCode);
-        this.providers = [
-          {
-            id: 'changenow',
-            name: 'ChangeNOW',
-            description: this.$t('Sell crypto via ChangeNOW flow'),
-            logo: this.createLogo('CN', '#00C26F'),
-          },
-          {
-            id: 'bridge',
-            name: 'Bridge',
-            description: this.$t('Cash out via Bridge transfer rails'),
-            logo: this.createLogo('BR', '#0A8F5A'),
-          },
-        ];
+        this.providers = this.isStablecoin
+          ? []
+          : [
+            {
+              id: 'changenow',
+              name: 'ChangeNOW',
+              description: this.$t('Sell crypto via ChangeNOW flow'),
+              logo: this.createLogo('CN', '#00C26F'),
+            },
+          ];
       } catch (err) {
         this.providers = [];
         console.error(err);
@@ -64,11 +68,7 @@ export default {
       ].join('');
       return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
     },
-    onProviderClick(item) {
-      if (item.id === 'bridge') {
-        this.$router.push({ name: 'bridge', force: true });
-        return;
-      }
+    onProviderClick() {
       this.$safeOpen('https://changenow.io/sell-crypto');
     },
   },
@@ -99,7 +99,9 @@ export default {
         v-else
         class="&__empty"
       >
-        {{ $t('There are currently no providers available.') }}
+        {{ isStablecoin
+          ? $t('Stablecoin banking is available in Bridge.')
+          : $t('There are currently no providers available.') }}
       </div>
     </div>
   </MainLayout>

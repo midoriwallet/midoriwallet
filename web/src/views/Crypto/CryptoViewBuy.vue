@@ -5,7 +5,10 @@ import CsModal from '../../components/CsModal.vue';
 import CsProviderList from '../../components/CsProviderList.vue';
 import MainLayout from '../../layouts/MainLayout.vue';
 
-import { cryptoSubtitle } from '../../lib/helpers.js';
+import {
+  cryptoSubtitle,
+  isStablecoinCrypto,
+} from '../../lib/helpers.js';
 
 const CHANGENOW_WIDGET_SCRIPT_ID = 'changenow-widget-stepper';
 
@@ -37,20 +40,24 @@ export default {
       this.isLoading = true;
       try {
         this.$account.ramps.setCountryCode(this.countryCode);
-        this.providers = [
-          {
-            id: 'changenow',
-            name: 'ChangeNOW',
-            description: this.$t('Instant crypto purchase widget'),
-            logo: this.createLogo('CN', '#00C26F'),
-          },
-          {
-            id: 'bridge',
-            name: 'Bridge',
-            description: this.$t('Bank transfer and compliant on-ramp'),
-            logo: this.createLogo('BR', '#0A8F5A'),
-          },
-        ];
+        const isStablecoin = isStablecoinCrypto(this.$wallet.crypto);
+        this.providers = isStablecoin
+          ? [
+            {
+              id: 'bridge',
+              name: 'Bridge',
+              description: this.$t('Buy stablecoins with banking rails'),
+              logo: this.createLogo('BR', '#0A8F5A'),
+            },
+          ]
+          : [
+            {
+              id: 'changenow',
+              name: 'ChangeNOW',
+              description: this.$t('Instant crypto purchase widget'),
+              logo: this.createLogo('CN', '#00C26F'),
+            },
+          ];
       } catch (err) {
         this.providers = [];
         console.error(err);
