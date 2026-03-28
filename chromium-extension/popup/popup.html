@@ -5,19 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Midori Wallet</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --c-primary: #049c66;
+      --c-primary-dark: #037a50;
+      --c-text: #152019;
+      --c-text-secondary: #506057;
+      --c-bg: #f7faf8;
+      --c-surface: #ffffff;
+      --c-border: #e4ece6;
+      --c-danger: #d63b2b;
+      --c-toolbar-h: 40px;
+      --radius: 6px;
+      --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
     }
 
-    body, html {
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --c-primary: #07bb7a;
+        --c-primary-dark: #049c66;
+        --c-text: #e7efe9;
+        --c-text-secondary: #95a89d;
+        --c-bg: #0f1512;
+        --c-surface: #141d18;
+        --c-border: #223027;
+        --c-danger: #f26b5c;
+      }
+    }
+
+    html, body {
       width: 420px;
       height: 600px;
       overflow: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: var(--font);
+      background-color: var(--c-bg);
+      color: var(--c-text);
     }
 
+    /* ---- Loading state ---- */
     #loading {
       display: flex;
       flex-direction: column;
@@ -25,27 +51,106 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #05a76b 0%, #048a59 100%);
-      color: white;
+      gap: 16px;
+      background-color: var(--c-surface);
     }
 
-    #loading.hidden {
+    #loading.hidden { display: none; }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--c-border);
+      border-top-color: var(--c-primary);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .loading-label {
+      font-size: 13px;
+      color: var(--c-text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- Toolbar ---- */
+    #toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--c-toolbar-h);
+      padding: 0 12px;
+      background-color: var(--c-surface);
+      border-bottom: 1px solid var(--c-border);
+      font-size: 12px;
+      color: var(--c-text-secondary);
+    }
+
+    #toolbar.hidden { display: none; }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toolbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      color: var(--c-text);
+    }
+
+    .toolbar-brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--c-primary);
+      flex-shrink: 0;
+    }
+
+    .toolbar-url {
+      font-size: 11px;
+      color: var(--c-text-secondary);
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 4px;
+    }
+
+    .toolbar-right button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: none;
+      color: var(--c-text-secondary);
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .toolbar-right button:hover {
+      background-color: var(--c-bg);
+      border-color: var(--c-border);
+      color: var(--c-text);
+    }
+
+    /* ---- Frame container ---- */
+    #frame-container {
+      width: 100%;
+      height: calc(100% - var(--c-toolbar-h));
       display: none;
     }
 
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    #frame-container.show { display: block; }
 
     #wallet-frame {
       width: 100%;
@@ -54,10 +159,9 @@
       display: none;
     }
 
-    #wallet-frame.loaded {
-      display: block;
-    }
+    #wallet-frame.loaded { display: block; }
 
+    /* ---- Error state ---- */
     #error {
       display: none;
       flex-direction: column;
@@ -65,115 +169,74 @@
       justify-content: center;
       width: 100%;
       height: 100%;
-      padding: 20px;
+      padding: 32px 24px;
       text-align: center;
-      background: #f8f9fa;
+      gap: 12px;
+      background-color: var(--c-surface);
     }
 
-    #error.show {
-      display: flex;
+    #error.show { display: flex; }
+
+    .error-icon {
+      font-size: 32px;
+      line-height: 1;
     }
 
     #error h2 {
-      color: #dd230e;
-      margin-bottom: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--c-danger);
     }
 
     #error p {
-      color: #616763;
-      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--c-text-secondary);
+      max-width: 280px;
+      line-height: 1.5;
     }
 
-    #error button {
-      padding: 12px 24px;
-      background: #05a76b;
-      color: white;
+    #retry-btn {
+      margin-top: 8px;
+      padding: 9px 24px;
+      background-color: var(--c-primary);
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background 0.15s;
     }
 
-    #error button:hover {
-      background: #048a59;
-      transform: translateY(-2px);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 12px;
-      background: #05a76b;
-      color: white;
-      font-size: 12px;
-    }
-
-    .toolbar.hidden {
-      display: none;
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .toolbar-right {
-      display: flex;
-      gap: 8px;
-    }
-
-    .toolbar button {
-      padding: 4px 8px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .toolbar button:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    #frame-container {
-      width: 100%;
-      height: calc(100% - 32px);
-      display: none;
-    }
-
-    #frame-container.show {
-      display: block;
-    }
+    #retry-btn:hover { background-color: var(--c-primary-dark); }
   </style>
 </head>
 <body>
   <!-- Loading -->
   <div id="loading">
     <div class="spinner"></div>
-    <p>Connecting with Midori Wallet...</p>
+    <span class="loading-label">Connecting with Midori Wallet...</span>
   </div>
 
   <!-- Toolbar -->
-  <div id="toolbar" class="toolbar hidden">
+  <div id="toolbar" class="hidden">
     <div class="toolbar-left">
-      <span>🔒 wallet.astian.org</span>
+      <div class="toolbar-brand">
+        <span class="toolbar-brand-dot"></span>
+        Midori Wallet
+      </div>
+      <span class="toolbar-url">wallet.astian.org</span>
     </div>
     <div class="toolbar-right">
-      <button id="refresh-btn" title="Recargar">🔄</button>
+      <button id="refresh-btn" title="Recargar">↺</button>
       <button id="open-tab-btn" title="Abrir en nueva pestaña">↗</button>
     </div>
   </div>
 
   <!-- Wallet Frame Container -->
   <div id="frame-container">
-    <iframe 
-      id="wallet-frame" 
+    <iframe
+      id="wallet-frame"
       src="https://wallet.astian.org/"
       allow="clipboard-read; clipboard-write; camera; microphone"
       sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation"
@@ -182,7 +245,8 @@
 
   <!-- Error -->
   <div id="error">
-    <h2>⚠️ Error de Conexión</h2>
+    <span class="error-icon">⚠</span>
+    <h2>Error de Conexión</h2>
     <p id="error-message">No se pudo conectar con wallet.astian.org</p>
     <button id="retry-btn">Reintentar</button>
   </div>
