@@ -14,12 +14,12 @@ export default {
   },
   extends: CsStep,
   computed: {
-  isRegistered() {
-    return this.$account.bridge.isRegistered;
-  },
-  isApproved() {
-    return this.$account.bridge.isApproved;
-  },
+    isRegistered() {
+      return this.$account.bridge.isRegistered;
+    },
+    isApproved() {
+      return this.$account.bridge.isApproved;
+    },
   },
   mounted() {
     if (this.isRegistered && !this.isApproved) {
@@ -42,7 +42,8 @@ export default {
           {{ $t('Connect your bank account to crypto') }}
         </div>
         <div class="&__intro-description">
-          {{ $t('Create virtual accounts to receive fiat deposits and convert them to crypto automatically. Supports USD, EUR, MXN, BRL, and GBP.') }}
+          {{ $t('Create virtual accounts to receive fiat deposits and convert them to crypto automatically.') }}
+          {{ $t('Supports USD, EUR, MXN, BRL, and GBP.') }}
         </div>
       </div>
       <CsButton
@@ -54,7 +55,7 @@ export default {
     </template>
 
     <template v-else>
-      <CsListItems>
+      <CsListItems class="&__list">
         <CsListItem
           :title="$t('Virtual Accounts')"
           :description="$t('Manage your virtual bank accounts')"
@@ -85,17 +86,32 @@ export default {
     &__intro {
       display: flex;
       flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 7%), transparent 65%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-md;
+    }
+
+    &__list {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__intro-title {
       @include text-lg;
       @include text-bold;
+      color: var(--color-text);
     }
 
     &__intro-description {
       @include text-md;
-      color: $secondary;
+      color: var(--color-secondary);
     }
   }
 </style>

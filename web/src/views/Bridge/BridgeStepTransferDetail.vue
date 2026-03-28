@@ -218,38 +218,49 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: $spacing-sm $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__badge {
       @include text-sm;
       @include text-bold;
       padding: $spacing-xs $spacing-md;
+      border: 1px solid var(--border-default);
       border-radius: 1rem;
 
       &--success {
-        background-color: $primary-light;
-        color: $primary;
+        background-color: var(--surface-primary-soft);
+        color: var(--color-primary);
       }
 
       &--danger {
-        background-color: $danger-light;
-        color: $danger;
+        background-color: var(--surface-danger-soft);
+        color: var(--color-danger);
       }
 
       &--pending {
-        background-color: $secondary-light;
-        color: $secondary;
+        background-color: var(--surface-2);
+        color: var(--color-secondary);
       }
     }
 
     &__date {
       @include text-xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__section {
       display: flex;
       flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-sm;
     }
 
@@ -260,8 +271,8 @@ export default {
 
     &__info-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: $spacing-xs 0;
     }
 
@@ -275,8 +286,9 @@ export default {
       display: flex;
       flex-direction: column;
       padding: $spacing-sm $spacing-md;
-      border-radius: 0.5rem;
-      background-color: $secondary-light;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
       gap: $spacing-xs;
 
       &--copyable {
@@ -286,7 +298,7 @@ export default {
 
     &__label {
       @include text-xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__value {
@@ -301,7 +313,7 @@ export default {
 
     &__copy {
       @include text-xs;
-      color: $primary;
+      color: var(--color-primary);
     }
   }
 </style>

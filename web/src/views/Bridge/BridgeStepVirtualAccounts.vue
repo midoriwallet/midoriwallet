@@ -68,7 +68,10 @@ export default {
   <MainLayout :title="$t('Virtual Accounts')">
     <CsLoader v-if="isLoading" />
     <template v-else>
-      <CsListItems v-if="accounts.length">
+      <CsListItems
+        v-if="accounts.length"
+        class="&__list"
+      >
         <CsListItem
           v-for="account in accounts"
           :key="account.id"
@@ -97,7 +100,18 @@ export default {
   .#{ $filename } {
     &__empty {
       @include text-md;
-      color: $secondary;
+      padding: $spacing-md;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
+    }
+
+    &__list {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
   }
 </style>

@@ -10,7 +10,7 @@ export default {
   },
   extends: CsStep,
   data() {
-    const customer = this.$account.bridge.customer;
+    const { customer } = this.$account.bridge;
     return {
       isLoading: false,
       kycLink: this.storage?.kycResult?.kycLink || customer?.kycLink || '',
@@ -98,7 +98,7 @@ export default {
     <div class="&__steps">
       <div class="&__step">
         <div class="&__step-header">
-          <span class="&__step-number">1</span>
+          <span class="&__step-number">{{ $t('1') }}</span>
           <span class="&__step-title">{{ $t('Terms of Service') }}</span>
           <span
             class="&__step-badge"
@@ -121,7 +121,7 @@ export default {
 
       <div class="&__step">
         <div class="&__step-header">
-          <span class="&__step-number">2</span>
+          <span class="&__step-number">{{ $t('2') }}</span>
           <span class="&__step-title">{{ $t('Identity Verification (KYC)') }}</span>
           <span
             class="&__step-badge"
@@ -174,24 +174,34 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     &__info {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
       margin-bottom: $spacing-lg;
+      background: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__info-text {
       @include text-md;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__steps {
       display: flex;
       flex-direction: column;
-      gap: $spacing-lg;
       margin-bottom: $spacing-lg;
+      gap: $spacing-lg;
     }
 
     &__step {
       display: flex;
       flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-sm;
     }
 
@@ -204,13 +214,13 @@ export default {
     &__step-number {
       @include text-bold;
       display: flex;
-      align-items: center;
-      justify-content: center;
       width: 1.5rem;
       height: 1.5rem;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      background-color: $primary;
-      color: $white;
+      background-color: var(--color-primary);
+      color: var(--color-white);
       @include text-sm;
     }
 
@@ -223,28 +233,32 @@ export default {
     &__step-badge {
       @include text-xs;
       padding: 0.125rem 0.5rem;
+      border: 1px solid var(--border-default);
       border-radius: 0.75rem;
 
       &--approved {
-        background-color: $primary-light;
-        color: $primary;
+        background-color: var(--surface-primary-soft);
+        color: var(--color-primary);
       }
 
       &--pending {
-        background-color: $secondary-light;
-        color: $secondary;
+        background-color: var(--surface-2);
+        color: var(--color-secondary);
       }
 
       &--rejected {
-        background-color: $danger-light;
-        color: $danger;
+        background-color: var(--surface-danger-soft);
+        color: var(--color-danger);
       }
     }
 
     &__error {
       @include text-sm;
-      color: $danger;
+      padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
       margin-bottom: $spacing-md;
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
     }
   }
 </style>

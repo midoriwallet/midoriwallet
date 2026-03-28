@@ -29,10 +29,24 @@ export default {
 
 <template>
   <MainLayout :title="$t('Enter passphrase')">
-    <CsPassphrase
-      v-model="passphrase"
-      :isLoading="isLoading"
-      @confirm="confirm"
-    />
+    <div class="&__panel">
+      <CsPassphrase
+        v-model="passphrase"
+        :isLoading="isLoading"
+        @confirm="confirm"
+      />
+    </div>
   </MainLayout>
 </template>
+
+<style lang="scss">
+  .#{ $filename } {
+    &__panel {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+</style>

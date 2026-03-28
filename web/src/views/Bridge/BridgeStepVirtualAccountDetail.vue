@@ -254,6 +254,11 @@ export default {
     &__status {
       display: flex;
       align-items: center;
+      padding: $spacing-sm $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-sm;
     }
 
@@ -261,19 +266,25 @@ export default {
       @include text-sm;
       @include text-bold;
       padding: $spacing-xs $spacing-md;
+      border: 1px solid var(--border-default);
       border-radius: 1rem;
-      background-color: $secondary-light;
-      color: $secondary;
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
 
       &--active {
-        background-color: $primary-light;
-        color: $primary;
+        background-color: var(--surface-primary-soft);
+        color: var(--color-primary);
       }
     }
 
     &__section {
       display: flex;
       flex-direction: column;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: $spacing-md;
     }
 
@@ -292,8 +303,9 @@ export default {
       display: flex;
       flex-direction: column;
       padding: $spacing-sm $spacing-md;
-      border-radius: 0.5rem;
-      background-color: $secondary-light;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
       gap: $spacing-xs;
 
       &--copyable {
@@ -303,7 +315,7 @@ export default {
 
     &__label {
       @include text-xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__value {
@@ -318,7 +330,7 @@ export default {
 
     &__copy {
       @include text-xs;
-      color: $primary;
+      color: var(--color-primary);
     }
 
     &__history {
@@ -331,15 +343,16 @@ export default {
       display: flex;
       flex-direction: column;
       padding: $spacing-sm $spacing-md;
-      border-radius: 0.5rem;
-      background-color: $secondary-light;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
       gap: $spacing-xs;
     }
 
     &__event-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
     }
 
     &__event-type {
@@ -349,7 +362,7 @@ export default {
 
     &__event-date {
       @include text-xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__event-amount {
@@ -359,7 +372,11 @@ export default {
 
     &__empty {
       @include text-md;
-      color: $secondary;
+      padding: $spacing-md;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
     }
   }
 </style>

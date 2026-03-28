@@ -13,6 +13,7 @@ export default {
 <template>
   <CsButtonGroup
     v-if="$showRampsAndExchangeAndStaking"
+    class="&"
     type="horizontal"
   >
     <CsButton
@@ -35,3 +36,15 @@ export default {
     </CsButton>
   </CsButtonGroup>
 </template>
+
+<style lang="scss">
+  .#{ $filename } {
+    padding: $spacing-sm;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
+    background:
+      linear-gradient(180deg, rgb(4 156 102 / 7%), transparent 65%),
+      var(--surface-1);
+    box-shadow: var(--shadow-sm);
+  }
+</style>

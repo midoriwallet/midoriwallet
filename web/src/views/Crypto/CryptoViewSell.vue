@@ -80,15 +80,20 @@ export default {
     :title="$t('Sell {symbol}', { symbol: $wallet.crypto.symbol })"
     :description="subtitle"
   >
-    <CsFormSelect
-      v-model="countryCode"
-      :label="$t('Select your country/region of residence')"
-      :options="countries"
-      @update:modelValue="load"
-    />
+    <div class="&__section">
+      <CsFormSelect
+        v-model="countryCode"
+        :label="$t('Select your country/region of residence')"
+        :options="countries"
+        @update:modelValue="load"
+      />
+    </div>
 
     <CsLoader v-if="isLoading" />
-    <div v-else>
+    <div
+      v-else
+      class="&__providers"
+    >
       <CsProviderList
         v-if="providers.length"
         :items="providers"
@@ -109,8 +114,20 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    &__section,
+    &__providers {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 5%), transparent 60%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
+    }
+
     &__empty {
       @include text-md;
+      color: var(--color-secondary);
     }
   }
 </style>

@@ -100,8 +100,10 @@ export default {
 
 <template>
   <MainLayout :title="$t('Create Virtual Account')">
-    <div class="&__section-title">{{ $t('Source Currency') }}</div>
-    <CsFormGroup>
+    <div class="&__section-title">
+      {{ $t('Source Currency') }}
+    </div>
+    <CsFormGroup class="&__panel">
       <CsFormSelect
         v-model="currency"
         :label="$t('Select currency')"
@@ -110,8 +112,10 @@ export default {
       />
     </CsFormGroup>
 
-    <div class="&__section-title">{{ $t('Crypto Destination') }}</div>
-    <CsFormGroup>
+    <div class="&__section-title">
+      {{ $t('Crypto Destination') }}
+    </div>
+    <CsFormGroup class="&__panel">
       <CsFormSelect
         v-model="destinationPaymentRail"
         :label="$t('Blockchain network')"
@@ -159,13 +163,27 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     &__section-title {
-      @include text-md;
+      @include text-xs;
       @include text-bold;
+      color: var(--color-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    &__panel {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__error {
       @include text-sm;
-      color: $danger;
+      padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
     }
   }
 </style>

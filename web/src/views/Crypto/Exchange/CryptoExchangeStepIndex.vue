@@ -381,15 +381,29 @@ export default {
 
     &__growing-group {
       flex-grow: 1;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 5%), transparent 60%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__providers {
       @include text-xs;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__info {
       @include text-md;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-primary-soft);
+      color: var(--color-text);
     }
   }
 </style>

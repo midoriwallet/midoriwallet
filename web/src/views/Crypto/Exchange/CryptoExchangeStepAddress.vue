@@ -261,9 +261,17 @@ export default {
 
     &__container {
       flex-grow: 1;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background:
+        linear-gradient(180deg, rgb(4 156 102 / 5%), transparent 60%),
+        var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__switch {
+      color: var(--color-secondary);
       cursor: pointer;
     }
 
@@ -271,6 +279,7 @@ export default {
       width: 100%;
       max-width: 25rem;
       align-self: center;
+      padding-top: $spacing-xs;
     }
   }
 </style>

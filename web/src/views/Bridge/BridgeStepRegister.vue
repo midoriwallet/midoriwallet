@@ -58,7 +58,7 @@ export default {
 
 <template>
   <MainLayout :title="$t('Register with Bridge')">
-    <CsFormGroup>
+    <CsFormGroup class="&__form">
       <CsFormInput
         v-model="fullName"
         :label="$t('Full Name')"
@@ -90,9 +90,20 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    &__form {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
+    }
+
     &__error {
       @include text-sm;
-      color: $danger;
+      padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
     }
   }
 </style>

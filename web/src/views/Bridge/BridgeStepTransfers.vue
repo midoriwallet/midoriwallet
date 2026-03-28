@@ -36,6 +36,11 @@ export default {
     await this.load();
   },
   methods: {
+    transferTitle(transfer) {
+      const source = transfer.source ? (transfer.source.currency || '').toUpperCase() : '';
+      const destination = transfer.destination ? (transfer.destination.currency || '').toUpperCase() : '';
+      return `${source} → ${destination}`;
+    },
     stateLabel(state) {
       return STATE_LABELS[state] || state;
     },
@@ -70,11 +75,14 @@ export default {
   <MainLayout :title="$t('Payments')">
     <CsLoader v-if="isLoading" />
     <template v-else>
-      <CsListItems v-if="transfers.length">
+      <CsListItems
+        v-if="transfers.length"
+        class="&__list"
+      >
         <CsListItem
           v-for="transfer in transfers"
           :key="transfer.id"
-          :title="(transfer.source ? (transfer.source.currency || '').toUpperCase() : '') + ' → ' + (transfer.destination ? (transfer.destination.currency || '').toUpperCase() : '')"
+          :title="transferTitle(transfer)"
           :description="stateLabel(transfer.state) + ' · ' + formatDate(transfer.createdAt)"
           @click="viewTransfer(transfer)"
         />
@@ -99,7 +107,18 @@ export default {
   .#{ $filename } {
     &__empty {
       @include text-md;
-      color: $secondary;
+      padding: $spacing-md;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
+    }
+
+    &__list {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
   }
 </style>

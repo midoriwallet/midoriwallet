@@ -122,8 +122,10 @@ export default {
 
 <template>
   <MainLayout :title="$t('New Payment')">
-    <div class="&__section-title">{{ $t('Source') }}</div>
-    <CsFormGroup>
+    <div class="&__section-title">
+      {{ $t('Source') }}
+    </div>
+    <CsFormGroup class="&__panel">
       <CsFormSelect
         v-model="sourcePaymentRail"
         :label="$t('Payment method')"
@@ -132,8 +134,10 @@ export default {
       />
     </CsFormGroup>
 
-    <div class="&__section-title">{{ $t('Destination') }}</div>
-    <CsFormGroup>
+    <div class="&__section-title">
+      {{ $t('Destination') }}
+    </div>
+    <CsFormGroup class="&__panel">
       <CsFormSelect
         v-model="destinationPaymentRail"
         :label="$t('Blockchain network')"
@@ -161,8 +165,10 @@ export default {
       </CsButton>
     </CsFormGroup>
 
-    <div class="&__section-title">{{ $t('Amount') }}</div>
-    <CsFormGroup>
+    <div class="&__section-title">
+      {{ $t('Amount') }}
+    </div>
+    <CsFormGroup class="&__panel">
       <div class="&__switch-row">
         <span class="&__switch-label">{{ $t('Flexible amount') }}</span>
         <CsSwitch
@@ -198,8 +204,19 @@ export default {
 <style lang="scss">
   .#{ $filename } {
     &__section-title {
-      @include text-md;
+      @include text-xs;
       @include text-bold;
+      color: var(--color-secondary);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    &__panel {
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
     }
 
     &__switch-row {
@@ -211,11 +228,15 @@ export default {
 
     &__switch-label {
       @include text-md;
+      color: var(--color-text);
     }
 
     &__error {
       @include text-sm;
-      color: $danger;
+      padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-danger-soft);
+      color: var(--color-danger);
     }
   }
 </style>

@@ -62,8 +62,15 @@ export default {
   <MainLayout :title="$t('Hardware security')">
     <CsLoader v-if="isLoading" />
     <template v-else>
+      <div
+        v-if="!keys.length"
+        class="&__empty"
+      >
+        {{ $t('No hardware keys added yet.') }}
+      </div>
       <CsListItems
         v-if="keys.length"
+        class="&__list"
         :title="$t('Hardware keys')"
       >
         <CsListItem
@@ -90,3 +97,23 @@ export default {
     </template>
   </MainLayout>
 </template>
+
+<style lang="scss">
+  .#{ $filename } {
+    &__empty {
+      @include text-md;
+      padding: $spacing-md;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      color: var(--color-secondary);
+    }
+
+    &__list {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+</style>
