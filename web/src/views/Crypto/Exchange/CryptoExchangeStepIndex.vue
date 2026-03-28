@@ -206,12 +206,17 @@ export default {
       this.isLoadingMaxAmount = true;
       try {
         if (this.$wallet.isFeeRatesSupported) await this.$wallet.loadFeeRates();
-        this.amount = await this.$wallet.estimateMaxAmount({
+        const maxAmount = await this.$wallet.estimateMaxAmount({
           address: this.$wallet.dummyExchangeDepositAddress,
           feeRate: this.$wallet.isFeeRatesSupported ? CsWallet.FEE_RATE_DEFAULT : undefined,
-          gasLimit: this.$wallet.gasLimit,
+          gasLimit: this.$wallet.isGasLimitSupported ? this.$wallet.gasLimit : undefined,
           price: this.storage.priceUSD,
         });
+        // Some networks can return 0 as spendable amount due to fees/reserve.
+        // Keep the UX predictable by filling the real balance when it is non-zero.
+        this.amount = (maxAmount.value === 0n && this.$wallet.balance?.value > 0n)
+          ? this.$wallet.balance
+          : maxAmount;
       } catch (err) {
         this.handleError(err);
       } finally {
