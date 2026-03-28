@@ -16,7 +16,7 @@ export default {
   computed: {
     items() {
       return this.storage.estimations.map(({ provider, result }) => {
-        const info = this.$account.exchanges.getProviderInfo(provider);
+        const info = this.$account.exchanges.getProviderInfo(provider) || { id: provider, name: provider };
         return {
           ...info,
           description: `${result} ${this.storage.to.crypto.symbol}`,

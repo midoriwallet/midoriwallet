@@ -1,8 +1,5 @@
-import ChangeHeroExchange from './ChangeHeroExchange.js';
 import ChangeNOWExchange from './ChangeNOWExchange.js';
-import ChangellyExchange from './ChangellyExchange.js';
 import ExchangeStorage from '../storage/ExchangeStorage.js';
-import LetsExchange from './LetsExchange.js';
 
 import {
   Amount,
@@ -28,7 +25,7 @@ export default class Exchanges {
       ...config,
       baseURL: this.#account.getBaseURL('swap'),
     });
-    for (const Exchange of [ChangellyExchange, ChangeNOWExchange, ChangeHeroExchange, LetsExchange]) {
+    for (const Exchange of [ChangeNOWExchange]) {
       this.#exchanges.push(new Exchange({ request: this.#request, account }));
     }
   }
@@ -38,12 +35,14 @@ export default class Exchanges {
   }
 
   async init() {
-    const exchangeStorages = await ExchangeStorage.initMany(this.#account, this.#exchanges);
     const infos = await this.#request({
       url: 'api/v1/providers',
       method: 'get',
       seed: 'device',
     });
+    const activeIds = new Set(infos.map((info) => info.id));
+    this.#exchanges = this.#exchanges.filter((exchange) => activeIds.has(exchange.id));
+    const exchangeStorages = await ExchangeStorage.initMany(this.#account, this.#exchanges);
     for (const exchange of this.#exchanges) {
       const storage = exchangeStorages[exchange.id];
       const info = infos.find((info) => info.id === exchange.id);
@@ -109,10 +108,17 @@ export default class Exchanges {
       throw new ExchangeDisabledError('Exchange disabled');
     }
     const cryptoTo = this.#account.cryptoDB.get(to);
-    return estimations.map((estimate) => {
-      estimate.result = Amount.fromString(estimate.result, cryptoTo.decimals);
-      return estimate;
-    });
+    return estimations
+      .map((estimate) => {
+        estimate.result = Amount.fromString(estimate.result, cryptoTo.decimals);
+        return estimate;
+      })
+      .sort((left, right) => {
+        if (left.result.value === right.result.value) {
+          return 0;
+        }
+        return left.result.value > right.result.value ? -1 : 1;
+      });
   }
 
   createExchange({ provider, ...opts }) {

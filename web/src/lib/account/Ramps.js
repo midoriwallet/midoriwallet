@@ -54,12 +54,13 @@ export default class Ramps {
 
   #mapProviders(items) {
     return items.map((info) => {
+      const logo = new URL(
+        `/logo/${info.logo}?ver=${import.meta.env.VITE_VERSION}`,
+        this.#account.siteUrl
+      ).toString();
       return {
         ...info,
-        logo: new URL(
-          `/logo/${info.logo}?ver=${import.meta.env.VITE_VERSION}`,
-          this.#account.getBaseURL('ramp')
-        ).toString(),
+        logo,
       };
     });
   }

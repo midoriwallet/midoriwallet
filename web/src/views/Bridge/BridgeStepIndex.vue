@@ -22,9 +22,9 @@ export default {
   },
   },
   mounted() {
-  if (this.isRegistered && !this.isApproved) {
-    this.next('kycPending');
-  } 
+    if (this.isRegistered && !this.isApproved) {
+      this.next('kycPending');
+    }
   },
   activated() {
     if (this.isRegistered && !this.isApproved) {

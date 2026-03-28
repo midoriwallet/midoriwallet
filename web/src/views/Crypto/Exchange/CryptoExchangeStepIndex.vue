@@ -63,7 +63,9 @@ export default {
       pricePlatform: await this.$account.market.getPrice(this.$wallet.platform._id, this.$currency),
       priceUSD: this.$wallet.isCsFeeSupported ?
         await this.$account.market.getPrice(this.$wallet.crypto._id, 'USD') : undefined,
-      provider: this.storage.provider || 'changelly',
+      provider: this.$account.exchanges.getProviderInfo(this.storage.provider)
+        ? this.storage.provider
+        : this.getDefaultProvider(),
     });
     this.isLoading = false;
   },
@@ -82,13 +84,21 @@ export default {
     },
     providerInfo() {
       return this.storage.provider
-        ? this.$account.exchanges.getProviderInfo(this.storage.provider)
+        ? this.$account.exchanges.getProviderInfo(this.storage.provider) || {}
         : {};
     },
     estimation() {
       if (this.storage.provider && this.storage.estimations) {
         return this.storage.estimations.find((item) => item.provider === this.storage.provider);
       }
+    },
+    availableProvidersLabel() {
+      if (!this.storage.estimations || this.storage.estimations.length < 2) {
+        return;
+      }
+      return this.storage.estimations.map(({ provider }) => {
+        return this.$account.exchanges.getProviderInfo(provider)?.name || provider;
+      }).join(', ');
     },
   },
   watch: {
@@ -106,10 +116,13 @@ export default {
     },
   },
   methods: {
+    getDefaultProvider() {
+      return this.$account.exchanges.getProviderInfo('changenow') ? 'changenow' : null;
+    },
     clean() {
       this.updateStorage({
         estimations: [],
-        provider: 'changelly',
+        provider: this.getDefaultProvider(),
       });
       this.errors = {};
     },
@@ -334,6 +347,12 @@ export default {
         </template>
       </CsFormDropdown>
       <div
+        v-if="availableProvidersLabel"
+        class="&__providers"
+      >
+        {{ $t('Available providers: {providers}', { providers: availableProvidersLabel }) }}
+      </div>
+      <div
         v-if="to && estimation"
         class="&__info"
       >
@@ -362,6 +381,11 @@ export default {
 
     &__growing-group {
       flex-grow: 1;
+    }
+
+    &__providers {
+      @include text-xs;
+      color: $secondary;
     }
 
     &__info {
