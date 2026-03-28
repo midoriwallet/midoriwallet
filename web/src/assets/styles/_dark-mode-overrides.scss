@@ -304,7 +304,7 @@
     }
     
     // Generic input and button elements - modern dark design
-    input:not([type="radio"]):not([type="checkbox"]):not([type="range"]),
+    input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not(.cs-form-input__input):not(.CsFormInput__input),
     textarea,
     select {
       background-color: #0a0c0b !important; // Deep black
