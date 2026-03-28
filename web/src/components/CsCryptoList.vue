@@ -290,19 +290,19 @@ export default {
     &__change {
       display: inline-flex;
       padding: 0 $spacing-2xs;
-      margin-left: $spacing-xs;
       border-radius: 999px;
+      margin-left: $spacing-xs;
       background-color: var(--surface-2);
       font-weight: 500;
 
       &--positive {
-        color: var(--color-primary);
         background-color: var(--surface-primary-soft);
+        color: var(--color-primary);
       }
 
       &--negative {
-        color: var(--color-danger);
         background-color: var(--surface-danger-soft);
+        color: var(--color-danger);
       }
     }
 

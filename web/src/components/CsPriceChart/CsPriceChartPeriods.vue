@@ -82,8 +82,8 @@ export default {
     &__button {
       @include text-sm;
       display: flex;
-      height: $spacing-2xl;
       min-width: 2.625rem;
+      height: $spacing-2xl;
       align-items: center;
       justify-content: center;
       border-radius: 999px;

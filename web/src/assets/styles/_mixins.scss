@@ -63,3 +63,69 @@ $breakpoints: (
   background-color: rgb(0 0 0 / 30%);
   overflow-y: auto;
 }
+
+// Platform-specific mixins for Electron Desktop (Fase 7)
+@mixin desktop-density {
+  // Reduces spacing for increased density on desktop
+  padding: $desktop-spacing-md;
+  gap: $desktop-spacing-sm;
+}
+
+@mixin desktop-list-item {
+  // Compact list items for desktop tables/lists
+  height: $desktop-list-height;
+  padding: $desktop-spacing-sm $desktop-spacing-md;
+  gap: $desktop-spacing-xs;
+}
+
+@mixin desktop-button {
+  // Smaller button height for desktop UI density
+  height: $desktop-button-height;
+  padding: 0 $desktop-spacing-lg;
+}
+
+@mixin desktop-container {
+  // Optimized container for desktop with sidebar
+  padding: $desktop-spacing-lg;
+  gap: $desktop-spacing-md;
+}
+
+// Platform-specific mixins for Mobile/PhoneGap (Fase 8)
+@mixin mobile-touch-target {
+  min-width: 3rem;
+  // Ensures touch targets are at least 48x48px for accessibility
+  min-height: 3rem;
+}
+
+@mixin mobile-button {
+  // Touch-friendly button sizing
+  height: $mobile-button-height;
+  padding: 0 $mobile-spacing-md;
+  gap: $spacing-sm;
+}
+
+@mixin mobile-list-item {
+  // Spacious list items for mobile touch
+  height: $mobile-list-height;
+  padding: $mobile-spacing-md;
+  gap: $spacing-xs;
+}
+
+@mixin mobile-bottom-nav {
+  // Safe area aware bottom navigation
+  position: fixed;
+  z-index: $zindex-dropdown;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: $mobile-bottom-nav-height;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@mixin mobile-safe-area {
+  // Apply safe area insets (notch awareness)
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}

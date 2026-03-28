@@ -33,6 +33,7 @@ $font-weight-regular: 400;
 $font-weight-bold: 500;
 
 // spacing (padding, margin, gap, width, height, top, right, bottom, left)
+// Base scale (used on mobile-first)
 $spacing-3xs: 0.125rem; // 2px
 $spacing-2xs: 0.25rem;  // 4px
 $spacing-xs: 0.5rem;    // 8px
@@ -48,6 +49,24 @@ $spacing-6xl: 5rem;     // 80px
 $spacing-7xl: 6rem;     // 96px
 $spacing-8xl: 8rem;     // 128px
 $spacing-9xl: 10rem;    // 160px
+
+// Desktop/Electron-specific spacing (increased density)
+$desktop-spacing-sm: 0.5rem;   // 8px (reduced from 12px for density)
+$desktop-spacing-md: 0.75rem;  // 12px (reduced from 16px for density)
+$desktop-spacing-lg: 1rem;     // 16px (reduced from 20px for density)
+$desktop-spacing-xl: 1.25rem;  // 20px (reduced from 24px for density)
+$desktop-list-height: 2.5rem;  // 40px (compact list items)
+$desktop-button-height: 2.75rem; // 44px (slightly smaller than mobile)
+
+// Mobile/PhoneGap-specific spacing (touch-friendly)
+$mobile-spacing-sm: 1rem;      // 16px (increase for better separation)
+$mobile-spacing-md: 1.25rem;   // 20px (increase for better touch targets)
+$mobile-spacing-lg: 1.5rem;    // 24px (increase for better visual balance)
+$mobile-list-height: 3rem;     // 48px (touch-friendly)
+$mobile-button-height: 3.5rem; // 56px (touch-friendly, recommended minimum)
+$mobile-bottom-nav-height: 4rem; // 64px (safe area consideration)
+
+// Desktop max width
 $desktop-max-width: 80rem; // 1280px
 
 // z-index

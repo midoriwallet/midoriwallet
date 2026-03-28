@@ -11,6 +11,7 @@ html {
   line-height: 1.5;
   text-size-adjust: none; // Prevent adjustments of font size after orientation changes in iOS.
   transition: background-color 0.3s ease, color 0.3s ease;
+
   &.platform--ios {
     min-height: 100vh; // fix ios overlay bug
   }

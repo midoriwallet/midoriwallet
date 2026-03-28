@@ -63,7 +63,7 @@ export default {
   %base-button {
     display: flex;
     overflow: hidden;
-    height: 3.25rem;
+    height: 3.5rem; // Mobile: larger for touch (56px)
     align-items: center;
     justify-content: center;
     padding: 0 $spacing-lg;
@@ -77,6 +77,12 @@ export default {
       border-color 0.15s ease-in-out,
       transform 0.15s ease-in-out,
       box-shadow 0.15s ease-in-out;
+
+    @include breakpoint(lg) {
+      height: 2.75rem; // Desktop: compact for density (44px)
+      padding: 0 $desktop-spacing-lg;
+      gap: $desktop-spacing-sm;
+    }
 
     @include text-md;
     @include text-bold;
@@ -148,8 +154,8 @@ export default {
 
       &:active {
         background-color: darker($primary-brand, 12%);
-        transform: translateY(0);
         box-shadow: none;
+        transform: translateY(0);
       }
     }
 
@@ -157,8 +163,8 @@ export default {
       @extend %base-button;
       border-color: var(--border-subtle);
       background-color: var(--surface-2);
-      color: var(--color-text);
       box-shadow: var(--shadow-sm);
+      color: var(--color-text);
 
       @include hover {
         border-color: var(--border-default);
@@ -166,8 +172,8 @@ export default {
       }
 
       &:active {
-        transform: scale(0.99);
         box-shadow: none;
+        transform: scale(0.99);
       }
     }
 
@@ -301,10 +307,10 @@ export default {
       flex-direction: column;
       justify-content: flex-start;
       padding: 0;
+      color: var(--color-secondary);
       font-weight: $font-weight-regular;
       gap: $spacing-xs;
       overflow-wrap: anywhere;
-      color: var(--color-secondary);
 
       @include text-sm;
 

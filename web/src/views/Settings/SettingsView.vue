@@ -262,11 +262,10 @@ export default {
       width: 20rem;
       height: 20rem;
       border-radius: 50%;
-      background:
-        radial-gradient(circle, rgb(4 156 102 / 15%) 0%, rgb(4 156 102 / 0%) 68%);
-      content: '';
-      transform: translateX(50%);
+      background: radial-gradient(circle, rgb(4 156 102 / 15%) 0%, rgb(4 156 102 / 0%) 68%);
+      content: "";
       pointer-events: none;
+      transform: translateX(50%);
     }
 
     &__header {

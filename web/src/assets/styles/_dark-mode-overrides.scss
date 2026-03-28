@@ -3,839 +3,839 @@
 
 // Shared dark mode styles
 @mixin dark-mode-styles {
-    // Buttons - all variants with black background and green accents
-    .CsButton,
-    .cs-button,
-    button.CsButton,
-    button.cs-button {
-      &__circle {
-        background-color: var(--color-secondary-light);
-        
-        &:hover {
-          opacity: 0.8;
-        }
-        
-        &:active {
-          opacity: 0.6;
-        }
+  // Buttons - all variants with black background and green accents
+  .CsButton,
+  .cs-button,
+  button.CsButton,
+  button.cs-button {
+    &__circle {
+      background-color: var(--color-secondary-light);
+
+      &:hover {
+        opacity: 0.8;
       }
-      
-      &--primary {
-        background-color: var(--color-primary) !important;
-        color: #000 !important;
-        border: 2px solid var(--color-primary) !important;
-        
-        svg [stroke] {
-          stroke: #000 !important;
-        }
-        
-        svg [fill] {
-          fill: #000 !important;
-        }
-      }
-      
-      &--secondary {
-        background-color: #0a0c0b !important; // Deep black like inputs
-        color: var(--color-primary) !important; // Green icon/text
-        border: 2px solid rgba(6, 201, 127, 0.2) !important;
-        
-        svg [stroke] {
-          stroke: var(--color-primary) !important; // Green icon
-        }
-        
-        svg [fill] {
-          fill: var(--color-primary) !important; // Green icon
-        }
-        
-        &:hover {
-          background-color: #0c0e0d !important;
-          border-color: rgba(6, 201, 127, 0.35) !important;
-        }
-        
-        &:active {
-          background-color: #0d0f0e !important;
-          border-color: var(--color-primary) !important;
-        }
-      }
-      
-      &--primary-light {
-        background-color: rgba(6, 201, 127, 0.15) !important;
-        color: var(--color-primary) !important;
-        border: 2px solid var(--color-primary) !important;
-        
-        svg [stroke] {
-          stroke: var(--color-primary) !important;
-        }
-        
-        svg [fill] {
-          fill: var(--color-primary) !important;
-        }
-      }
-      
-      &--danger {
-        background-color: var(--color-danger) !important;
-        color: #fff !important;
-        border: 2px solid var(--color-danger) !important;
-      }
-      
-      &--danger-light {
-        background-color: var(--color-danger-light) !important;
-        color: var(--color-danger) !important;
-        border: 2px solid var(--color-danger) !important;
-      }
-      
-      &--primary-link {
-        color: var(--color-primary) !important;
-      }
-      
-      &--secondary-link {
-        color: var(--color-secondary) !important;
+
+      &:active {
+        opacity: 0.6;
       }
     }
-    
-    // Specific override for small buttons in forms
-    .CsFormElement,
-    .cs-form-element {
-      .CsButton--secondary,
-      .cs-button--secondary,
-      button.CsButton--secondary {
-        background-color: #0a0c0b !important;
-        color: var(--color-primary) !important;
-        border: 2px solid rgba(6, 201, 127, 0.2) !important;
-        
-        svg,
-        svg [stroke],
-        svg [fill] {
-          stroke: var(--color-primary) !important;
-          fill: var(--color-primary) !important;
-        }
-      }
-    }
-    
-    // Forms - modern dark design with green accents
-    .CsFormElement,
-    .CsFormInput,
-    .CsFormDropdown,
-    .CsFormGroup,
-    .cs-form-element,
-    .cs-form-input,
-    .cs-form-dropdown,
-    .cs-form-group {
-      background-color: transparent !important;
-      
-      &__label {
-        color: var(--color-primary) !important; // Green labels like Continue button
-        font-weight: 600;
-        font-size: 0.875rem;
-        letter-spacing: 0.025em;
-        text-transform: uppercase;
-        margin-bottom: 0.5rem;
-      }
-      
-      &__box {
-        background-color: #0a0c0b !important; // Deep black for the container
-        border: 2px solid rgba(6, 201, 127, 0.2) !important;
-        border-radius: 0.75rem !important;
-        transition: all 0.3s ease;
-        
-        &:focus-within,
-        &:active {
-          background-color: #0d0f0e !important;
-          border-color: var(--color-primary) !important;
-          box-shadow: 0 0 0 4px rgba(6, 201, 127, 0.1), 0 4px 12px rgba(6, 201, 127, 0.15);
-        }
-        
-        &:hover:not(:focus-within):not(:active) {
-          border-color: rgba(6, 201, 127, 0.35) !important;
-          background-color: #0c0e0d !important;
-        }
-      }
-      
-      &__text {
-        color: var(--color-text) !important;
-      }
-      
-      &__input,
-      &__textarea,
-      &__field,
-      input,
-      textarea {
-        background-color: transparent !important; // Transparent inside the box
-        color: var(--color-text) !important;
-        border: none !important;
-        font-size: 1rem;
-        
-        &::placeholder {
-          color: rgba(255, 255, 255, 0.3) !important;
-        }
-      }
-      
-      &__error {
-        color: var(--color-danger);
-      }
-    }
-    
-    // Form element specific - override has-error state
-    .CsFormElement--has-error,
-    .cs-form-element--has-error {
-      .CsFormElement__box,
-      .cs-form-element__box {
-        background-color: rgba(220, 38, 38, 0.1) !important;
-        border-color: var(--color-danger) !important;
-      }
-    }
-    
-    // Passphrase textarea - white text for better visibility
-    .CsFormTextareaReadonly,
-    .cs-form-textarea-readonly {
-      &__textarea {
-        color: var(--color-text) !important; // White text for passphrase words
-        font-weight: 500;
-      }
-    }
-    
-    // Passphrase specific styling
-    .auth-step-passphrase,
-    .AuthStepPassphrase {
-      .CsFormTextareaReadonly__textarea,
-      .cs-form-textarea-readonly__textarea {
-        color: #ffffff !important; // Pure white for maximum contrast
-        font-weight: 600;
-        letter-spacing: 0.02em;
-      }
-    }
-    
-    // Dropdown Menu - dark theme
-    .CsDropdownMenu,
-    .cs-dropdown-menu {
-      &__content {
-        background-color: #0a0c0b !important; // Deep black
-        border: 2px solid rgba(6, 201, 127, 0.2) !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      }
-      
-      &__triangle {
-        svg {
-          fill: #0a0c0b !important;
-        }
-      }
-    }
-    
-    // Modal - dark theme
-    .CsModal,
-    .cs-modal {
-      &__container {
-        background-color: #0a0c0b !important; // Deep black
-        border: 2px solid rgba(6, 201, 127, 0.2) !important;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-      }
-      
-      &__title {
-        color: var(--color-text) !important;
-      }
-      
-      &__body {
-        color: var(--color-text) !important;
-      }
-      
-      &__close {
-        cursor: pointer;
-        
-        svg [stroke] {
-          stroke: var(--color-text) !important;
-        }
-        
-        &:hover {
-          opacity: 0.7;
-        }
-      }
-    }
-    
-    // List Items - dark theme with hover
-    .CsListItem,
-    .cs-list-item {
-      color: var(--color-text) !important;
-      
-      &__title {
-        color: var(--color-text) !important;
-      }
-      
-      &__description {
-        color: var(--color-secondary) !important;
-      }
-      
-      &--clickable {
-        transition: background-color 0.2s ease;
-        
-        &:hover {
-          background-color: rgba(6, 201, 127, 0.05) !important;
-        }
-        
-        &:active {
-          background-color: rgba(6, 201, 127, 0.1) !important;
-        }
-      }
-      
-      &--danger {
-        color: var(--color-danger) !important;
-        
-        svg [stroke] {
-          stroke: var(--color-danger) !important;
-        }
-        
-        svg [fill] {
-          fill: var(--color-danger) !important;
-        }
-      }
-      
+
+    &--primary {
+      border: 2px solid var(--color-primary) !important;
+      background-color: var(--color-primary) !important;
+      color: #000 !important;
+
       svg [stroke] {
-        stroke: var(--color-text);
+        stroke: #000 !important;
       }
-      
+
       svg [fill] {
-        fill: var(--color-text);
+        fill: #000 !important;
       }
     }
-    
-    // List Items Container
-    .CsListItems,
-    .cs-list-items {
-      background-color: transparent !important;
-    }
-    
-    // Generic input and button elements - modern dark design
-    input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):not(.cs-form-input__input):not(.CsFormInput__input),
-    textarea,
-    select {
-      background-color: #0a0c0b !important; // Deep black
-      color: var(--color-text) !important;
-      border: 2px solid rgba(6, 201, 127, 0.2) !important;
-      border-radius: 0.75rem;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-      
-      &::placeholder {
-        color: rgba(255, 255, 255, 0.3) !important;
+
+    &--secondary {
+      border: 2px solid rgb(6 201 127 / 20%) !important;
+      background-color: #0a0c0b !important; // Deep black like inputs
+      color: var(--color-primary) !important; // Green icon/text
+
+      svg [stroke] {
+        stroke: var(--color-primary) !important; // Green icon
       }
-      
-      &:focus {
-        background-color: #0d0f0e !important;
-        border-color: var(--color-primary) !important;
-        box-shadow: 0 0 0 4px rgba(6, 201, 127, 0.1), 0 4px 12px rgba(6, 201, 127, 0.15);
-        outline: none;
+
+      svg [fill] {
+        fill: var(--color-primary) !important; // Green icon
       }
-      
-      &:hover:not(:focus) {
-        border-color: rgba(6, 201, 127, 0.35) !important;
+
+      &:hover {
+        border-color: rgb(6 201 127 / 35%) !important;
         background-color: #0c0e0d !important;
       }
-    }
-    
-    // Labels - bright green like Continue button
-    label {
-      color: var(--color-primary) !important; // Bright green
-      font-weight: 600;
-      font-size: 0.875rem;
-      letter-spacing: 0.025em;
-    }
-    
-    // Dropdown and Select - black background
-    .CsDropdownMenu,
-    .cs-dropdown-menu {
-      background-color: #0a0c0b !important; // Deep black like inputs
-      border: 2px solid rgba(6, 201, 127, 0.2) !important;
-      border-radius: 0.75rem;
-      color: var(--color-text) !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      
-      &__item {
-        background-color: #0a0c0b !important;
-        color: var(--color-text) !important;
-        
-        &:hover {
-          background-color: rgba(6, 201, 127, 0.1) !important;
-        }
-        
-        &--active {
-          background-color: rgba(6, 201, 127, 0.15) !important;
-          color: var(--color-primary) !important;
-        }
+
+      &:active {
+        border-color: var(--color-primary) !important;
+        background-color: #0d0f0e !important;
       }
     }
-    
-    // Select specific styling
-    select {
-      background-color: #0a0c0b !important;
-      border: 2px solid rgba(6, 201, 127, 0.2) !important;
-      border-radius: 0.75rem;
-      color: var(--color-text) !important;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2306c97f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      padding-right: 2.5rem;
-      
-      option {
-        background-color: #0a0c0b;
-        color: var(--color-text);
-      }
-    }
-    
-    // Role-based selectors
-    [role="listbox"],
-    [role="combobox"] {
-      background-color: #0a0c0b !important;
-      border: 2px solid rgba(6, 201, 127, 0.2) !important;
-      border-radius: 0.75rem;
-      color: var(--color-text) !important;
-    }
-    
-    [role="option"] {
-      background-color: #0a0c0b !important;
-      color: var(--color-text) !important;
-      
-      &:hover {
-        background-color: rgba(6, 201, 127, 0.1) !important;
-      }
-      
-      &[aria-selected="true"] {
-        background-color: rgba(6, 201, 127, 0.15) !important;
-        color: var(--color-primary) !important;
-      }
-    }
-    
-    // Modal
-    .CsModal {
-      &__overlay {
-        background-color: rgba(0, 0, 0, 0.7);
-      }
-      
-      &__content {
-        background-color: var(--color-background);
-        color: var(--color-text);
-      }
-      
-      &__header {
-        border-bottom-color: var(--color-divider);
-      }
-      
-      &__footer {
-        border-top-color: var(--color-divider);
-      }
-    }
-    
-    // Sidebar
-    .CsSidebar {
-      background-color: var(--color-background);
-      
-      &__portfolio-amount {
-        color: var(--color-text);
-      }
-      
-      &__portfolio-label {
-        color: var(--color-secondary);
-      }
-      
-      &__portfolio-change {
-        color: var(--color-secondary);
-        
-        &--positive {
-          color: var(--color-primary);
-        }
-        
-        &--negative {
-          color: var(--color-danger);
-        }
-      }
-    }
-    
-    // Crypto List
-    .CsCryptoList {
-      &__item {
-        &:hover {
-          background-color: var(--color-secondary-light);
-        }
-        
-        &--active {
-          background-color: var(--color-primary-light);
-        }
-      }
-      
-      &__title {
-        color: var(--color-text);
-      }
-      
-      &__subtitle {
-        color: var(--color-secondary);
-      }
-      
-      &__amount {
-        color: var(--color-text);
-      }
-      
-      &__change {
-        color: var(--color-secondary);
-        
-        &--positive {
-          color: var(--color-primary);
-        }
-        
-        &--negative {
-          color: var(--color-danger);
-        }
-      }
-    }
-    
-    // Loader
-    .CsLoader {
-      &__spinner {
-        border-color: var(--color-divider);
-        border-top-color: var(--color-primary);
-      }
-      
-      &__text {
-        color: var(--color-secondary);
-      }
-    }
-    
-    // Warning
-    .CsWarning {
-      background-color: var(--color-danger-light);
-      color: var(--color-danger);
-      border-color: var(--color-danger);
-    }
-    
-    // Transaction Status
-    .CsTransactionStatus {
-      &--pending {
-        color: var(--color-secondary);
-      }
-      
-      &--confirmed {
-        color: var(--color-primary);
-      }
-      
-      &--failed {
-        color: var(--color-danger);
-      }
-    }
-    
-    // Switch
-    .CsSwitch {
-      &__track {
-        background-color: var(--color-secondary-light);
-      }
-      
-      &__track--active {
-        background-color: var(--color-primary);
-      }
-      
-      &__thumb {
-        background-color: #fff;
-      }
-    }
-    
-    // Pin - CRITICAL: High specificity selectors
-    .cs-pin,
-    .CsPin {
-      // Dots
-      .cs-pin__dot,
-      &__dot {
-        background-color: var(--color-divider);
-        border-color: var(--color-divider);
-        
-        &--active,
-        &--filled {
-          background-color: var(--color-primary);
-          border-color: var(--color-primary);
-        }
-      }
-      
-      // Number buttons - force white background with black text
-      .cs-button--secondary,
-      .CsButton--secondary,
-      button.cs-button,
-      button.CsButton {
-        color: #222 !important;
-        background-color: #fff !important;
-        
-        &:hover {
-          background-color: #f0f0f0 !important;
-          color: #222 !important;
-        }
-        
-        &:active {
-          background-color: #e0e0e0 !important;
-          color: #222 !important;
-        }
-      }
-      
-      // Named buttons (Log out, Delete)
-      .cs-pin__key--named,
-      &__key--named {
-        color: var(--color-primary) !important;
-        background-color: transparent !important;
-        
-        &:hover {
-          background-color: var(--color-primary-light) !important;
-        }
-      }
-      
-      // Disabled buttons
-      .cs-pin__key--disabled,
-      &__key--disabled {
-        background-color: transparent !important;
-      }
-    }
-    
-    // List Item Dropdown
-    .CsListItemDropdown {
-      color: var(--color-text);
-      
-      select {
-        color: var(--color-text);
-        background-color: transparent;
-      }
-    }
-    
-    // Powered By
-    .CsPoweredBy {
-      color: var(--color-secondary);
-    }
-    
-    // Provider List
-    .CsProviderList {
-      &__item {
-        background-color: var(--color-secondary-light);
-        border-color: var(--color-divider);
-        
-        &:hover {
-          background-color: var(--color-divider);
-        }
-        
-        &--selected {
-          border-color: var(--color-primary);
-          background-color: var(--color-primary-light);
-        }
-      }
-      
-      &__name {
-        color: var(--color-text);
-      }
-      
-      &__description {
-        color: var(--color-secondary);
-      }
-    }
-    
-    // Price Chart
-    .CsPriceChart {
-      &__period {
-        color: var(--color-secondary);
-        
-        &--active {
-          color: var(--color-primary);
-        }
-      }
-      
-      &__axis-label {
-        color: var(--color-secondary);
-      }
-    }
-    
-    // Navbar
-    .CsNavbar {
-      background-color: var(--color-background);
-      border-bottom-color: var(--color-divider);
-      
-      &__title {
-        color: var(--color-text);
-      }
-    }
-    
-    // Avatar
-    .CsAvatar {
-      background-color: var(--color-secondary-light);
-      color: var(--color-text);
-    }
-    
-    // CRITICAL: Main panels and views - force background
-    .cs-sidebar,
-    .CsSidebar {
-      background-color: var(--color-background) !important;
-    }
-    
-    .app-layout,
-    .AppLayout {
-      &__main {
-        background-color: var(--color-background) !important;
-      }
-      
-      &__content {
-        background-color: var(--color-background) !important;
-      }
-    }
-    
-    // Crypto views
-    .crypto-index-view,
-    .CryptoIndexView,
-    .crypto-view {
-      background-color: var(--color-background) !important;
-    }
-    
-    // Auth layouts
-    .auth-step-layout,
-    .AuthStepLayout {
-      background-color: var(--color-background) !important;
-    }
-    
-    // All router-view containers
-    .router-view,
-    [class*="view"],
-    [class*="View"],
-    [class*="layout"],
-    [class*="Layout"] {
-      background-color: var(--color-background) !important;
-    }
-    
-    // Price Chart Periods (1D, 7D, 14D, etc.) - Match action buttons style
-    .cs-price-chart-periods,
-    .CsPriceChartPeriods {
-      &__period {
-        label {
-          cursor: pointer;
-        }
-      }
-      
-      &__button {
-        color: var(--color-secondary);
-        background-color: var(--color-secondary-light);
-        border-radius: 0.5rem;
-        transition: all 0.2s;
-        font-weight: 500;
-        
-        &:hover {
-          background-color: var(--color-divider);
-          color: var(--color-text);
-        }
-      }
-      
-      &__input:checked ~ &__button,
-      input:checked ~ &__button {
-        background-color: var(--color-secondary-light) !important;
-        color: var(--color-primary) !important;
-        font-weight: 600;
-        box-shadow: 0 0 0 2px var(--color-primary);
-      }
-    }
-    
-    // Icons - ensure visibility on dark background
-    svg {
-      [stroke] {
-        stroke: var(--color-text);
-      }
-      
-      [fill]:not([fill="none"]) {
-        fill: var(--color-text);
-      }
-    }
-    
-    // Buttons with icons
-    button,
-    .button,
-    [class*="button"],
-    [class*="Button"] {
+
+    &--primary-light {
+      border: 2px solid var(--color-primary) !important;
+      background-color: rgb(6 201 127 / 15%) !important;
+      color: var(--color-primary) !important;
+
       svg [stroke] {
-        stroke: currentColor;
+        stroke: var(--color-primary) !important;
       }
-      
-      svg [fill]:not([fill="none"]) {
-        fill: currentColor;
-      }
-    }
-    
-    // Crypto list items
-    .cs-crypto-list,
-    .CsCryptoList {
-      &__item {
-        background-color: var(--color-background);
-        border-left: 3px solid transparent;
-        
-        &:hover {
-          background-color: var(--color-secondary-light);
-        }
-        
-        &--active {
-          background-color: var(--color-secondary-light) !important;
-          border-left-color: var(--color-primary) !important;
-          
-          .cs-crypto-list__title,
-          .CsCryptoList__title {
-            color: var(--color-primary);
-            font-weight: 600;
-          }
-        }
-      }
-    }
-    
-    // Price Chart - force green color
-    .cs-price-chart,
-    .CsPriceChart {
-      // Chart area fill
-      svg {
-        path[fill] {
-          fill: var(--color-primary) !important;
-          fill-opacity: 0.2;
-        }
-        
-        path[stroke] {
-          stroke: var(--color-primary) !important;
-          stroke-width: 2;
-        }
-      }
-      
-      // ApexCharts specific
-      .apexcharts-area {
-        fill: var(--color-primary) !important;
-        fill-opacity: 0.2;
-      }
-      
-      .apexcharts-area-series path {
+
+      svg [fill] {
         fill: var(--color-primary) !important;
       }
-      
-      .apexcharts-line {
+    }
+
+    &--danger {
+      border: 2px solid var(--color-danger) !important;
+      background-color: var(--color-danger) !important;
+      color: #fff !important;
+    }
+
+    &--danger-light {
+      border: 2px solid var(--color-danger) !important;
+      background-color: var(--color-danger-light) !important;
+      color: var(--color-danger) !important;
+    }
+
+    &--primary-link {
+      color: var(--color-primary) !important;
+    }
+
+    &--secondary-link {
+      color: var(--color-secondary) !important;
+    }
+  }
+
+  // Specific override for small buttons in forms
+  .CsFormElement,
+  .cs-form-element {
+    .CsButton--secondary,
+    .cs-button--secondary,
+    button.CsButton--secondary {
+      border: 2px solid rgb(6 201 127 / 20%) !important;
+      background-color: #0a0c0b !important;
+      color: var(--color-primary) !important;
+
+      svg,
+      svg [stroke],
+      svg [fill] {
+        fill: var(--color-primary) !important;
         stroke: var(--color-primary) !important;
       }
     }
-    
-    // Action buttons (Send, Receive, Swap, History)
-    .crypto-index-actions,
-    .CryptoIndexActions {
-      button,
-      .cs-button,
-      .CsButton {
+  }
+
+  // Forms - modern dark design with green accents
+  .CsFormElement,
+  .CsFormInput,
+  .CsFormDropdown,
+  .CsFormGroup,
+  .cs-form-element,
+  .cs-form-input,
+  .cs-form-dropdown,
+  .cs-form-group {
+    background-color: transparent !important;
+
+    &__label {
+      margin-bottom: 0.5rem;
+      color: var(--color-primary) !important; // Green labels like Continue button
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      text-transform: uppercase;
+    }
+
+    &__box {
+      border: 2px solid rgb(6 201 127 / 20%) !important;
+      border-radius: 0.75rem !important;
+      background-color: #0a0c0b !important; // Deep black for the container
+      transition: all 0.3s ease;
+
+      &:focus-within,
+      &:active {
+        border-color: var(--color-primary) !important;
+        background-color: #0d0f0e !important;
+        box-shadow: 0 0 0 4px rgb(6 201 127 / 10%), 0 4px 12px rgb(6 201 127 / 15%);
+      }
+
+      &:hover:not(:focus-within, :active) {
+        border-color: rgb(6 201 127 / 35%) !important;
+        background-color: #0c0e0d !important;
+      }
+    }
+
+    &__text {
+      color: var(--color-text) !important;
+    }
+
+    &__input,
+    &__textarea,
+    &__field,
+    input,
+    textarea {
+      border: none !important;
+      background-color: transparent !important; // Transparent inside the box
+      color: var(--color-text) !important;
+      font-size: 1rem;
+
+      &::placeholder {
+        color: rgb(255 255 255 / 30%) !important;
+      }
+    }
+
+    &__error {
+      color: var(--color-danger);
+    }
+  }
+
+  // Form element specific - override has-error state
+  .CsFormElement--has-error,
+  .cs-form-element--has-error {
+    .CsFormElement__box,
+    .cs-form-element__box {
+      border-color: var(--color-danger) !important;
+      background-color: rgb(220 38 38 / 10%) !important;
+    }
+  }
+
+  // Passphrase textarea - white text for better visibility
+  .CsFormTextareaReadonly,
+  .cs-form-textarea-readonly {
+    &__textarea {
+      color: var(--color-text) !important; // White text for passphrase words
+      font-weight: 500;
+    }
+  }
+
+  // Passphrase specific styling
+  .auth-step-passphrase,
+  .AuthStepPassphrase {
+    .CsFormTextareaReadonly__textarea,
+    .cs-form-textarea-readonly__textarea {
+      color: #fff !important; // Pure white for maximum contrast
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  // Dropdown Menu - dark theme
+  .CsDropdownMenu,
+  .cs-dropdown-menu {
+    &__content {
+      border: 2px solid rgb(6 201 127 / 20%) !important;
+      background-color: #0a0c0b !important; // Deep black
+      box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+    }
+
+    &__triangle {
+      svg {
+        fill: #0a0c0b !important;
+      }
+    }
+  }
+
+  // Modal - dark theme
+  .CsModal,
+  .cs-modal {
+    &__container {
+      border: 2px solid rgb(6 201 127 / 20%) !important;
+      background-color: #0a0c0b !important; // Deep black
+      box-shadow: 0 12px 40px rgb(0 0 0 / 60%);
+    }
+
+    &__title {
+      color: var(--color-text) !important;
+    }
+
+    &__body {
+      color: var(--color-text) !important;
+    }
+
+    &__close {
+      cursor: pointer;
+
+      svg [stroke] {
+        stroke: var(--color-text) !important;
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  // List Items - dark theme with hover
+  .CsListItem,
+  .cs-list-item {
+    color: var(--color-text) !important;
+
+    &__title {
+      color: var(--color-text) !important;
+    }
+
+    &__description {
+      color: var(--color-secondary) !important;
+    }
+
+    &--clickable {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: rgb(6 201 127 / 5%) !important;
+      }
+
+      &:active {
+        background-color: rgb(6 201 127 / 10%) !important;
+      }
+    }
+
+    &--danger {
+      color: var(--color-danger) !important;
+
+      svg [stroke] {
+        stroke: var(--color-danger) !important;
+      }
+
+      svg [fill] {
+        fill: var(--color-danger) !important;
+      }
+    }
+
+    svg [stroke] {
+      stroke: var(--color-text);
+    }
+
+    svg [fill] {
+      fill: var(--color-text);
+    }
+  }
+
+  // List Items Container
+  .CsListItems,
+  .cs-list-items {
+    background-color: transparent !important;
+  }
+
+  // Generic input and button elements - modern dark design
+  input:not([type="radio"], [type="checkbox"], [type="range"], .cs-form-input__input, .CsFormInput__input),
+  textarea,
+  select {
+    border: 2px solid rgb(6 201 127 / 20%) !important;
+    border-radius: 0.75rem;
+    background-color: #0a0c0b !important; // Deep black
+    color: var(--color-text) !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: rgb(255 255 255 / 30%) !important;
+    }
+
+    &:focus {
+      border-color: var(--color-primary) !important;
+      background-color: #0d0f0e !important;
+      box-shadow: 0 0 0 4px rgb(6 201 127 / 10%), 0 4px 12px rgb(6 201 127 / 15%);
+      outline: none;
+    }
+
+    &:hover:not(:focus) {
+      border-color: rgb(6 201 127 / 35%) !important;
+      background-color: #0c0e0d !important;
+    }
+  }
+
+  // Labels - bright green like Continue button
+  label {
+    color: var(--color-primary) !important; // Bright green
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+  }
+
+  // Dropdown and Select - black background
+  .CsDropdownMenu,
+  .cs-dropdown-menu {
+    border: 2px solid rgb(6 201 127 / 20%) !important;
+    border-radius: 0.75rem;
+    background-color: #0a0c0b !important; // Deep black like inputs
+    box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+    color: var(--color-text) !important;
+
+    &__item {
+      background-color: #0a0c0b !important;
+      color: var(--color-text) !important;
+
+      &:hover {
+        background-color: rgb(6 201 127 / 10%) !important;
+      }
+
+      &--active {
+        background-color: rgb(6 201 127 / 15%) !important;
+        color: var(--color-primary) !important;
+      }
+    }
+  }
+
+  // Select specific styling
+  select {
+    padding-right: 2.5rem;
+    border: 2px solid rgb(6 201 127 / 20%) !important;
+    border-radius: 0.75rem;
+    appearance: none;
+    background-color: #0a0c0b !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2306c97f' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    color: var(--color-text) !important;
+
+    option {
+      background-color: #0a0c0b;
+      color: var(--color-text);
+    }
+  }
+
+  // Role-based selectors
+  [role="listbox"],
+  [role="combobox"] {
+    border: 2px solid rgb(6 201 127 / 20%) !important;
+    border-radius: 0.75rem;
+    background-color: #0a0c0b !important;
+    color: var(--color-text) !important;
+  }
+
+  [role="option"] {
+    background-color: #0a0c0b !important;
+    color: var(--color-text) !important;
+
+    &:hover {
+      background-color: rgb(6 201 127 / 10%) !important;
+    }
+
+    &[aria-selected="true"] {
+      background-color: rgb(6 201 127 / 15%) !important;
+      color: var(--color-primary) !important;
+    }
+  }
+
+  // Modal
+  .CsModal {
+    &__overlay {
+      background-color: rgb(0 0 0 / 70%);
+    }
+
+    &__content {
+      background-color: var(--color-background);
+      color: var(--color-text);
+    }
+
+    &__header {
+      border-bottom-color: var(--color-divider);
+    }
+
+    &__footer {
+      border-top-color: var(--color-divider);
+    }
+  }
+
+  // Sidebar
+  .CsSidebar {
+    background-color: var(--color-background);
+
+    &__portfolio-amount {
+      color: var(--color-text);
+    }
+
+    &__portfolio-label {
+      color: var(--color-secondary);
+    }
+
+    &__portfolio-change {
+      color: var(--color-secondary);
+
+      &--positive {
+        color: var(--color-primary);
+      }
+
+      &--negative {
+        color: var(--color-danger);
+      }
+    }
+  }
+
+  // Crypto List
+  .CsCryptoList {
+    &__item {
+      &:hover {
+        background-color: var(--color-secondary-light);
+      }
+
+      &--active {
+        background-color: var(--color-primary-light);
+      }
+    }
+
+    &__title {
+      color: var(--color-text);
+    }
+
+    &__subtitle {
+      color: var(--color-secondary);
+    }
+
+    &__amount {
+      color: var(--color-text);
+    }
+
+    &__change {
+      color: var(--color-secondary);
+
+      &--positive {
+        color: var(--color-primary);
+      }
+
+      &--negative {
+        color: var(--color-danger);
+      }
+    }
+  }
+
+  // Loader
+  .CsLoader {
+    &__spinner {
+      border-color: var(--color-divider);
+      border-top-color: var(--color-primary);
+    }
+
+    &__text {
+      color: var(--color-secondary);
+    }
+  }
+
+  // Warning
+  .CsWarning {
+    border-color: var(--color-danger);
+    background-color: var(--color-danger-light);
+    color: var(--color-danger);
+  }
+
+  // Transaction Status
+  .CsTransactionStatus {
+    &--pending {
+      color: var(--color-secondary);
+    }
+
+    &--confirmed {
+      color: var(--color-primary);
+    }
+
+    &--failed {
+      color: var(--color-danger);
+    }
+  }
+
+  // Switch
+  .CsSwitch {
+    &__track {
+      background-color: var(--color-secondary-light);
+    }
+
+    &__track--active {
+      background-color: var(--color-primary);
+    }
+
+    &__thumb {
+      background-color: #fff;
+    }
+  }
+
+  // Pin - CRITICAL: High specificity selectors
+  .cs-pin,
+  .CsPin {
+    // Dots
+    .cs-pin__dot,
+    &__dot {
+      border-color: var(--color-divider);
+      background-color: var(--color-divider);
+
+      &--active,
+      &--filled {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary);
+      }
+    }
+
+    // Number buttons - force white background with black text
+    .cs-button--secondary,
+    .CsButton--secondary,
+    button.cs-button,
+    button.CsButton {
+      background-color: #fff !important;
+      color: #222 !important;
+
+      &:hover {
+        background-color: #f0f0f0 !important;
+        color: #222 !important;
+      }
+
+      &:active {
+        background-color: #e0e0e0 !important;
+        color: #222 !important;
+      }
+    }
+
+    // Named buttons (Log out, Delete)
+    .cs-pin__key--named,
+    &__key--named {
+      background-color: transparent !important;
+      color: var(--color-primary) !important;
+
+      &:hover {
+        background-color: var(--color-primary-light) !important;
+      }
+    }
+
+    // Disabled buttons
+    .cs-pin__key--disabled,
+    &__key--disabled {
+      background-color: transparent !important;
+    }
+  }
+
+  // List Item Dropdown
+  .CsListItemDropdown {
+    color: var(--color-text);
+
+    select {
+      background-color: transparent;
+      color: var(--color-text);
+    }
+  }
+
+  // Powered By
+  .CsPoweredBy {
+    color: var(--color-secondary);
+  }
+
+  // Provider List
+  .CsProviderList {
+    &__item {
+      border-color: var(--color-divider);
+      background-color: var(--color-secondary-light);
+
+      &:hover {
+        background-color: var(--color-divider);
+      }
+
+      &--selected {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary-light);
+      }
+    }
+
+    &__name {
+      color: var(--color-text);
+    }
+
+    &__description {
+      color: var(--color-secondary);
+    }
+  }
+
+  // Price Chart
+  .CsPriceChart {
+    &__period {
+      color: var(--color-secondary);
+
+      &--active {
+        color: var(--color-primary);
+      }
+    }
+
+    &__axis-label {
+      color: var(--color-secondary);
+    }
+  }
+
+  // Navbar
+  .CsNavbar {
+    border-bottom-color: var(--color-divider);
+    background-color: var(--color-background);
+
+    &__title {
+      color: var(--color-text);
+    }
+  }
+
+  // Avatar
+  .CsAvatar {
+    background-color: var(--color-secondary-light);
+    color: var(--color-text);
+  }
+
+  // CRITICAL: Main panels and views - force background
+  .cs-sidebar,
+  .CsSidebar {
+    background-color: var(--color-background) !important;
+  }
+
+  .app-layout,
+  .AppLayout {
+    &__main {
+      background-color: var(--color-background) !important;
+    }
+
+    &__content {
+      background-color: var(--color-background) !important;
+    }
+  }
+
+  // Crypto views
+  .crypto-index-view,
+  .CryptoIndexView,
+  .crypto-view {
+    background-color: var(--color-background) !important;
+  }
+
+  // Auth layouts
+  .auth-step-layout,
+  .AuthStepLayout {
+    background-color: var(--color-background) !important;
+  }
+
+  // All router-view containers
+  .router-view,
+  [class*="view"],
+  [class*="View"],
+  [class*="layout"],
+  [class*="Layout"] {
+    background-color: var(--color-background) !important;
+  }
+
+  // Price Chart Periods (1D, 7D, 14D, etc.) - Match action buttons style
+  .cs-price-chart-periods,
+  .CsPriceChartPeriods {
+    &__period {
+      label {
+        cursor: pointer;
+      }
+    }
+
+    &__button {
+      border-radius: 0.5rem;
+      background-color: var(--color-secondary-light);
+      color: var(--color-secondary);
+      font-weight: 500;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: var(--color-divider);
         color: var(--color-text);
-        
-        &__circle {
-          background-color: var(--color-secondary-light);
-          
-          svg {
-            [stroke] {
-              stroke: var(--color-primary);
-            }
-            
-            [fill]:not([fill="none"]) {
-              fill: var(--color-primary);
-            }
-          }
-        }
-        
-        &:hover &__circle {
-          background-color: var(--color-primary-light);
+      }
+    }
+
+    &__input:checked ~ &__button,
+    input:checked ~ &__button {
+      background-color: var(--color-secondary-light) !important;
+      box-shadow: 0 0 0 2px var(--color-primary);
+      color: var(--color-primary) !important;
+      font-weight: 600;
+    }
+  }
+
+  // Icons - ensure visibility on dark background
+  svg {
+    [stroke] {
+      stroke: var(--color-text);
+    }
+
+    [fill]:not([fill="none"]) {
+      fill: var(--color-text);
+    }
+  }
+
+  // Buttons with icons
+  button,
+  .button,
+  [class*="button"],
+  [class*="Button"] {
+    svg [stroke] {
+      stroke: currentcolor;
+    }
+
+    svg [fill]:not([fill="none"]) {
+      fill: currentcolor;
+    }
+  }
+
+  // Crypto list items
+  .cs-crypto-list,
+  .CsCryptoList {
+    &__item {
+      border-left: 3px solid transparent;
+      background-color: var(--color-background);
+
+      &:hover {
+        background-color: var(--color-secondary-light);
+      }
+
+      &--active {
+        border-left-color: var(--color-primary) !important;
+        background-color: var(--color-secondary-light) !important;
+
+        .cs-crypto-list__title,
+        .CsCryptoList__title {
+          color: var(--color-primary);
+          font-weight: 600;
         }
       }
     }
+  }
+
+  // Price Chart - force green color
+  .cs-price-chart,
+  .CsPriceChart {
+    // Chart area fill
+    svg {
+      path[fill] {
+        fill: var(--color-primary) !important;
+        fill-opacity: 0.2;
+      }
+
+      path[stroke] {
+        stroke: var(--color-primary) !important;
+        stroke-width: 2;
+      }
+    }
+
+    // ApexCharts specific
+    .apexcharts-area {
+      fill: var(--color-primary) !important;
+      fill-opacity: 0.2;
+    }
+
+    .apexcharts-area-series path {
+      fill: var(--color-primary) !important;
+    }
+
+    .apexcharts-line {
+      stroke: var(--color-primary) !important;
+    }
+  }
+
+  // Action buttons (Send, Receive, Swap, History)
+  .crypto-index-actions,
+  .CryptoIndexActions {
+    button,
+    .cs-button,
+    .CsButton {
+      color: var(--color-text);
+
+      &__circle {
+        background-color: var(--color-secondary-light);
+
+        svg {
+          [stroke] {
+            stroke: var(--color-primary);
+          }
+
+          [fill]:not([fill="none"]) {
+            fill: var(--color-primary);
+          }
+        }
+      }
+
+      &:hover &__circle {
+        background-color: var(--color-primary-light);
+      }
+    }
+  }
 }
 
 // Apply to dark theme (always)

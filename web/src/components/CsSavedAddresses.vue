@@ -150,8 +150,8 @@ export default {
 
   &__title {
     @include text-md;
-    font-weight: 600;
     margin: 0;
+    font-weight: 600;
   }
 
   &__item {
@@ -159,26 +159,26 @@ export default {
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.02);
+      background-color: rgb(0 0 0 / 2%);
     }
   }
 
   &__content {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: $spacing-xs;
   }
 
   &__alias {
-    font-weight: 500;
     font-size: 14px;
+    font-weight: 500;
   }
 
   &__address {
+    color: var(--color-secondary);
     font-family: monospace;
     font-size: 12px;
-    color: var(--color-secondary);
   }
 
   &__meta {
@@ -187,11 +187,11 @@ export default {
   }
 
   &__count {
-    font-size: 12px;
-    color: var(--color-secondary);
-    background-color: var(--color-hover);
     padding: 2px 8px;
     border-radius: 12px;
+    background-color: var(--color-hover);
+    color: var(--color-secondary);
+    font-size: 12px;
   }
 }
 </style>

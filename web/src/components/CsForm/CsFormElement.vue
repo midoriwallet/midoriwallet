@@ -155,7 +155,7 @@ export default {
       position: relative;
       display: flex;
       min-width: 0;
-      min-height: 3.5rem;
+      min-height: 3.5rem; // Mobile: 56px touch-friendly
       flex: 1 1 100%;
       align-items: center;
       padding: 0 $spacing-md;
@@ -169,14 +169,19 @@ export default {
         border-color 0.15s ease-in-out,
         box-shadow 0.15s ease-in-out;
 
+      @include breakpoint(lg) {
+        min-height: 2.5rem; // Desktop: 40px compact
+        padding: 0 $desktop-spacing-md;
+      }
+
       &--extra {
         flex: 1 0 auto;
       }
     }
 
     &__info {
-      flex-shrink: 0;
       width: 2.75rem;
+      flex-shrink: 0;
       padding: 0;
 
       svg {

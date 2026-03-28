@@ -277,7 +277,6 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: $spacing-2xs;
       padding: $spacing-md;
       border: 1px solid var(--border-subtle);
       border-radius: var(--border-radius-lg);
@@ -285,6 +284,7 @@ export default {
         linear-gradient(180deg, rgb(4 156 102 / 7%), transparent 75%),
         var(--surface-1);
       box-shadow: var(--shadow-sm);
+      gap: $spacing-2xs;
       text-align: center;
     }
 

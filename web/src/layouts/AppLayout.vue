@@ -45,12 +45,12 @@ export default {
       max-width: $desktop-max-width;
       align-items: flex-start;
       padding:
-        max($spacing-md, env(safe-area-inset-top))
-        max($spacing-md, env(safe-area-inset-right))
-        $spacing-md
-        max($spacing-md, env(safe-area-inset-left));
+        max($desktop-spacing-md, env(safe-area-inset-top))
+        max($desktop-spacing-md, env(safe-area-inset-right))
+        $desktop-spacing-md
+        max($desktop-spacing-md, env(safe-area-inset-left));
       margin: 0 auto;
-      gap: $spacing-md;
+      gap: $desktop-spacing-md;
     }
 
     &__stage {

@@ -140,7 +140,12 @@ export default {
 
       @include breakpoint(lg) {
         flex-basis: 45rem;
-        padding: $spacing-2xl $spacing-xl $spacing-3xl;
+        padding:
+          $desktop-spacing-lg
+          $desktop-spacing-md
+          $desktop-spacing-lg
+          $desktop-spacing-md;
+        gap: $desktop-spacing-lg;
       }
 
       &--narrow {

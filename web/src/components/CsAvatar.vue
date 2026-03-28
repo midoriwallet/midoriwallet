@@ -46,9 +46,9 @@ export default {
   .#{ $filename } {
     width: $spacing-4xl;
     height: $spacing-4xl;
+    border: 1px solid var(--border-subtle);
     border-radius: 50%;
     animation: fix-ios 0.2s ease-in; // fix safari bug with initial render
-    border: 1px solid var(--border-subtle);
     background-color: var(--surface-1);
     box-shadow: var(--shadow-sm);
 

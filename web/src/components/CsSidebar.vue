@@ -175,8 +175,7 @@ export default {
         $spacing-lg
         max($spacing-xl, env(safe-area-inset-left));
       border-bottom: 1px solid var(--border-subtle);
-      background:
-        linear-gradient(180deg, rgb(4 156 102 / 10%), transparent 78%);
+      background: linear-gradient(180deg, rgb(4 156 102 / 10%), transparent 78%);
     }
 
     &__identity-top {
@@ -205,8 +204,8 @@ export default {
       margin-bottom: $spacing-3xs;
       color: var(--color-text);
       cursor: pointer;
-      text-align: left;
       letter-spacing: 0.01em;
+      text-align: left;
 
       &--large {
         @include text-xl;
@@ -239,13 +238,13 @@ export default {
       background-color: var(--surface-2);
 
       &--positive {
-        color: var(--color-primary);
         background-color: var(--surface-primary-soft);
+        color: var(--color-primary);
       }
 
       &--negative {
-        color: var(--color-danger);
         background-color: var(--surface-danger-soft);
+        color: var(--color-danger);
       }
     }
 

@@ -309,13 +309,13 @@ export default {
     &__saved-contact {
       display: flex;
       align-items: center;
-      gap: $spacing-xs;
       padding: $spacing-sm $spacing-md;
+      border-radius: var(--border-radius-md);
+      border-left: 3px solid var(--color-primary);
       margin-top: $spacing-xs;
       margin-bottom: $spacing-md;
       background-color: var(--surface-primary-soft);
-      border-left: 3px solid var(--color-primary);
-      border-radius: var(--border-radius-md);
+      gap: $spacing-xs;
     }
 
     &__saved-contact-icon {

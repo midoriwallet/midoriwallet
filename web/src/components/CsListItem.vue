@@ -81,7 +81,7 @@ export default {
   .#{ $filename } {
     $self: &;
     display: flex;
-    min-height: 4rem;
+    min-height: 4rem; // Mobile: 64px touch-friendly
     flex-direction: row;
     align-items: center;
     padding-right: max($spacing-xl, env(safe-area-inset-right));
@@ -90,13 +90,14 @@ export default {
     gap: $spacing-sm;
     transition: background-color 0.15s ease-in-out;
 
-    &:last-child {
-      border-bottom: 0;
+    @include breakpoint(lg) {
+      min-height: 2.75rem; // Desktop: 44px compact
+      padding-right: $desktop-spacing-lg;
+      padding-left: $desktop-spacing-lg;
     }
 
-    @include breakpoint(lg) {
-      padding-right: 0;
-      padding-left: 0;
+    &:last-child {
+      border-bottom: 0;
     }
 
     &__content {
@@ -104,6 +105,11 @@ export default {
       flex-grow: 1;
       padding-top: $spacing-md;
       padding-bottom: $spacing-md;
+
+      @include breakpoint(lg) {
+        padding-top: $desktop-spacing-sm;
+        padding-bottom: $desktop-spacing-sm;
+      }
     }
 
     &__title {

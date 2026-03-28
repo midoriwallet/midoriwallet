@@ -171,10 +171,10 @@ export default {
     &__transactions {
       display: flex;
       flex-direction: column;
-      margin: 0;
       padding: $spacing-sm;
       border: 1px solid var(--border-subtle);
       border-radius: var(--border-radius-lg);
+      margin: 0;
       background-color: var(--surface-1);
       box-shadow: var(--shadow-sm);
       gap: $spacing-2xs;

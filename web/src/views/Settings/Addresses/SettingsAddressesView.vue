@@ -413,9 +413,9 @@ export default {
   }
 
   &__empty {
-    text-align: center;
     padding: $spacing-2xl;
     color: var(--color-secondary);
+    text-align: center;
   }
 
   &__address-item {
@@ -423,26 +423,26 @@ export default {
   }
 
   &__address-content {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: $spacing-xs;
   }
 
   &__address-alias {
-    font-weight: 600;
     font-size: 16px;
+    font-weight: 600;
   }
 
   &__address-text {
+    color: var(--color-secondary);
     font-family: monospace;
     font-size: 14px;
-    color: var(--color-secondary);
   }
 
   &__address-meta {
-    font-size: 12px;
     color: var(--color-secondary);
+    font-size: 12px;
   }
 
   &__address-actions {

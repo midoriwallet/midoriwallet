@@ -161,8 +161,8 @@ export default {
       align-self: center;
       border: 1px solid var(--border-subtle);
       border-radius: 50%;
-      box-shadow: var(--shadow-sm);
       animation: status-icon 0.2s ease-in 0.1s forwards;
+      box-shadow: var(--shadow-sm);
       opacity: 0;
       transform: scale(0.3);
 

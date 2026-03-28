@@ -70,13 +70,19 @@ export default {
   .#{ $filename } {
     display: grid;
     width: 100%;
-    min-height: $spacing-5xl;
+    min-height: $spacing-5xl; // Mobile: 64px
     align-items: center;
     padding: $spacing-xs 0;
     border-bottom: 1px solid var(--border-subtle);
-    background-color: color-mix(in srgb, var(--surface-1) 90%, transparent);
     backdrop-filter: blur(8px);
+    background-color: color-mix(in srgb, var(--surface-1) 90%, transparent);
     grid-template-columns: $spacing-5xl 1fr $spacing-5xl;
+
+    @include breakpoint(lg) {
+      min-height: 3rem; // Desktop: 48px
+      padding: $desktop-spacing-sm 0;
+      grid-template-columns: 2.5rem 1fr 2.5rem;
+    }
 
     &__zone {
       display: flex;
@@ -116,6 +122,10 @@ export default {
       font-size: 1.0625rem;
       letter-spacing: 0.01em;
       line-height: 1.4;
+
+      @include breakpoint(lg) {
+        font-size: 0.9375rem; // Slightly smaller on desktop
+      }
     }
 
     &__description {
