@@ -42,8 +42,11 @@ export default {
     $self: &;
     position: relative;
     display: flex;
-    padding: 0 $spacing-xl;
-    gap: $spacing-xs;
+    padding: $spacing-2xs;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background-color: var(--surface-1);
+    gap: $spacing-2xs;
 
     @include breakpoint(lg) {
       max-width: 30rem;
@@ -64,10 +67,15 @@ export default {
       pointer-events: none;
       &:checked ~ #{ $self }__button {
         z-index: 1;
-        background-color: var(--color-secondary-light);
-        box-shadow: 0 0 0 2px var(--color-primary);
+        background-color: var(--surface-primary-soft);
+        box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 30%, transparent);
         color: var(--color-primary);
         font-weight: 600;
+      }
+
+      &:focus-visible ~ #{ $self }__button {
+        outline: 2px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+        outline-offset: 1px;
       }
     }
 
@@ -75,17 +83,18 @@ export default {
       @include text-sm;
       display: flex;
       height: $spacing-2xl;
+      min-width: 2.625rem;
       align-items: center;
       justify-content: center;
-      border-radius: 0.5rem;
-      background-color: var(--color-secondary-light);
+      border-radius: 999px;
+      background-color: transparent;
       color: var(--color-secondary);
       cursor: pointer;
       font-weight: 500;
-      transition: all 0.2s;
+      transition: all 0.15s ease-in-out;
 
       &:hover {
-        background-color: var(--color-divider);
+        background-color: var(--surface-2);
         color: var(--color-text);
       }
     }

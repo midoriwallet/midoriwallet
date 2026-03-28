@@ -22,7 +22,11 @@ export default {
     @include text-sm;
     display: flex;
     align-items: flex-start;
-    color: $danger;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 28%, transparent);
+    border-radius: var(--border-radius-sm);
+    background: var(--surface-danger-soft);
+    color: var(--color-danger);
     gap: $spacing-xs;
 
     &__triangle {

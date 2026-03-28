@@ -19,9 +19,10 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
-    width: $spacing-5xl;
-    height: 100%;
+    width: 2.75rem;
+    height: 2.75rem;
     flex-shrink: 0;
-    padding: $spacing-lg;
+    padding: $spacing-sm;
+    border-radius: 0.75rem;
   }
 </style>

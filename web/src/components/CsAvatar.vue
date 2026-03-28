@@ -48,7 +48,9 @@ export default {
     height: $spacing-4xl;
     border-radius: 50%;
     animation: fix-ios 0.2s ease-in; // fix safari bug with initial render
-    box-shadow: 0 $spacing-md $spacing-xl rgb(0 0 0 / 8%);
+    border: 1px solid var(--border-subtle);
+    background-color: var(--surface-1);
+    box-shadow: var(--shadow-sm);
 
     &--own {
       outline: 2px solid transparent;
@@ -56,8 +58,8 @@ export default {
     }
 
     &--own-tor {
-      box-shadow: 0 $spacing-md $spacing-xl rgb(138 43 226 / 8%);
-      outline: 2px solid #8a2be2;
+      box-shadow: 0 $spacing-md $spacing-xl color-mix(in srgb, var(--color-primary) 24%, transparent);
+      outline: 2px solid color-mix(in srgb, var(--color-primary) 62%, transparent);
     }
 
     @keyframes fix-ios {

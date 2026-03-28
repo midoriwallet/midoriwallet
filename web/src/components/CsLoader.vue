@@ -31,10 +31,10 @@ export default {
     gap: $spacing-xs;
 
     &__dot {
-      width: $spacing-xs;
-      height: $spacing-xs;
+      width: 0.375rem;
+      height: 0.375rem;
       border-radius: 50%;
-      background-color: $secondary;
+      background-color: var(--color-secondary);
 
       &:nth-child(1) {
         animation: pulse-3 0.4s ease-in-out alternate infinite;
@@ -51,19 +51,19 @@ export default {
 
     &--primary {
       #{ $self }__dot {
-        background-color: $text-color;
+        background-color: #fff;
       }
     }
 
     &--primary-light {
       #{ $self }__dot {
-        background-color: $primary;
+        background-color: var(--color-primary);
       }
     }
 
     &--danger-light {
       #{ $self }__dot {
-        background-color: $danger;
+        background-color: var(--color-danger);
       }
     }
   }

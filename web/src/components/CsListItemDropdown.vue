@@ -58,11 +58,15 @@ export default {
     position: relative;
     display: flex;
     align-items: center;
+    padding: $spacing-xs $spacing-sm;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--surface-1);
     gap: $spacing-xs;
 
     &__label {
       @include text-sm;
-      color: $secondary;
+      color: var(--color-secondary);
     }
 
     &__select {
@@ -73,6 +77,14 @@ export default {
     svg {
       width: $spacing-xl;
       height: $spacing-xl;
+
+      [stroke] {
+        stroke: var(--color-secondary);
+      }
+
+      [fill] {
+        fill: var(--color-secondary);
+      }
     }
   }
 </style>

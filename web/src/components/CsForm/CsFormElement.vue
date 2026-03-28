@@ -121,7 +121,7 @@ export default {
     $self: &;
     display: flex;
     flex-direction: column;
-    gap: $spacing-2xs;
+    gap: $spacing-xs;
 
     &__container {
       display: flex;
@@ -140,7 +140,9 @@ export default {
     &__label {
       @include text-sm;
       margin-bottom: $spacing-2xs;
-      color: $secondary;
+      color: var(--color-secondary);
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
 
     &__wrapper {
@@ -156,12 +158,16 @@ export default {
       min-height: 3.5rem;
       flex: 1 1 100%;
       align-items: center;
-      padding: 0 $spacing-sm;
-      border: 1px solid $secondary-light;
-      border-radius: 0.625rem;
-      background-color: $secondary-light;
+      padding: 0 $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-sm);
       gap: 0.625rem;
-      transition: background-color 0.15s ease-in-out, border 0.15s ease-in-out;
+      transition:
+        background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
 
       &--extra {
         flex: 1 0 auto;
@@ -170,19 +176,31 @@ export default {
 
     &__info {
       flex-shrink: 0;
-      padding: 0 $spacing-md;
+      width: 2.75rem;
+      padding: 0;
+
+      svg {
+        [stroke] {
+          stroke: var(--color-secondary);
+        }
+
+        [fill] {
+          fill: var(--color-secondary);
+        }
+      }
     }
 
     &__error {
       @include text-sm;
-      color: $danger;
+      color: var(--color-danger);
     }
 
     &--has-error {
       #{ $self }__container {
         div#{ $self }__box {
-          border: 1px solid $danger;
-          background-color: $danger-light;
+          border-color: var(--color-danger);
+          background-color: var(--surface-danger-soft);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 14%, transparent);
         }
       }
     }
@@ -200,10 +218,14 @@ export default {
       #{ $self }__box {
         cursor: pointer;
 
-        &:focus-within,
+        &:focus-within {
+          border-color: var(--color-primary-brand);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-brand) 18%, transparent);
+        }
+
         &:active {
-          border: 1px solid $primary-brand;
-          background-color: $white;
+          border-color: var(--border-default);
+          box-shadow: var(--shadow-sm);
         }
       }
     }

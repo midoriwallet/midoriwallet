@@ -1,38 +1,38 @@
 // Theme system using CSS custom properties
 :root {
   // Light theme (default)
-  --color-text: #152019;
-  --color-secondary: #506057;
-  --color-secondary-light: #eef3ef;
+  --color-text: #0f1b15;
+  --color-secondary: #3e5047;
+  --color-secondary-light: #e9f0eb;
   --color-primary: #049c66;
   --color-primary-brand: #049c66;
-  --color-primary-light: #e7f7ef;
+  --color-primary-light: #ddf4e9;
   --color-danger: #d63b2b;
-  --color-danger-light: #fcefeb;
-  --color-divider: #dde6df;
-  --color-background: #f7faf8;
+  --color-danger-light: #fae9e5;
+  --color-divider: #d1ddd5;
+  --color-background: #f2f7f4;
   --color-background-dark: #223128;
   --color-white: #fff;
   --color-black: #000;
-  --color-gray: #c5d0c9;
+  --color-gray: #b9c7be;
 
   // Surfaces
-  --surface-0: #f7faf8;
+  --surface-0: #f2f7f4;
   --surface-1: #fff;
-  --surface-2: #f1f6f2;
-  --surface-3: #e8f0ea;
-  --surface-primary-soft: #e5f7ee;
-  --surface-danger-soft: #fdeeea;
+  --surface-2: #edf4ef;
+  --surface-3: #e3ece6;
+  --surface-primary-soft: #dcf3e8;
+  --surface-danger-soft: #fae8e4;
 
   // Borders
-  --border-subtle: #e4ece6;
-  --border-default: #d4dfd8;
-  --border-strong: #c2d0c8;
+  --border-subtle: #d7e2db;
+  --border-default: #c9d6ce;
+  --border-strong: #b9c8bf;
 
   // Shadows
-  --shadow-sm: 0 1px 2px 0 rgb(12 28 19 / 6%);
-  --shadow-md: 0 6px 14px -8px rgb(12 28 19 / 14%);
-  --shadow-lg: 0 16px 28px -14px rgb(12 28 19 / 20%);
+  --shadow-sm: 0 1px 2px 0 rgb(12 28 19 / 8%);
+  --shadow-md: 0 8px 18px -10px rgb(12 28 19 / 16%);
+  --shadow-lg: 0 18px 30px -16px rgb(12 28 19 / 22%);
 
   // Border radius
   --border-radius-sm: 0.5rem;

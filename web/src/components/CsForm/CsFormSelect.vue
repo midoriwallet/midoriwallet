@@ -92,6 +92,7 @@ export default {
     &__value {
       @include ellipsis;
       flex-grow: 1;
+      color: var(--color-text);
     }
 
     &__select {
@@ -104,6 +105,16 @@ export default {
       width: $spacing-xl;
       height: $spacing-xl;
       flex-shrink: 0;
+
+      svg {
+        [stroke] {
+          stroke: var(--color-secondary);
+        }
+
+        [fill] {
+          fill: var(--color-secondary);
+        }
+      }
     }
   }
 </style>

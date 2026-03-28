@@ -75,13 +75,19 @@ export default {
       background-color 0.15s ease-in-out,
       color 0.15s ease-in-out,
       border-color 0.15s ease-in-out,
-      transform 0.15s ease-in-out;
+      transform 0.15s ease-in-out,
+      box-shadow 0.15s ease-in-out;
 
     @include text-md;
     @include text-bold;
 
     &:disabled {
       opacity: 0.45;
+    }
+
+    &:focus-visible {
+      outline: 2px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+      outline-offset: 2px;
     }
 
     svg {
@@ -114,6 +120,7 @@ export default {
       border: 1px solid var(--border-subtle);
       border-radius: 50%;
       background-color: var(--surface-2);
+      box-shadow: inset 0 0 0 1px rgb(255 255 255 / 35%);
 
       @include hover {
         background-color: var(--surface-3);
@@ -131,6 +138,7 @@ export default {
     &--primary {
       @extend %base-button;
       background-color: var(--color-primary-brand);
+      box-shadow: var(--shadow-sm);
       color: #fff;
 
       @include hover {
@@ -141,6 +149,7 @@ export default {
       &:active {
         background-color: darker($primary-brand, 12%);
         transform: translateY(0);
+        box-shadow: none;
       }
     }
 
@@ -149,6 +158,7 @@ export default {
       border-color: var(--border-subtle);
       background-color: var(--surface-2);
       color: var(--color-text);
+      box-shadow: var(--shadow-sm);
 
       @include hover {
         border-color: var(--border-default);
@@ -157,6 +167,7 @@ export default {
 
       &:active {
         transform: scale(0.99);
+        box-shadow: none;
       }
     }
 
@@ -293,8 +304,30 @@ export default {
       font-weight: $font-weight-regular;
       gap: $spacing-xs;
       overflow-wrap: anywhere;
+      color: var(--color-secondary);
 
       @include text-sm;
+
+      @include hover {
+        color: var(--color-text);
+      }
+
+      #{ $self }__circle {
+        transition:
+          background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out,
+          transform 0.15s ease-in-out,
+          box-shadow 0.15s ease-in-out;
+      }
+
+      @include hover {
+        #{ $self }__circle {
+          border-color: var(--border-default);
+          background-color: var(--surface-3);
+          box-shadow: var(--shadow-sm);
+          transform: translateY(-1px);
+        }
+      }
     }
 
     &--small {

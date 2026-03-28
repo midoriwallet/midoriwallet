@@ -72,8 +72,10 @@ export default {
     width: 100%;
     min-height: $spacing-5xl;
     align-items: center;
-    padding: $spacing-2xs 0;
-    background-color: var(--surface-1);
+    padding: $spacing-xs 0;
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: color-mix(in srgb, var(--surface-1) 90%, transparent);
+    backdrop-filter: blur(8px);
     grid-template-columns: $spacing-5xl 1fr $spacing-5xl;
 
     &__zone {
@@ -83,7 +85,7 @@ export default {
 
       &--left {
         justify-content: flex-start;
-        padding-left: $spacing-xs;
+        padding-left: $spacing-2xs;
       }
 
       &--center {
@@ -103,7 +105,7 @@ export default {
 
       &--right {
         justify-content: flex-end;
-        padding-right: $spacing-xs;
+        padding-right: $spacing-2xs;
       }
     }
 
@@ -111,7 +113,7 @@ export default {
       @include text-bold;
       @include ellipsis;
       color: var(--color-text);
-      font-size: 1rem;
+      font-size: 1.0625rem;
       letter-spacing: 0.01em;
       line-height: 1.4;
     }

@@ -81,12 +81,18 @@ export default {
   .#{ $filename } {
     $self: &;
     display: flex;
-    min-height: 3.5rem;
+    min-height: 4rem;
     flex-direction: row;
     align-items: center;
     padding-right: max($spacing-xl, env(safe-area-inset-right));
     padding-left: max($spacing-xl, env(safe-area-inset-left));
-    gap: $spacing-xs;
+    border-bottom: 1px solid var(--border-subtle);
+    gap: $spacing-sm;
+    transition: background-color 0.15s ease-in-out;
+
+    &:last-child {
+      border-bottom: 0;
+    }
 
     @include breakpoint(lg) {
       padding-right: 0;
@@ -96,13 +102,15 @@ export default {
     &__content {
       min-width: 20%;
       flex-grow: 1;
-      padding-top: $spacing-sm;
-      padding-bottom: $spacing-sm;
+      padding-top: $spacing-md;
+      padding-bottom: $spacing-md;
     }
 
     &__title {
       @include text-md;
       @include ellipsis;
+      color: var(--color-text);
+      font-weight: 500;
     }
 
     &__description {
@@ -125,6 +133,14 @@ export default {
 
     &--clickable {
       cursor: pointer;
+
+      @include hover {
+        background-color: var(--surface-2);
+      }
+
+      &:active {
+        background-color: var(--surface-3);
+      }
     }
 
     &--disabled {

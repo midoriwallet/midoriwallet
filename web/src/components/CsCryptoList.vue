@@ -146,10 +146,13 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    color: var(--color-text);
+
     &__header {
       @include text-sm;
       margin-bottom: $spacing-2xs;
       color: var(--color-secondary);
+      font-weight: 500;
     }
 
     &__list {
@@ -162,7 +165,7 @@ export default {
       list-style: none;
 
       &--loading {
-        opacity: 0.4;
+        opacity: 0.72;
         pointer-events: none;
       }
     }
@@ -189,7 +192,7 @@ export default {
       &--selected {
         background-color: var(--color-secondary-light);
         border-left: 3px solid var(--color-primary);
-        
+
         .cs-crypto-list__title,
         .#{ $filename }__title {
           color: var(--color-primary);
@@ -229,6 +232,7 @@ export default {
       @include text-md;
       @include text-bold;
       @include ellipsis;
+      color: var(--color-text);
 
       &:first-child {
         flex: 0 0 auto;

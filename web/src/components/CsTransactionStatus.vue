@@ -159,7 +159,9 @@ export default {
       width: $spacing-8xl;
       height: $spacing-8xl;
       align-self: center;
+      border: 1px solid var(--border-subtle);
       border-radius: 50%;
+      box-shadow: var(--shadow-sm);
       animation: status-icon 0.2s ease-in 0.1s forwards;
       opacity: 0;
       transform: scale(0.3);
@@ -190,16 +192,22 @@ export default {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      padding: $spacing-md;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background: var(--surface-1);
       gap: $spacing-md;
     }
 
     &__info-header {
       @include text-lg;
       @include text-bold;
+      color: var(--color-text);
     }
 
     &__info-message {
       @include text-md;
+      color: var(--color-secondary);
     }
   }
 </style>

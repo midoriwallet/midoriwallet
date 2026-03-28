@@ -27,8 +27,14 @@ export default {
 
 <style lang="scss">
   .#{ $filename } {
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--border-radius-lg);
     margin-right: calc(-1 * max($spacing-xl, env(safe-area-inset-right)));
     margin-left: calc(-1 * max($spacing-xl, env(safe-area-inset-left)));
+    background: var(--surface-1);
+    box-shadow: var(--shadow-sm);
+
     @include breakpoint(lg) {
       margin-right: 0;
       margin-left: 0;
@@ -48,8 +54,10 @@ export default {
 
     &__title {
       @include text-sm;
-      padding: $spacing-2xs 0;
-      border-bottom: 1px solid var(--color-divider);
+      padding: $spacing-xs 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 500;
+      letter-spacing: 0.01em;
     }
 
     &__list {

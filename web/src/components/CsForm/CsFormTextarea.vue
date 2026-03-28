@@ -59,10 +59,14 @@ export default {
       padding: $spacing-sm 0;
       border: none;
       background-color: transparent;
-      color: $text-color;
+      color: var(--color-text);
       font-family: inherit;
       line-height: inherit;
       resize: none;
+
+      &::placeholder {
+        color: var(--color-secondary);
+      }
     }
   }
 </style>

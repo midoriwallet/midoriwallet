@@ -30,7 +30,7 @@ export default {
           .replace(/[^0-9.]+/g, '')
           .split('.');
         if (fraction === undefined) {
-          if (integer === ''){
+          if (integer === '') {
             this.internalValue = '';
           } else {
             this.internalValue = BigInt(integer || '0').toString(10);
@@ -83,5 +83,12 @@ export default {
   .#{ $filename } {
     width: 100%;
     border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+
+    &::placeholder {
+      color: var(--color-secondary);
+    }
   }
 </style>

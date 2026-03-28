@@ -28,12 +28,13 @@ export default {
 
     &--horizontal {
       flex-direction: row;
+      flex-wrap: wrap;
     }
 
     &--circle {
       flex-direction: row;
       justify-content: space-around;
-      gap: $spacing-2xs;
+      gap: $spacing-sm;
     }
   }
 </style>

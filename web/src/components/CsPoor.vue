@@ -50,12 +50,19 @@ export default {
 
     &__content {
       flex-grow: 1;
+      padding: $spacing-lg;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--border-radius-md);
+      background: var(--surface-2);
+      color: var(--color-secondary);
+      text-align: center;
     }
 
     &__actions {
       width: 100%;
       max-width: 25rem;
       align-self: center;
+      margin-top: $spacing-sm;
     }
   }
 </style>

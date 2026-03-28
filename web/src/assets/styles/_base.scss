@@ -23,24 +23,6 @@ body {
   }
 }
 
-// Force dark mode background
-html.theme--dark body {
-  background-color: #121614 !important;
-  @include breakpoint(lg) {
-    background-color: #1e2421 !important;
-  }
-}
-
-// Force auto mode background (follows system)
-@media (prefers-color-scheme: dark) {
-  html.theme--auto body {
-    background-color: #121614 !important;
-    @include breakpoint(lg) {
-      background-color: #1e2421 !important;
-    }
-  }
-}
-
 html,
 body {
   overflow: hidden;
@@ -89,11 +71,11 @@ a {
   transition: color 0.2s ease;
 
   @include hover {
-    opacity: 0.8;
+    color: color-mix(in srgb, var(--color-primary) 86%, #000);
   }
 
   &:active {
-    opacity: 0.6;
+    color: color-mix(in srgb, var(--color-primary) 76%, #000);
   }
 }
 

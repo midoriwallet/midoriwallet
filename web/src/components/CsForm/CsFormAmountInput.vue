@@ -181,11 +181,14 @@ export default {
     &__amount {
       @include ellipsis;
       flex-grow: 1;
+      @include text-lg;
+      font-weight: 500;
     }
 
     &__value {
       @include ellipsis;
       flex-grow: 1;
+      color: var(--color-secondary);
     }
 
     &__select {
@@ -197,10 +200,23 @@ export default {
       width: $spacing-xl;
       height: $spacing-xl;
       flex-shrink: 0;
+
+      svg {
+        [stroke] {
+          stroke: var(--color-secondary);
+        }
+
+        [fill] {
+          fill: var(--color-secondary);
+        }
+      }
     }
 
     &__info {
       @include text-md;
+      margin-top: $spacing-2xs;
+      color: var(--color-secondary);
+      font-variant-numeric: tabular-nums;
     }
   }
 </style>

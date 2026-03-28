@@ -85,6 +85,8 @@ export default {
 
     &__overlay {
       @include overlay;
+      backdrop-filter: blur(6px);
+      background-color: rgb(10 17 13 / 55%);
     }
 
     &__container {
@@ -93,9 +95,11 @@ export default {
       flex: 0 1 25rem;
       flex-direction: column;
       padding: $spacing-xl;
-      border-radius: 0.625rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-lg);
       margin: auto;
-      background-color: $white;
+      background-color: var(--surface-1);
+      box-shadow: var(--shadow-lg);
       gap: $spacing-xl;
     }
 
@@ -109,6 +113,7 @@ export default {
     &__title {
       @include text-lg;
       @include text-bold;
+      color: var(--color-text);
     }
 
     &__close {
@@ -116,13 +121,27 @@ export default {
       height: $spacing-xl;
       flex-grow: 0;
       flex-shrink: 0;
+      color: var(--color-secondary);
       cursor: pointer;
+
+      @include hover {
+        color: var(--color-text);
+      }
+
+      [stroke] {
+        stroke: currentcolor;
+      }
+
+      [fill] {
+        fill: currentcolor;
+      }
     }
 
     &__body {
       @include text-md;
       display: flex;
       flex-direction: column;
+      color: var(--color-text);
       gap: $spacing-md;
     }
   }

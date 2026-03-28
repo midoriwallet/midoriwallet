@@ -105,9 +105,10 @@ export default {
       @include ellipsis;
       width: 100%;
       flex-grow: 1;
+      color: var(--color-text);
 
       &::placeholder {
-        color: $secondary;
+        color: var(--color-secondary);
       }
     }
 
@@ -116,6 +117,16 @@ export default {
       width: $spacing-xl;
       height: $spacing-xl;
       flex-shrink: 0;
+
+      svg {
+        [stroke] {
+          stroke: var(--color-secondary);
+        }
+
+        [fill] {
+          fill: var(--color-secondary);
+        }
+      }
     }
   }
 </style>
