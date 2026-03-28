@@ -9,6 +9,15 @@ import semver from 'semver';
 import tokens from '../tokens.js';
 
 const api = express.Router();
+let providersPromise;
+
+const PROVIDERS = [
+  {
+    id: 'changenow',
+    name: 'ChangeNOW',
+    logo: 'changenow.svg',
+  },
+];
 
 api.post('/register', validateAuthParams, (req, res) => {
   const walletId = req.body.wallet_id;
@@ -112,6 +121,102 @@ api.get('/fees', (req, res) => {
   }).catch((err) => {
     res.status(400).send(err);
   });
+});
+
+api.get('/providers', async (req, res) => {
+  const providers = await getEnabledProviders();
+  res.status(200).send(providers.map(({ id }) => {
+    return PROVIDERS.find((provider) => provider.id === id);
+  }));
+});
+
+api.get('/estimate', async (req, res) => {
+  const { from, to, amount } = req.query;
+  const providers = getEnabledProviders();
+  const estimations = [];
+  let amountError;
+  let hasInternalError = false;
+
+  const results = await Promise.allSettled((await providers).map(async ({ id, exchange }) => {
+    const data = await exchange.estimate({ from, to, amount });
+    return { provider: id, data };
+  }));
+
+  for (const result of results) {
+    if (result.status !== 'fulfilled') {
+      hasInternalError = true;
+      continue;
+    }
+    const { provider, data } = result.value;
+    if (data?.error) {
+      if (!amountError && ['AmountError', 'SmallAmountError', 'BigAmountError'].includes(data.error)) {
+        amountError = data;
+      }
+      continue;
+    }
+    estimations.push({
+      provider,
+      ...data,
+    });
+  }
+
+  if (estimations.length) {
+    return res.status(200).send(estimations);
+  }
+  if (amountError) {
+    return res.status(200).send(amountError);
+  }
+  if (hasInternalError) {
+    return res.status(200).send({ error: 'InternalExchangeError' });
+  }
+  return res.status(200).send({ error: 'ExchangeDisabled' });
+});
+
+api.get('/validate/:provider', (req, res, next) => {
+  getProvider(req.params.provider).then((exchange) => {
+    if (!exchange) {
+      return res.status(400).send({ error: 'Unknown provider' });
+    }
+    exchange.validateAddress({
+      cryptoId: req.query.cryptoId,
+      address: req.query.address,
+      extraId: req.query.extraId,
+    }).then((data) => {
+      res.status(200).send(data);
+    }).catch(next);
+  }).catch(next);
+});
+
+api.post('/transaction/:provider', (req, res, next) => {
+  getProvider(req.params.provider).then((exchange) => {
+    if (!exchange) {
+      return res.status(400).send({ error: 'Unknown provider' });
+    }
+    exchange.createTransaction({
+      walletId: req.query.id || req.body.id || '',
+      from: req.body.from,
+      to: req.body.to,
+      amount: req.body.amount,
+      address: req.body.address,
+      extraId: req.body.extraId,
+      refundAddress: req.body.refundAddress,
+    }).then((data) => {
+      res.status(200).send(data);
+    }).catch(next);
+  }).catch(next);
+});
+
+api.get('/transactions/:provider', (req, res, next) => {
+  getProvider(req.params.provider).then((exchange) => {
+    if (!exchange) {
+      return res.status(400).send({ error: 'Unknown provider' });
+    }
+    exchange.getTransactions({
+      ids: parseTransactions(req.query.transactions),
+    }).then((data) => {
+      res.status(200).send(data);
+    }).catch(next);
+  }).catch(next);
 });
 
 api.get('/csFee', (req, res) => {
@@ -226,6 +331,48 @@ function validateAuthParams(req, res, next) {
 
 function validatePin(pin) {
   return pin != undefined && pin.match(/^\d{4}$/);
+}
+
+async function getEnabledProviders() {
+  if (!providersPromise) {
+    providersPromise = loadProviders();
+  }
+  const providers = await providersPromise;
+  return PROVIDERS
+    .map(({ id }) => ({ id, exchange: providers[id] }))
+    .filter(({ exchange }) => Boolean(exchange));
+}
+
+async function getProvider(id) {
+  const providers = await getEnabledProviders();
+  return providers.find((provider) => provider.id === id)?.exchange;
+}
+
+function parseTransactions(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+async function loadProviders() {
+  const providers = {};
+
+  if (process.env.CHANGENOW_API_KEY) {
+    try {
+      providers.changenow = await import('../exchanges/changenow.js');
+    } catch (err) {
+      console.error('Unable to load ChangeNOW provider', err.message);
+    }
+  }
+
+  return providers;
 }
 
 export default api;
