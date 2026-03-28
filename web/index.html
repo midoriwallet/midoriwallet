@@ -96,7 +96,7 @@
     <% } %>
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline' data:;
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' data: https://changenow.io https://*.changenow.io;
       style-src 'self' 'unsafe-inline';
       connect-src
         'self'
@@ -114,6 +114,8 @@
         https://*.sentry.io;
       frame-src
         'self'
+        https://changenow.io
+        https://*.changenow.io
         https://*.walletconnect.org/
         https://*.walletconnect.com/;
       img-src
