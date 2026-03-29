@@ -57,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <MainLayout :title="$t('Register with Bridge')">
+  <MainLayout :title="$t('Register with Midori Banking')">
     <CsFormGroup class="&__form">
       <CsFormInput
         v-model="fullName"

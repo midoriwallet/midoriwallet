@@ -38,6 +38,30 @@ export default {
       if (width < 200) return 'large';
       return '';
     },
+    bridgeStatus() {
+      if (!this.$account.bridge.isRegistered) {
+        return {
+          tone: 'neutral',
+          title: this.$t('Midori not connected'),
+          description: this.$t('Connect your bank account to unlock fiat to crypto transfers.'),
+          cta: this.$t('Connect Midori'),
+        };
+      }
+      if (!this.$account.bridge.isApproved) {
+        return {
+          tone: 'warn',
+          title: this.$t('KYC in review'),
+          description: this.$t('Your Bridge account is registered. Complete verification to enable transfers.'),
+          cta: this.$t('Open Midori status'),
+        };
+      }
+      return {
+        tone: 'ok',
+        title: this.$t('Midori ready for banking'),
+        description: this.$t('Create virtual accounts and move fiat with ACH, Wire, SPEI and SEPA.'),
+        cta: this.$t('Open Midori dashboard'),
+      };
+    },
   },
   watch: {
     $cryptos: {
@@ -56,6 +80,11 @@ export default {
         this.portfolioBalanceChangePercent = portfolioBalance ? portfolioBalanceChange / portfolioBalance : 0;
       },
       immediate: true,
+    },
+  },
+  methods: {
+    openBridge() {
+      this.$router.push({ name: 'bridge', force: true });
     },
   },
 };
@@ -120,6 +149,29 @@ export default {
         :changePeriod="changePeriod"
         @select="(id) => $router.push({ name: 'crypto', params: { cryptoId: id }})"
       />
+
+      <div
+        class="&__bridge"
+        :class="`&__bridge--${bridgeStatus.tone}`"
+      >
+        <div class="&__bridge-head">
+          <span class="&__bridge-dot" />
+          <span class="&__bridge-label">{{ $t('Midori Banking') }}</span>
+        </div>
+        <div class="&__bridge-title">
+          {{ bridgeStatus.title }}
+        </div>
+        <div class="&__bridge-description">
+          {{ bridgeStatus.description }}
+        </div>
+        <CsButton
+          class="&__bridge-action"
+          type="primary-light"
+          @click="openBridge"
+        >
+          {{ bridgeStatus.cta }}
+        </CsButton>
+      </div>
     </div>
 
     <!-- Footer actions -->
@@ -130,12 +182,6 @@ export default {
       >
         <PlusIcon />
         {{ $t('Add crypto') }}
-      </CsButton>
-      <CsButton
-        type="primary-link"
-        @click="$router.push({ name: 'bridge', force: true })"
-      >
-        {{ $t('Bridge') }}
       </CsButton>
     </div>
   </div>
@@ -264,6 +310,64 @@ export default {
 
     &__content-list {
       flex-grow: 1;
+    }
+
+    &__bridge {
+      display: flex;
+      flex-direction: column;
+      margin-top: $spacing-sm;
+      padding: $spacing-sm;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--border-radius-md);
+      background-color: var(--surface-2);
+      gap: $spacing-2xs;
+
+      &--ok {
+        border-color: color-mix(in srgb, var(--color-primary) 35%, var(--border-subtle));
+        background: linear-gradient(180deg, rgb(4 156 102 / 10%), transparent 70%), var(--surface-2);
+      }
+
+      &--warn {
+        border-color: color-mix(in srgb, var(--color-warning) 40%, var(--border-subtle));
+      }
+    }
+
+    &__bridge-head {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2xs;
+    }
+
+    &__bridge-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      background-color: var(--color-primary);
+      box-shadow: 0 0 0 0.25rem rgb(4 156 102 / 16%);
+    }
+
+    &__bridge-label {
+      @include text-xs;
+      @include text-bold;
+      color: var(--color-primary);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    &__bridge-title {
+      @include text-md;
+      @include text-bold;
+      color: var(--color-text);
+    }
+
+    &__bridge-description {
+      @include text-xs;
+      color: var(--color-secondary);
+      line-height: 1.45;
+    }
+
+    &__bridge-action {
+      margin-top: $spacing-3xs;
     }
 
     /* ---- Footer actions ---- */

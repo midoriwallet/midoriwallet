@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-  <MainLayout :title="$t('Bridge')">
+  <MainLayout :title="$t('Midori Accounts')">
     <template v-if="!isRegistered || !isApproved">
       <div class="&__intro">
         <div class="&__intro-title">
