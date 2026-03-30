@@ -138,60 +138,6 @@ export default {
             <span class="&__copy">{{ copied === 'account' ? $t('Copied!') : $t('Copy') }}</span>
           </div>
           <div
-            v-if="instructions.iban"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.iban, 'iban')"
-          >
-            <span class="&__label">{{ $t('IBAN') }}</span>
-            <span class="&__value">{{ instructions.iban }}</span>
-            <span class="&__copy">{{ copied === 'iban' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
-            v-if="instructions.bic"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.bic, 'bic')"
-          >
-            <span class="&__label">{{ $t('BIC/SWIFT') }}</span>
-            <span class="&__value">{{ instructions.bic }}</span>
-            <span class="&__copy">{{ copied === 'bic' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
-            v-if="instructions.clabe"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.clabe, 'clabe')"
-          >
-            <span class="&__label">{{ $t('CLABE') }}</span>
-            <span class="&__value">{{ instructions.clabe }}</span>
-            <span class="&__copy">{{ copied === 'clabe' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
-            v-if="instructions.br_code"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.br_code, 'brcode')"
-          >
-            <span class="&__label">{{ $t('PIX BR Code') }}</span>
-            <span class="&__value &__value--break">{{ instructions.br_code }}</span>
-            <span class="&__copy">{{ copied === 'brcode' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
-            v-if="instructions.account_number"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.account_number, 'accnum')"
-          >
-            <span class="&__label">{{ $t('Account Number') }}</span>
-            <span class="&__value">{{ instructions.account_number }}</span>
-            <span class="&__copy">{{ copied === 'accnum' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
-            v-if="instructions.sort_code"
-            class="&__field &__field--copyable"
-            @click="copyToClipboard(instructions.sort_code, 'sortcode')"
-          >
-            <span class="&__label">{{ $t('Sort Code') }}</span>
-            <span class="&__value">{{ instructions.sort_code }}</span>
-            <span class="&__copy">{{ copied === 'sortcode' ? $t('Copied!') : $t('Copy') }}</span>
-          </div>
-          <div
             v-if="instructions.deposit_message"
             class="&__field &__field--copyable"
             @click="copyToClipboard(instructions.deposit_message, 'memo')"

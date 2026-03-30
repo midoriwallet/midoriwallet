@@ -10,19 +10,11 @@ import MainLayout from '../../layouts/MainLayout.vue';
 const SOURCE_RAILS = [
   { value: 'ach_push', name: 'ACH Push (USD)' },
   { value: 'wire', name: 'Wire Transfer (USD)' },
-  { value: 'sepa', name: 'SEPA (EUR)' },
-  { value: 'spei', name: 'SPEI (MXN)' },
-  { value: 'pix', name: 'PIX (BRL)' },
-  { value: 'faster_payments', name: 'Faster Payments (GBP)' },
 ];
 
 const SOURCE_CURRENCIES_MAP = {
   ach_push: 'usd',
   wire: 'usd',
-  sepa: 'eur',
-  spei: 'mxn',
-  pix: 'brl',
-  faster_payments: 'gbp',
 };
 
 const DEST_RAILS = [

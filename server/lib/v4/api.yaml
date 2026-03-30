@@ -655,7 +655,7 @@ paths:
               properties:
                 currency:
                   type: string
-                  enum: [usd, eur, mxn, brl, gbp]
+                  enum: [usd]
                 destinationPaymentRail:
                   type: string
                 destinationCurrency:

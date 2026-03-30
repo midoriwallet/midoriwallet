@@ -61,7 +61,7 @@ export default {
         </div>
         <div class="&__bridge-features">
           <span>{{ $t('Virtual Accounts') }}</span>
-          <span>{{ $t('ACH/Wire/SPEI/SEPA') }}</span>
+          <span>{{ $t('ACH/Wire') }}</span>
           <span>{{ $t('One-time Payments') }}</span>
         </div>
         <button

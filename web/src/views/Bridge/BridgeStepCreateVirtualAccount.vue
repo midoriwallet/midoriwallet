@@ -1,7 +1,6 @@
 <script>
 import CsButton from '../../components/CsButton.vue';
 import CsFormGroup from '../../components/CsForm/CsFormGroup.vue';
-import CsFormSelect from '../../components/CsForm/CsFormSelect.vue';
 import CsStep from '../../components/CsStep.vue';
 import MainLayout from '../../layouts/MainLayout.vue';
 import { SeedRequiredError } from '../../lib/account/Account.js';
@@ -25,20 +24,13 @@ export default {
     MainLayout,
     CsButton,
     CsFormGroup,
-    CsFormSelect,
   },
   extends: CsStep,
   mixins: [walletSeed],
   data() {
-    const currencies = (this.$account.bridge.supportedCurrencies || []).map((c) => ({
-      value: c.currency,
-      name: `${c.name} (${c.region})`,
-    }));
-
     return {
       isLoading: false,
-      currency: currencies.length ? currencies[0].value : '',
-      currencies: [{ value: '', name: '–' }, ...currencies],
+      currency: 'usd',
       destinationWalletAddress: '',
       errors: {},
     };
@@ -54,9 +46,6 @@ export default {
   methods: {
     validate() {
       this.errors = {};
-      if (!this.currency) {
-        this.errors.currency = this.$t('Currency is required');
-      }
       return Object.keys(this.errors).length === 0;
     },
     findBaseUsdcCrypto() {
@@ -173,12 +162,10 @@ export default {
       {{ $t('Source Currency') }}
     </div>
     <CsFormGroup class="&__panel">
-      <CsFormSelect
-        v-model="currency"
-        :label="$t('Select currency')"
-        :options="currencies"
-        :error="errors.currency"
-      />
+      <div class="&__locked-field">
+        <span class="&__locked-label">{{ $t('Select currency') }}</span>
+        <span class="&__locked-value">{{ $t('USD Virtual Account (United States)') }}</span>
+      </div>
     </CsFormGroup>
 
     <div class="&__section-title">

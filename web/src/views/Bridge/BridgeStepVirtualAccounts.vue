@@ -8,10 +8,6 @@ import MainLayout from '../../layouts/MainLayout.vue';
 
 const CURRENCY_LABELS = {
   usd: 'USD',
-  eur: 'EUR',
-  mxn: 'MXN',
-  brl: 'BRL',
-  gbp: 'GBP',
 };
 
 const STATUS_LABELS = {

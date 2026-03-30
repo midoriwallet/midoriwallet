@@ -43,7 +43,7 @@ export default {
         </div>
         <div class="&__intro-description">
           {{ $t('Create virtual accounts to receive fiat deposits and convert them to crypto automatically.') }}
-          {{ $t('Supports USD, EUR, MXN, BRL, and GBP.') }}
+          {{ $t('Supports USD') }}
         </div>
       </div>
       <CsButton

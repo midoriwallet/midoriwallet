@@ -1,10 +1,10 @@
 import axios from 'axios';
 import createError from 'http-errors';
 import crypto from 'crypto';
-import { query, queryOne, queryAll } from './pg.js';
+import { query, queryAll, queryOne } from './pg.js';
 
 const BRIDGE_API_URL = 'https://api.bridge.xyz/v0';
-const BRIDGE_API_KEY = process.env.BRIDGE_API_KEY;
+const { BRIDGE_API_KEY } = process.env;
 
 async function request(method, path, data = null, headers = {}) {
   if (!BRIDGE_API_KEY) {
@@ -32,7 +32,10 @@ async function request(method, path, data = null, headers = {}) {
     const status = err.response?.status || 500;
     const responseData = err.response?.data;
     const message = responseData?.message || responseData?.error || err.message;
-    console.error(`[Bridge API] ${method.toUpperCase()} ${path} failed (${status}):`, JSON.stringify(responseData || message));
+    console.error(
+      `[Bridge API] ${method.toUpperCase()} ${path} failed (${status}):`,
+      JSON.stringify(responseData || message)
+    );
     const safeMessage = [400, 422].includes(status) ? message : 'An error occurred with the payment service';
     throw createError(status, safeMessage);
   }
@@ -96,8 +99,9 @@ async function createKycLink(walletId, { fullName, email, type }) {
 
   await query(
     `INSERT INTO bridge_customers
-       (wallet_id, bridge_customer_id, kyc_link_id, full_name, email, kyc_link, tos_link, kyc_status, tos_status, created_at, updated_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())`,
+       (wallet_id, bridge_customer_id, kyc_link_id, full_name, email, kyc_link,
+        tos_link, kyc_status, tos_status, created_at, updated_at)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,now(),now())`,
     [
       walletId, result.customer_id, result.id, fullName, email,
       result.kyc_link, result.tos_link,
@@ -160,7 +164,7 @@ function isCustomerApproved(record) {
 
 // ─── Virtual Accounts ───────────────────────────────────────────────────────
 
-const SUPPORTED_CURRENCIES = ['usd', 'eur', 'mxn', 'brl', 'gbp'];
+const SUPPORTED_CURRENCIES = ['usd'];
 
 function validateCurrency(currency) {
   if (!SUPPORTED_CURRENCIES.includes(currency.toLowerCase())) {
@@ -168,7 +172,10 @@ function validateCurrency(currency) {
   }
 }
 
-async function createVirtualAccount(walletId, { currency, destinationPaymentRail, destinationCurrency, destinationAddress, developerFeePercent }) {
+async function createVirtualAccount(
+  walletId,
+  { currency, destinationPaymentRail, destinationCurrency, destinationAddress, developerFeePercent }
+) {
   validateCurrency(currency);
   validateAddress(destinationAddress);
 
@@ -425,34 +432,6 @@ function getSupportedCurrencies() {
       description: 'U.S. bank account and routing numbers',
       paymentRails: ['ach_push', 'wire'],
       region: 'United States',
-    },
-    {
-      currency: 'eur',
-      name: 'SEPA Virtual IBAN',
-      description: 'Euro-denominated IBANs for SEPA payments',
-      paymentRails: ['sepa'],
-      region: 'Europe',
-    },
-    {
-      currency: 'mxn',
-      name: 'MXN Virtual Account',
-      description: 'CLABE account numbers for SPEI payments',
-      paymentRails: ['spei'],
-      region: 'Mexico',
-    },
-    {
-      currency: 'brl',
-      name: 'BRL Virtual Account',
-      description: 'BR codes for PIX payments',
-      paymentRails: ['pix'],
-      region: 'Brazil',
-    },
-    {
-      currency: 'gbp',
-      name: 'GBP Virtual Account',
-      description: 'Account number for FPS payments',
-      paymentRails: ['faster_payments'],
-      region: 'United Kingdom',
     },
   ];
 }

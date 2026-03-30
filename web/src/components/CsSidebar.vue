@@ -58,7 +58,7 @@ export default {
       return {
         tone: 'ok',
         title: this.$t('Midori ready for banking'),
-        description: this.$t('Create virtual accounts and move fiat with ACH, Wire, SPEI and SEPA.'),
+        description: this.$t('Create virtual accounts and move fiat with ACH and Wire.'),
         cta: this.$t('Open Midori dashboard'),
       };
     },
